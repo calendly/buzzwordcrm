@@ -1,0 +1,17 @@
+<nav>
+  <div class="nav-wrapper">
+    {{#if isLoggedIn}}
+      <a href="/dashboard" class="brand-logo" style="padding-left: 15px;">BuzzwordCRM</a>
+    {{else}}
+      <a href="/" class="brand-logo" style="padding-left: 15px;">BuzzwordCRM</a>
+    {{/if}}
+
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        {{#if isLoggedIn}}
+          <li><a href="/dashboard">Dashboard</a></li>
+          <li><a href="/events">Events</a></li>
+          <li><a href="/logout">Logout</a></li>
+        {{/if}}
+      </ul>
+  </div>
+</nav>

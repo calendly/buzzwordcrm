@@ -1,0 +1,9 @@
+button {
+    background-color: #ee6e73 !important;
+}
+
+.card-title {
+    color: white;
+    font-weight: 400;
+    padding-left: 10px;
+}

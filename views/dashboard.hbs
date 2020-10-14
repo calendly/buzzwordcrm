@@ -1,0 +1,20 @@
+{{> nav}}
+
+<div class="container" style="margin-top: 50px;">
+  <div class="row">
+    {{#each eventTypes}}
+      <div class="col s6">
+        <div class="card">
+          <div style="background-color: {{color}};height:50px;width:100%;">
+          </div>
+          <div class="card-content">
+            <p>{{name}}</p>
+            <p>{{description_plain}}</p>
+          </div>
+          <div class="card-action">
+            <a href="" onclick="Calendly.initPopupWidget({url: '{{scheduling_url}}'});return false;">View Availability</a>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
