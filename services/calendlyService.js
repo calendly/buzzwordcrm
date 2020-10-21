@@ -2,7 +2,7 @@ const axios = require('axios').default;
 const User = require('../models/userModel');
 
 const {
-    CALENDLY_OAUTH_BASE_URL,
+    CALENDLY_AUTH_BASE_URL,
     CALENDLY_API_BASE_URL,
     CLIENT_SECRET,
     CLIENT_ID
@@ -68,7 +68,7 @@ class CalendlyService {
     };
 
     requestNewAccessToken = () => {
-        return axios.post(`${CALENDLY_OAUTH_BASE_URL}/oauth/token`, {
+        return axios.post(`${CALENDLY_AUTH_BASE_URL}/oauth/token`, {
             client_id: CLIENT_ID,
             client_secret: CLIENT_SECRET,
             grant_type: 'refresh_token',

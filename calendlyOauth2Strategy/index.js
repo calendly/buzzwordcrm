@@ -2,7 +2,7 @@ const OAuth2Strategy = require('passport-oauth2').Strategy;
 const User = require('../models/userModel');
 const CalendlyService = require('../services/calendlyService');
 const {
-    CALENDLY_OAUTH_BASE_URL,
+    CALENDLY_AUTH_BASE_URL,
     CLIENT_ID,
     CLIENT_SECRET,
     REDIRECT_URI
@@ -10,8 +10,8 @@ const {
 
 const strategy = new OAuth2Strategy(
     {
-        authorizationURL: CALENDLY_OAUTH_BASE_URL + '/oauth/authorize',
-        tokenURL: CALENDLY_OAUTH_BASE_URL + '/oauth/token',
+        authorizationURL: CALENDLY_AUTH_BASE_URL + '/oauth/authorize',
+        tokenURL: CALENDLY_AUTH_BASE_URL + '/oauth/token',
         clientID: CLIENT_ID,
         clientSecret: CLIENT_SECRET,
         callbackURL: REDIRECT_URI

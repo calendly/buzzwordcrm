@@ -3,7 +3,7 @@
 1. Familiarize yourself with the codebase.
 1. Create a new issue before starting your project so that we can keep track of
    what you are trying to add/fix. That way, we can also offer suggestions or
-   let you know if there is already an effort in progress. We will let you know when you're good to go to start.
+   let you know if there is already an effort in progress.
 1. Fork this repository.
 1. The [README](README.md) has details on how to set up your environment.
 1. Create a branch in your fork based on the correct branch (usually the **main** branch). Note, this step is recommended but technically not required if contributing using a fork.
