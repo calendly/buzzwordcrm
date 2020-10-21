@@ -1,5 +1,15 @@
-### Setup
+# BuzzwordCRM
 
-1. Rename `.env.example` to `.env` and update the file's environment variables with your app's client id, client secret, and redirect url.
-2. Run `npm install` to install dependencies.
-3. Run `npm start` and visit http://localhost:3000
+BuzzwordCRM is a sample application that demonstrates how to build applications using Calendly's v2 api.
+
+## Running the app locally
+
+1. Register as a Calendly developer (if you haven't already) by logging into your Calendly account and [completing this form](https://calendlyquestions.typeform.com/to/ys5GCq). We’ll process your request within 1 day and email you when it’s time to complete the setup.
+1. Once you've received your Client ID and Client Secret you can then copy `.env.example` to `.env` and update the file's environment variables with your application's credentials.
+
+   ```bash
+   cp .env.example .env
+   ```
+
+1. Run `npm install` to install dependencies.
+1. Run `npm start` to start the application.
