@@ -4,7 +4,7 @@ BuzzwordCRM is a sample application that demonstrates how to build applications 
 
 ## Running the app locally
 
-1. Register as a Calendly developer (if you haven't already) by logging into your Calendly account and [completing this form](https://calendlyquestions.typeform.com/to/ys5GCq). We’ll process your request within 1 day and email you when it’s time to complete the setup.
+1. Register as a Calendly developer (if you haven't already) by logging into your Calendly account and [completing this form](https://calendlyquestions.typeform.com/to/ys5GCq) (note: this app assumes that your redirect uri will be http://localhost:3000/oauth/callback). We’ll process your request within 1 day and email you when it’s time to complete the setup.
 1. Once you've received your Client ID and Client Secret you can then copy `.env.example` to `.env` and update the file's environment variables with your application's credentials.
 
    ```bash

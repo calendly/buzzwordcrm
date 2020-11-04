@@ -8,6 +8,7 @@ const passport = require('passport');
 const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const hbs = require('hbs');
+const port = process.env.PORT || '3000';
 
 (async () => {
     await initializeDatabase();
@@ -63,4 +64,6 @@ app.use(function (err, req, res, next) {
     res.render('error');
 });
 
-module.exports = app;
+app.listen(port, () => {
+    console.log(`Server ready at http://localhost:${port}`);
+});
