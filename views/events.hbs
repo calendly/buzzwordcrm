@@ -1,0 +1,73 @@
+{{> nav}}
+<div class="container" style="margin-top: 50px;">
+  <div class="row">
+      <table class="striped centered">
+        <thead>
+          <tr>
+              <th>Name</th>
+              <th>Date</th>
+              <th>Start Time</th>
+              <th>End Time</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each events}}
+            <tr>
+              <td>{{name}}</td>
+              <td>{{date}}</td>
+              <td>{{start_time}}</td>
+              <td>{{end_time}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+  </div>
+  {{#if pagination.next_page}}
+  <div class="center-align">
+    <button id="load_more" class="waves-effect waves-light btn-small" data-next-page={{pagination.next_page}}>
+      Load More
+    </button>
+  </div>
+  {{/if}}
+<script>
+  const loadMoreElement = document.querySelector('#load_more');
+
+  if (loadMoreElement) {
+    loadMoreElement.addEventListener('click', async () => {
+      const nextPageUrl = loadMoreElement.getAttribute('data-next-page');
+      const nextPageQueryParams = nextPageUrl.slice(nextPageUrl.indexOf('?'));
+    
+      const { events, pagination } = await fetch(`/api/scheduled_events${nextPageQueryParams}`).then(res => res.json());
+
+      const tableBody = document.querySelector('tbody');
+
+      events.forEach(({ name, start_time, end_time, date, uuid }) => {
+        const tableRow = document.createElement('tr');
+
+        const nameData = document.createElement('td');
+        nameData.textContent = name;
+
+        const dateData = document.createElement('td');
+        dateData.textContent = date;
+        
+        const startTimeData = document.createElement('td');
+        startTimeData.textContent = start_time;
+        
+        const endTimeData = document.createElement('td');
+        endTimeData.textContent = end_time;
+        
+        tableRow.appendChild(nameData);
+        tableRow.appendChild(dateData);
+        tableRow.appendChild(startTimeData);
+        tableRow.appendChild(endTimeData);
+        tableBody.appendChild(tableRow);
+      });
+
+      if (pagination.next_page) {
+        loadMoreElement.setAttribute('data-next-page', pagination.next_page)
+      } else {
+        loadMoreElement.remove();
+      }
+    });
+  }
+</script>
