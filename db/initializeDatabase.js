@@ -4,9 +4,9 @@ CREATE_USERS_TABLE_SQL = `
   CREATE TABLE users
     (
       id INTEGER PRIMARY KEY AUTOINCREMENT, 
-      calendly_uid varchar(255) UNIQUE NOT NULL, 
-      access_token varchar(255) UNIQUE NOT NULL, 
-      refresh_token varchar(255) UNIQUE NOT NULL
+      calendly_uid TEXT UNIQUE NOT NULL,
+      access_token TEXT UNIQUE NOT NULL,
+      refresh_token TEXT UNIQUE NOT NULL
     )
 `;
 
