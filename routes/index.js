@@ -16,19 +16,6 @@ router
         }
         res.redirect('/');
     })
-    .get('/dashboard', isUserAuthenticated, async (req, res) => {
-        const { access_token, refresh_token, calendly_uid } = req.user;
-        const calendlyService = new CalendlyService(
-            access_token,
-            refresh_token
-        );
-        const {
-            collection: eventTypes,
-            pagination
-        } = await calendlyService.getUserEventTypes(calendly_uid);
-
-        res.render('dashboard', { isLoggedIn: true, eventTypes, pagination });
-    })
     .get('/events', isUserAuthenticated, async (req, res) => {
         const { access_token, refresh_token, calendly_uid } = req.user;
         const calendlyService = new CalendlyService(

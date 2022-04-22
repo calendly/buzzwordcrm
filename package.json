@@ -25,6 +25,7 @@
         "passport": "^0.4.1",
         "passport-oauth2": "^1.5.0",
         "react": "^18.0.0",
+        "react-calendly": "^4.0.0",
         "react-dom": "^18.0.0",
         "react-router-dom": "^6.3.0",
         "sqlite3": "^5.0.2"

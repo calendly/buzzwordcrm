@@ -3,18 +3,32 @@ const CalendlyService = require('../services/calendlyService');
 const { isUserAuthenticated, formatEventDateTime } = require('../utils');
 const router = express.Router();
 
-router.get('/scheduled_events', isUserAuthenticated, async (req, res) => {
-    const { access_token, refresh_token } = req.user;
-    const { count, page_token, user } = req.query;
-    const calendlyService = new CalendlyService(access_token, refresh_token);
+router
+    .get('/scheduled_events', isUserAuthenticated, async (req, res) => {
+        const { access_token, refresh_token } = req.user;
+        const { count, page_token, user } = req.query;
+        const calendlyService = new CalendlyService(access_token, refresh_token);
 
-    const {
-        collection,
-        pagination
-    } = await calendlyService.getUserScheduledEvents(user, count, page_token);
-    const events = collection.map(formatEventDateTime);
+        const {
+            collection,
+            pagination
+        } = await calendlyService.getUserScheduledEvents(user, count, page_token);
+        const events = collection.map(formatEventDateTime);
 
-    res.json({ events, pagination });
-});
+        res.json({ events, pagination });
+    })
+    .get('/event_types', isUserAuthenticated, async (req, res) => {
+        const { access_token, refresh_token, calendly_uid } = req.user;
+        const calendlyService = new CalendlyService(
+            access_token,
+            refresh_token
+        );
+        const {
+            collection: eventTypes,
+            pagination
+        } = await calendlyService.getUserEventTypes(calendly_uid);
+
+        res.json({ eventTypes, pagination });
+    });
 
 module.exports = router;
