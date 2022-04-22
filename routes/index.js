@@ -26,6 +26,9 @@ router
         const events = collection.map(formatEventDateTime);
 
         res.render('events', { isLoggedIn: true, events, pagination });
+    })
+    .get('*', (req, res) => {
+        res.render('index');
     });
 
 module.exports = router;
