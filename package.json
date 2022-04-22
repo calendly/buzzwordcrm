@@ -3,6 +3,7 @@
     "version": "0.0.0",
     "private": true,
     "scripts": {
+        "esbuild": "esbuild components/app.jsx --bundle --outfile=public/javascripts/bundle.js",
         "start": "node app.js",
         "dev": "nodemon ./bin/www"
     },
@@ -23,6 +24,8 @@
         "morgan": "~1.9.1",
         "passport": "^0.4.1",
         "passport-oauth2": "^1.5.0",
+        "react": "^18.0.0",
+        "react-dom": "^18.0.0",
         "sqlite3": "^5.0.2"
     },
     "devDependencies": {
