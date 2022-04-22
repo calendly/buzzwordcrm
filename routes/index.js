@@ -5,9 +5,6 @@ const router = express.Router();
 
 router
     .get('/', (req, res) => {
-        if (req.user) {
-            return res.render('dashboard', { isLoggedIn: !!req.user });
-        }
         res.render('index');
     })
     .get('/logout', (req, res) => {

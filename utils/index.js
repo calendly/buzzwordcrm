@@ -18,8 +18,6 @@ exports.isUserAuthenticated = async (req, res, next) => {
             return next();
         }
     }
-
-    res.redirect('/');
 };
 
 exports.formatEventDateTime = (event) => ({

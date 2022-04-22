@@ -2,6 +2,7 @@ const express = require('express');
 const CalendlyService = require('../services/calendlyService');
 const { isUserAuthenticated, formatEventDateTime } = require('../utils');
 const router = express.Router();
+const User = require('../models/userModel');
 
 router
     .get('/scheduled_events', isUserAuthenticated, async (req, res) => {
@@ -29,6 +30,15 @@ router
         } = await calendlyService.getUserEventTypes(calendly_uid);
 
         res.json({ eventTypes, pagination });
-    });
+    })
+    .get('/authenticate', async (req, res) => {
+        let user;
+
+        if (req.user) {
+            user = await User.findById(req.user.id);
+        }
+
+        res.json({ authenticated: !!user })
+    })
 
 module.exports = router;

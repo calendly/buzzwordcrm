@@ -5,8 +5,8 @@ const router = express.Router();
 router.get('/', passport.authenticate('oauth2')).get(
     '/callback',
     passport.authenticate('oauth2', {
-        successRedirect: '/dashboard',
-        failureRedirect: '/'
+        successRedirect: '/',
+        failureRedirect: '/login'
     })
 );
 
