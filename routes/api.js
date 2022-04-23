@@ -6,14 +6,14 @@ const User = require('../models/userModel');
 
 router
     .get('/scheduled_events', isUserAuthenticated, async (req, res) => {
-        const { access_token, refresh_token } = req.user;
-        const { count, page_token, user } = req.query;
+        const { access_token, refresh_token, calendly_uid } = req.user;
+        const { count, page_token } = req.query;
         const calendlyService = new CalendlyService(access_token, refresh_token);
 
         const {
             collection,
             pagination
-        } = await calendlyService.getUserScheduledEvents(user, count, page_token);
+        } = await calendlyService.getUserScheduledEvents(calendly_uid, count, page_token);
         const events = collection.map(formatEventDateTime);
 
         res.json({ events, pagination });

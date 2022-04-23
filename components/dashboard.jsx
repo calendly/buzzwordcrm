@@ -18,7 +18,7 @@ export default () => {
     <div className="container" style={{marginTop: '50px'}}>
       <div className="row">
         {eventTypes.map((eventType) =>
-          <div className="col s6">
+          <div className="col s6" key={eventType.uri}>
             <div className="card">
               <div style={{backgroundColor: eventType.color, height: 50, width: '100%'}}>
               </div>
