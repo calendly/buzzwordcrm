@@ -1,5 +1,5 @@
 import Dashboard from './dashboard.jsx';
-import Events from './events.jsx'
+import Events from './events.jsx';
 import Login from './login.jsx';
 import Nav from './nav.jsx';
 import React from 'react';
@@ -11,8 +11,22 @@ import { createRoot } from 'react-dom/client';
 let App = () => (
   <Routes>
     <Route path="/login" element={<Login />} />
-    <Route path="/" element={<RequireAuth><Dashboard /></RequireAuth>} />
-    <Route path="/events" element={<RequireAuth><Events /></RequireAuth>} />
+    <Route
+      path="/"
+      element={
+        <RequireAuth>
+          <Dashboard />
+        </RequireAuth>
+      }
+    />
+    <Route
+      path="/events"
+      element={
+        <RequireAuth>
+          <Events />
+        </RequireAuth>
+      }
+    />
   </Routes>
 );
 
