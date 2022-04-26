@@ -27,6 +27,13 @@ let App = () => (
         </RequireAuth>
       }
     />
+    <Route path="events/:uuid"
+    element={
+      <RequireAuth>
+        <SingleEvent />
+      </RequireAuth>
+    }
+    />
   </Routes>
 );
 
