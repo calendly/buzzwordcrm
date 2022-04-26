@@ -11,12 +11,12 @@ CREATE_USERS_TABLE_SQL = `
 `;
 
 module.exports = () => {
-    return new Promise((resolve, reject) => {
-        db.serialize(function () {
-            db.run(CREATE_USERS_TABLE_SQL, (result, err) => {
-                if (err) return reject(err);
-                resolve(result);
-            });
-        });
+  return new Promise((resolve, reject) => {
+    db.serialize(function () {
+      db.run(CREATE_USERS_TABLE_SQL, (result, err) => {
+        if (err) return reject(err);
+        resolve(result);
+      });
     });
+  });
 };

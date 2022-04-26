@@ -1,0 +1,2 @@
+api: npm run dev
+frontend: npm run esbuild -- --watch

@@ -7,76 +7,72 @@ const CREATE_SQL = `INSERT INTO users (calendly_uid, access_token, refresh_token
 const UPDATE_SQL = `UPDATE users SET access_token = ?, refresh_token = ? WHERE id = ?`;
 
 class UserModel {
-    constructor(connection) {
-        this.connection = connection;
-    }
+  constructor(connection) {
+    this.connection = connection;
+  }
 
-    async findOrCreate({ calendlyUid, refreshToken, accessToken }) {
-        const user = await this.findByCalendlyUserId(calendlyUid);
+  async findOrCreate({ calendlyUid, refreshToken, accessToken }) {
+    const user = await this.findByCalendlyUserId(calendlyUid);
 
-        if (user) return user;
+    if (user) return user;
 
-        await this.create({
-            calendlyUid,
-            refreshToken,
-            accessToken
-        });
+    await this.create({
+      calendlyUid,
+      refreshToken,
+      accessToken,
+    });
 
-        return this.findByCalendlyUserId(calendlyUid);
-    }
+    return this.findByCalendlyUserId(calendlyUid);
+  }
 
-    async findByCalendlyUserId(calendlyUid) {
-        return new Promise((resolve, reject) => {
-            db.get(FIND_BY_CALENDLY_UID_SQL, [calendlyUid], (err, row) => {
-                if (err) return reject(err);
+  async findByCalendlyUserId(calendlyUid) {
+    return new Promise((resolve, reject) => {
+      db.get(FIND_BY_CALENDLY_UID_SQL, [calendlyUid], (err, row) => {
+        if (err) return reject(err);
 
-                resolve(row);
-            });
-        });
-    }
+        resolve(row);
+      });
+    });
+  }
 
-    async findById(id) {
-        return new Promise((resolve, reject) => {
-            db.get(FIND_BY_ID_SQL, [id], (err, row) => {
-                if (err) return reject(err);
+  async findById(id) {
+    return new Promise((resolve, reject) => {
+      db.get(FIND_BY_ID_SQL, [id], (err, row) => {
+        if (err) return reject(err);
 
-                resolve(row);
-            });
-        });
-    }
+        resolve(row);
+      });
+    });
+  }
 
-    async findByAccessToken(accessToken) {
-        return new Promise((resolve, reject) => {
-            db.get(FIND_BY_ACCESS_TOKEN_SQL, [accessToken], (err, row) => {
-                if (err) return reject(err);
+  async findByAccessToken(accessToken) {
+    return new Promise((resolve, reject) => {
+      db.get(FIND_BY_ACCESS_TOKEN_SQL, [accessToken], (err, row) => {
+        if (err) return reject(err);
 
-                resolve(row);
-            });
-        });
-    }
+        resolve(row);
+      });
+    });
+  }
 
-    async update(id, { accessToken, refreshToken }) {
-        return new Promise((resolve, reject) => {
-            db.run(UPDATE_SQL, [accessToken, refreshToken, id], (err, row) => {
-                if (err) return reject(err);
+  async update(id, { accessToken, refreshToken }) {
+    return new Promise((resolve, reject) => {
+      db.run(UPDATE_SQL, [accessToken, refreshToken, id], (err, row) => {
+        if (err) return reject(err);
 
-                resolve(row);
-            });
-        });
-    }
+        resolve(row);
+      });
+    });
+  }
 
-    async create({ calendlyUid, accessToken, refreshToken }) {
-        return new Promise((resolve, reject) => {
-            db.run(
-                CREATE_SQL,
-                [calendlyUid, accessToken, refreshToken],
-                (err) => {
-                    if (err) return reject(err);
-                    resolve();
-                }
-            );
-        });
-    }
+  async create({ calendlyUid, accessToken, refreshToken }) {
+    return new Promise((resolve, reject) => {
+      db.run(CREATE_SQL, [calendlyUid, accessToken, refreshToken], (err) => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
+  }
 }
 
 module.exports = new UserModel(db);
