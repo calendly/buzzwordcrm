@@ -9,6 +9,7 @@ const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const hbs = require('hbs');
 const port = process.env.PORT || '3000';
+const { mockCalendlyAuthentication } = require('./utils/test.js');
 
 (async () => {
   await initializeDatabase();
@@ -63,6 +64,8 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+if (process.env.NODE_ENV === 'test') mockCalendlyAuthentication();
 
 app.listen(port, () => {
   console.log(`Server ready at http://localhost:${port}`);

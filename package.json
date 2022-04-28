@@ -22,6 +22,7 @@
     "http-errors": "~1.6.3",
     "moment": "^2.27.0",
     "morgan": "~1.9.1",
+    "nock": "^13.2.4",
     "passport": "^0.4.1",
     "passport-oauth2": "^1.5.0",
     "react": "^18.0.0",
