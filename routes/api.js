@@ -16,6 +16,7 @@ router
         count,
         page_token
       );
+
     const events = collection.map(formatEventDateTime);
 
     res.json({ events, pagination });
@@ -29,20 +30,14 @@ router
     res.json({ eventTypes, pagination });
   })
   .get('/events/:uuid', isUserAuthenticated, async (req, res) => {
-    const { access_token, refresh_token, calendly_uid } = req.user;
-    const { count, page_token } = req.query;
+    const { access_token, refresh_token } = req.user;
+    const { uuid } = req.params
+
     const calendlyService = new CalendlyService(access_token, refresh_token);
 
-    const { collection } =
-      await calendlyService.getUserScheduledEvents(
-        calendly_uid,
-        count,
-        page_token
-      );
+    const { resource } = await calendlyService.getUserScheduledEvent(uuid);
+    const event = formatEventDateTime(resource)
 
-    const { uuid } = req.params
-    const event = collection.filter(uid => uid === uuid)
-    
     res.json({ event });
   })
   .get('/authenticate', async (req, res) => {
