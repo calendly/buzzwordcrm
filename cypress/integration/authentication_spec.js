@@ -1,5 +1,5 @@
-describe('Login', () => {
-  it('Allows users to login', () => {
+describe('Authentication', () => {
+  it('Enables users to login and out', () => {
     cy.intercept(
       {
         method: 'GET',
