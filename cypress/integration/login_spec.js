@@ -7,7 +7,7 @@ describe('Login', () => {
       },
       (req) => {
         req.redirect(
-          'http://localhost:4000/oauth/callback?code=5BbtpL2SJIeDP4yClOJPHMJZwEDF1QkbPNaJgkTymeI',
+          `${Cypress.config().baseUrl}/oauth/callback?code=5BbtpL2SJIeDP4yClOJPHMJZwEDF1QkbPNaJgkTymeI`,
           302
         );
       }
@@ -24,6 +24,9 @@ describe('Login', () => {
     );
 
     cy.visit('/login');
+    cy.get('nav').contains('Logout').should('not.exist');
     cy.get('.btn-large').click();
+    cy.get('nav').contains('Logout').click();
+    cy.get('nav').contains('Logout').should('not.exist');
   });
 });
