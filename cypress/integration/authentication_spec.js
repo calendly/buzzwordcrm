@@ -7,7 +7,9 @@ describe('Authentication', () => {
       },
       (req) => {
         req.redirect(
-          `${Cypress.config().baseUrl}/oauth/callback?code=5BbtpL2SJIeDP4yClOJPHMJZwEDF1QkbPNaJgkTymeI`,
+          `${
+            Cypress.config().baseUrl
+          }/oauth/callback?code=5BbtpL2SJIeDP4yClOJPHMJZwEDF1QkbPNaJgkTymeI`,
           302
         );
       }
