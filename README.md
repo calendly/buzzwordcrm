@@ -14,3 +14,7 @@ BuzzwordCRM is a sample application that demonstrates how to build applications 
 1. Run `npm install` to install dependencies.
 1. Run `npm start` to start the application.
 1. Navigate to `http://localhost:3000`.
+
+## Tests
+
+BuzzwordCRM is equipped with integration tests, built with [Cypress](https://www.cypress.io/). To run tests locally you can run `npm run test`, this starts a test server and then opens the Cypress runner.
