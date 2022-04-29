@@ -30,7 +30,7 @@
     "react-calendly": "^4.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",
-    "sqlite3": "^5.0.2"
+    "sqlite3": "^5.0.3"
   },
   "devDependencies": {
     "cypress": "^9.6.0",
