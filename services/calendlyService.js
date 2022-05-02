@@ -48,6 +48,15 @@ class CalendlyService {
     return data;
   };
 
+  getUserEventType = async (uuid) => {
+    const { data } = await this.request.get(
+      `/event_types/${uuid}`,
+      this.getRequestConfiguration()
+    );
+
+    return data;
+  };
+
   getUserScheduledEvents = async (userUri, count, pageToken) => {
     let queryParams = [
       `user=${userUri}`,

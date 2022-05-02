@@ -26,3 +26,8 @@ exports.formatEventDateTime = (event) => ({
   start_time: formatTime(event.start_time),
   end_time: formatTime(event.end_time),
 });
+
+exports.formatEventTypeDate = (event) => ({
+  ...event,
+  last_updated: new Date(event.updated_at).toLocaleDateString()
+})

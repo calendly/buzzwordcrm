@@ -1,5 +1,6 @@
 import Dashboard from './dashboard.jsx';
 import Events from './events.jsx';
+import EventType from './eventType';
 import Login from './login.jsx';
 import Nav from './nav.jsx';
 import React from 'react';
@@ -26,6 +27,14 @@ let App = () => (
           <Events />
         </RequireAuth>
       }
+    />
+    <Route
+    path="/event_types/:uuid"
+    element={
+      <RequireAuth>
+        <EventType />
+      </RequireAuth>
+    }
     />
   </Routes>
 );

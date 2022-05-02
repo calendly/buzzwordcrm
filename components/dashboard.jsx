@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { PopupButton } from 'react-calendly';
+import { Link } from 'react-router-dom'
 
 export default () => {
   const [eventTypes, setEventTypes] = useState([]);
@@ -17,6 +18,7 @@ export default () => {
       <div className="row">
         {eventTypes.map((eventType) => (
           <div className="col s6" key={eventType.uri}>
+             <Link to={`/event_types/${eventType.uri.split('/')[4]}`}>
             <div className="card">
               <div
                 style={{
@@ -25,9 +27,9 @@ export default () => {
                   width: '100%',
                 }}
               ></div>
-              <div className="card-content">
+              <div className="card-content" style={{ color: 'black'}}>
                 <p>{eventType.name}</p>
-                <p>{eventType.description_plain}</p>
+                <p style={{ fontSize: 'small' }}>Description: {eventType.description_plain || 'No description'}</p>
               </div>
               <div className="card-action">
                 <PopupButton
@@ -42,6 +44,7 @@ export default () => {
                 />
               </div>
             </div>
+            </Link>
           </div>
         ))}
       </div>
