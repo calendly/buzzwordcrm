@@ -16,6 +16,7 @@ router
         count,
         page_token
       );
+
     const events = collection.map(formatEventDateTime);
 
     res.json({ events, pagination });
@@ -35,6 +36,14 @@ router
     const { resource } = await calendlyService.getUserEventType(uuid);
 
     const event = formatEventTypeDate(resource)
+  .get('/events/:uuid', isUserAuthenticated, async (req, res) => {
+    const { access_token, refresh_token } = req.user;
+    const { uuid } = req.params
+
+    const calendlyService = new CalendlyService(access_token, refresh_token);
+
+    const { resource } = await calendlyService.getUserScheduledEvent(uuid);
+    const event = formatEventDateTime(resource)
 
     res.json({ event });
   })

@@ -76,6 +76,15 @@ class CalendlyService {
     return data;
   };
 
+  getUserScheduledEvent = async (uuid) => {
+    const { data } = await this.request.get(
+      `/scheduled_events/${uuid}`,
+      this.getRequestConfiguration()
+    );
+
+    return data
+  }
+
   requestNewAccessToken = () => {
     return axios.post(`${CALENDLY_AUTH_BASE_URL}/oauth/token`, {
       client_id: CLIENT_ID,
