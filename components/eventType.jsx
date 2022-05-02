@@ -14,15 +14,21 @@ export default () => {
 
         setEventType(result.event)
     }
+
+    console.log(eventType)
     useEffect(() => {
         fetchData()
     }, []);
 
     return (
-        <div style={{ textAlign: 'center' }}>
-            <p>{`Last updated ${eventType.last_updated}`}</p>
-            <p>{eventType.name}</p>
-            <p>***This page will allow user to edit the event type***</p>
+        <div>
+            <p style={{ textAlign: 'center' }}>{`Last updated ${eventType.last_updated}`}</p>
+            <h5>{eventType.name}</h5>
+            <div><strong>Invitee Questions: </strong>{eventType.custom_questions && eventType.custom_questions.map((question) => (
+                // It doesn't increment correctly with an ol, so I've done it this way (below) to create a numbered list.
+                <p key={question.position}>{`${question.position + 1}. ${question.name}`}</p>))}
+            </div>
+            <p><strong>Duration: </strong>{`${eventType.duration} minutes`}</p>
         </div>
     )
 }
