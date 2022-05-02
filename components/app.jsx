@@ -7,6 +7,7 @@ import { BrowserRouter } from 'react-router-dom';
 import { RequireAuth, AuthConsumer, AuthProvider } from './auth.jsx';
 import { Routes, Route } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
+import Event from './event.jsx';
 
 let App = () => (
   <Routes>
@@ -20,10 +21,17 @@ let App = () => (
       }
     />
     <Route
-      path="/events"
+      exact path="/events"
       element={
         <RequireAuth>
           <Events />
+        </RequireAuth>
+      }
+    />
+    <Route path="/events/:uuid"
+      element={
+        <RequireAuth>
+          <Event />
         </RequireAuth>
       }
     />
