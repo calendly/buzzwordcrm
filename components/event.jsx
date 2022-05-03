@@ -21,12 +21,14 @@ export default () => {
     }, []);
 
     return (
-        <div>
-            <h5>Details for  <strong>"{event.name}"</strong> scheduled for <strong>{event.date}</strong></h5>
-            <p><strong>Start time: </strong> {event.start_time}</p>
-            <p><strong>End time: </strong> {event.end_time}</p>
-            <p><strong>Location: </strong>{event.location && event.location.location || "No location set"}</p>
-            <p><strong>Number of invitees (confirmed/total): </strong> {event.invitees_counter && `${event.invitees_counter.active}/${event.invitees_counter.limit}`}</p>
+        <div className='scheduled-event-container'>
+          <h5 className='scheduled-event-header'>Details for  <strong>"{event.name}"</strong> scheduled for <strong>{event.date}</strong></h5>
+            <div className='scheduled-event-details'>
+              <p><strong>Start time: </strong> {event.start_time}</p>
+              <p><strong>End time: </strong> {event.end_time}</p>
+              <p><strong>Location: </strong>{event.location && event.location.location || "No location set"}</p>
+              <p><strong>Number of invitees (confirmed/total): </strong> {event.invitees_counter && `${event.invitees_counter.active}/${event.invitees_counter.limit}`}</p>
+            </div>
         </div>
 
     )

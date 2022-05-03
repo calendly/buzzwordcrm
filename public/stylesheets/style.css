@@ -7,3 +7,25 @@ button {
     font-weight: 400;
     padding-left: 10px;
 }
+
+.scheduled-event-container {
+    margin: auto;
+    margin-top: 6%;
+    text-align: center;
+    background-color: aquamarine;
+    border-radius: 50%;
+    color: white;
+}
+
+.scheduled-event-header {
+    color: #1c9ad5;
+    text-decoration: underline;
+}
+
+.scheduled-event-details {
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 2rem;
+    background-color: #ee6e73;
+    border-radius: 50%;
+}
