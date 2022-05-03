@@ -12,10 +12,9 @@ export default () => {
             `/api/event_types/${uuid}`
         ).then((res) => res.json());
 
-        setEventType(result.event)
+        setEventType(result.eventType)
     }
 
-    console.log(eventType)
     useEffect(() => {
         fetchData()
     }, []);

@@ -36,6 +36,7 @@ let App = () => (
         <EventType />
       </RequireAuth>
     }
+    />
     <Route path="/events/:uuid"
       element={
         <RequireAuth>

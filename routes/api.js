@@ -35,7 +35,10 @@ router
     const { uuid } = req.params;
     const { resource } = await calendlyService.getUserEventType(uuid);
 
-    const event = formatEventTypeDate(resource)
+    const eventType = formatEventTypeDate(resource)
+
+    res.json({ eventType })
+  })
   .get('/events/:uuid', isUserAuthenticated, async (req, res) => {
     const { access_token, refresh_token } = req.user;
     const { uuid } = req.params
