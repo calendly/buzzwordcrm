@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 <<<<<<< HEAD
 import { useParams, Link } from 'react-router-dom';
-=======
-import { useParams } from 'react-router-dom';
->>>>>>> 509227cc7ef474b112541f384e57f01d64ee3ec3
 
 export default () => {
 
