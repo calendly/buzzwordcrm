@@ -35,5 +35,6 @@ export default () => {
                   </ul>
               )) : 'No guests added by invitee'}</div>
         </div>
+        </div>
     )
 }

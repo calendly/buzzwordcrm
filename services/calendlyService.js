@@ -30,6 +30,18 @@ class CalendlyService {
     };
   }
 
+  postRequestConfiguration(uri) {
+    console.log('uri=', uri)
+    return {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
+      data: {
+        invitee: uri
+      }
+    }
+  }
+
   getUserInfo = async () => {
     const { data } = await this.request.get(
       '/users/me',
@@ -100,6 +112,25 @@ class CalendlyService {
     )
 
     return data;
+  }
+
+  markAsNoShow = async (uri) => {
+    const { data } = await this.request.post(
+      '/invitee_no_shows',
+      this.postRequestConfiguration(uri)
+    )
+
+    console.log('noShowData=', data)
+    return data
+  }
+
+  undoNoShow = async (inviteeUuid) => {
+    await this.request.post(
+      `/invitee_no_shows/${inviteeUuid}`,
+      this.getRequestConfiguration()
+      )
+
+      return 'Inviteed no-show successfully undone'
   }
   requestNewAccessToken = () => {
     return axios.post(`${CALENDLY_AUTH_BASE_URL}/oauth/token`, {

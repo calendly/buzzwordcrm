@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 
 export default () => {
 
-    const [invitees, setInvitees] = useState([]);
-    const [pagination, setPagination] = useState({});
+    const [ invitees, setInvitees ] = useState([]);
+    const [ pagination, setPagination ] = useState({});
+    const [ noShow, setNoShow ] = useState(false);
 
     const { uuid } = useParams();
 
@@ -20,6 +21,18 @@ export default () => {
         setInvitees([...invitees, ...result.invitees]);
         setPagination(result.pagination);
     };
+
+    const handleNoShowClick = async (event) => {
+        event.preventDefault()
+        await fetch('/api/no_shows').then(() => console.log('Mark as no-show clicked'));
+        setNoShow(!noShow);
+    }
+
+    const undoNoShowClick = async (event) => {
+        event.preventDefault()
+        await fetch(`/api/no_shows/${event.target.value}`).then(() => console.log('Undo clicked'));
+        setNoShow(!noShow)
+    }
 
     useEffect(() => {
         fetchData()
@@ -52,6 +65,7 @@ export default () => {
                             )) : 'N/A'}</td>
                             <td>{invitee.rescheduled === false ? 'No' : 'Yes'}</td>
                             <td>{invitee.timezone}</td>
+                            <td>{noShow === false ? <button value={invitee.uri} onClick={handleNoShowClick}>Mark As No-Show</button> : <button value={invitee.uri} onClick={undoNoShowClick}>Undo</button>}</td>
                         </tr>
                     ))}
                 </tbody>

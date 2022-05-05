@@ -59,6 +59,8 @@ router
 
     const { collection, pagination } = await calendlyService.getUserScheduledEventInvitees(uuid, count, page_token);
     const invitees = collection.map(formatInviteeDateTime);
+    console.log('access_token=', access_token)
+    console.log('invitees=', invitees)
 
     res.json({ invitees, pagination });
   })
@@ -70,6 +72,38 @@ router
     }
 
     res.json({ authenticated: !!user });
-  });
+  })
+  .post('/no_shows', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token } = req.user;
+    const { invitee } = req.body
+    console.log('invitee=', invitee)
+
+    const calendlyService = new CalendlyService(access_token, refresh_token);
+
+    const { resource } = await calendlyService.markAsNoShow(invitee)
+
+    console.log(resource)
+
+    res.json({ resource })
+    } catch (error) {
+      next(error)
+    }
+
+  })
+  .delete('/no_shows/:uuid', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token } = req.user;
+         const { uuid } = req.params;
+         const calendlyService = new CalendlyService(access_token, refresh_token);
+
+    await calendlyService.undoNoShow(uuid)
+
+    res.send('No-show successfully undone') 
+    } catch (error) {
+      next(error)
+    }
+
+  })
 
 module.exports = router;
