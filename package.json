@@ -5,7 +5,8 @@
   "scripts": {
     "esbuild": "esbuild components/app.jsx --bundle --outfile=public/javascripts/bundle.js",
     "start": "node app.js",
-    "dev": "nodemon ./bin/www"
+    "dev": "nodemon ./bin/www",
+    "test": "start-server-and-test 'NODE_ENV=test PORT=1234 npm start' 1234 'cypress open'"
   },
   "engines": {
     "node": ">=12"
@@ -22,6 +23,7 @@
     "http-errors": "~1.6.3",
     "moment": "^2.27.0",
     "morgan": "~1.9.1",
+    "nock": "^13.2.4",
     "passport": "^0.4.1",
     "passport-oauth2": "^1.5.0",
     "react": "^18.0.0",
@@ -31,7 +33,9 @@
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {
+    "cypress": "^9.6.0",
     "nodemon": "^2.0.4",
-    "prettier": "2.6.2"
+    "prettier": "2.6.2",
+    "start-server-and-test": "^1.14.0"
   }
 }
