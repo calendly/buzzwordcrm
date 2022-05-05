@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 
 export default () => {
 
@@ -27,6 +27,12 @@ export default () => {
             <p><strong>End time: </strong> {event.end_time}</p>
             <p><strong>Location: </strong>{event.location && event.location.location || "No location set"}</p>
             <p><strong>Number of invitees (confirmed/total): </strong> {event.invitees_counter && `${event.invitees_counter.active}/${event.invitees_counter.limit}`}</p>
+            <Link to={`/events/${uuid}/invitees`}><p>Click here for invitee details</p></Link>
+            <div><strong>Invitee guests: </strong> {event.event_guests && event.event_guests.length > 0 ? event.event_guests.map((guest, i) => (
+                <ul key={i}>
+                    <li>{i + 1}: {guest.email}</li>
+                </ul>
+            )) : 'No guests added by invitee'}</div>
         </div>
 
     )
