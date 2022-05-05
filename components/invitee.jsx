@@ -44,12 +44,12 @@ export default () => {
                             <td>{invitee.name}</td>
                             <td>{invitee.email}</td>
                             <td>{invitee.scheduled_at}</td>
-                            <td>{invitee.questions_and_answers && invitee.questions_and_answers.map((questAns) => (
+                            <td>{invitee.questions_and_answers && invitee.questions_and_answers.length ? invitee.questions_and_answers.map((questAns) => (
                                 <ul key={questAns.position}>
                                     <li>{questAns.position + 1}. <strong>Question: </strong> {questAns.question} <br />
                                         <strong>Answer: </strong> {questAns.answer}</li>
                                 </ul>
-                            ))}</td>
+                            )) : 'N/A'}</td>
                             <td>{invitee.rescheduled === false ? 'No' : 'Yes'}</td>
                             <td>{invitee.timezone}</td>
                         </tr>
