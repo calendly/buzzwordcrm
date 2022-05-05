@@ -1,6 +1,7 @@
 import Dashboard from './dashboard.jsx';
 import Events from './events.jsx';
 import EventType from './eventType';
+import Invitee from './invitee.jsx';
 import Login from './login.jsx';
 import Nav from './nav.jsx';
 import React from 'react';
@@ -41,6 +42,13 @@ let App = () => (
       element={
         <RequireAuth>
           <Event />
+        </RequireAuth>
+      }
+    />
+    <Route path="/events/:uuid/invitees"
+      element={
+        <RequireAuth>
+          <Invitee />
         </RequireAuth>
       }
     />
