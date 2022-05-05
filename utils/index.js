@@ -27,6 +27,10 @@ exports.formatEventDateTime = (event) => ({
   end_time: formatTime(event.end_time),
 });
 
+exports.formatEventTypeDate = (eventType) => ({
+  ...eventType,
+  last_updated: new Date(eventType.updated_at).toLocaleDateString()
+
 exports.formatInviteeDateTime = (invitee) => ({
   ...invitee,
   scheduled_at: new Date(new Date(invitee.created_at).getTime()).toLocaleString('en-US'),
