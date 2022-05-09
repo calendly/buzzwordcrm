@@ -31,15 +31,13 @@ class CalendlyService {
   }
 
   postRequestConfiguration(uri) {
-    console.log('uri=', uri)
+    const inviteeUri = JSON.stringify({ invitee: uri})
     return {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
       },
-      data: {
-        invitee: uri
-      }
-    }
+      body: inviteeUri,
+    };
   }
 
   getUserInfo = async () => {
@@ -120,7 +118,6 @@ class CalendlyService {
       this.postRequestConfiguration(uri)
     )
 
-    console.log('noShowData=', data)
     return data
   }
 

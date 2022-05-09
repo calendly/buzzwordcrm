@@ -59,8 +59,8 @@ router
 
     const { collection, pagination } = await calendlyService.getUserScheduledEventInvitees(uuid, count, page_token);
     const invitees = collection.map(formatInviteeDateTime);
-    console.log('access_token=', access_token)
-    console.log('invitees=', invitees)
+    // console.log('access_token=', access_token)
+    // console.log('invitees=', invitees)
 
     res.json({ invitees, pagination });
   })
@@ -75,10 +75,10 @@ router
   })
   .post('/no_shows', isUserAuthenticated, async (req, res, next) => {
     try {
-      const { access_token, refresh_token } = req.user;
+    const { access_token, refresh_token } = req.user;
     const { invitee } = req.body
     console.log('invitee=', invitee)
-
+    console.log(typeof(invitee))
     const calendlyService = new CalendlyService(access_token, refresh_token);
 
     const { resource } = await calendlyService.markAsNoShow(invitee)
@@ -87,6 +87,7 @@ router
 
     res.json({ resource })
     } catch (error) {
+      console.log('error details from POST API=', error)
       next(error)
     }
 

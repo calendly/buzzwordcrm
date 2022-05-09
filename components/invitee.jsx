@@ -24,13 +24,24 @@ export default () => {
 
     const handleNoShowClick = async (event) => {
         event.preventDefault()
-        await fetch('/api/no_shows').then(() => console.log('Mark as no-show clicked'));
-        setNoShow(!noShow);
+
+        const body = await JSON.stringify({ invitee: event.target.value })
+
+        await fetch('/api/no_shows', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: body
+        }
+            ).then((res) => console.log(res));
+            setNoShow(!noShow);
     }
 
     const undoNoShowClick = async (event) => {
         event.preventDefault()
-        await fetch(`/api/no_shows/${event.target.value}`).then(() => console.log('Undo clicked'));
+        await fetch(`/api/no_shows/${event.target.value}`, {method: 'POST'}).then((res) => console.log('res2=', res));
         setNoShow(!noShow)
     }
 
