@@ -31,12 +31,10 @@ class CalendlyService {
   }
 
   postRequestConfiguration(uri) {
-    const inviteeUri = JSON.stringify({ invitee: uri})
     return {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
       },
-      body: inviteeUri,
     };
   }
 
@@ -115,6 +113,9 @@ class CalendlyService {
   markAsNoShow = async (uri) => {
     const { data } = await this.request.post(
       '/invitee_no_shows',
+      {
+        invitee: uri
+      },
       this.postRequestConfiguration(uri)
     )
 
