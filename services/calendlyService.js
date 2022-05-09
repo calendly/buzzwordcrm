@@ -82,13 +82,11 @@ class CalendlyService {
       this.getRequestConfiguration()
     );
 
-    return data
-  }
+    return data;
+  };
 
   getUserScheduledEventInvitees = async (uuid, count, pageToken) => {
-    let queryParams = [
-      `count=${count || 10}`,
-    ].join('&')
+    let queryParams = [`count=${count || 10}`].join('&');
 
     if (pageToken) queryParams += `&page_token=${pageToken}`;
 
@@ -97,10 +95,10 @@ class CalendlyService {
     const { data } = await this.request.get(
       url,
       this.getRequestConfiguration()
-    )
+    );
 
     return data;
-  }
+  };
   requestNewAccessToken = () => {
     return axios.post(`${CALENDLY_AUTH_BASE_URL}/oauth/token`, {
       client_id: CLIENT_ID,

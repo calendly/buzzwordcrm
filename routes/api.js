@@ -1,6 +1,11 @@
 const express = require('express');
 const CalendlyService = require('../services/calendlyService');
-const { isUserAuthenticated, formatEventDateTime, formatEventTypeDate, formatInviteeDateTime } = require('../utils');
+const {
+  isUserAuthenticated,
+  formatEventDateTime,
+  formatEventTypeDate,
+  formatInviteeDateTime,
+} = require('../utils');
 const router = express.Router();
 const User = require('../models/userModel');
 
@@ -35,9 +40,9 @@ router
     const { uuid } = req.params;
     const { resource } = await calendlyService.getUserEventType(uuid);
 
-    const eventType = formatEventTypeDate(resource)
+    const eventType = formatEventTypeDate(resource);
 
-    res.json({ eventType })
+    res.json({ eventType });
   })
   .get('/events/:uuid', isUserAuthenticated, async (req, res) => {
     const { access_token, refresh_token } = req.user;
@@ -46,7 +51,7 @@ router
     const calendlyService = new CalendlyService(access_token, refresh_token);
 
     const { resource } = await calendlyService.getUserScheduledEvent(uuid);
-    const event = formatEventDateTime(resource)
+    const event = formatEventDateTime(resource);
 
     res.json({ event });
   })
@@ -57,7 +62,12 @@ router
 
     const calendlyService = new CalendlyService(access_token, refresh_token);
 
-    const { collection, pagination } = await calendlyService.getUserScheduledEventInvitees(uuid, count, page_token);
+    const { collection, pagination } =
+      await calendlyService.getUserScheduledEventInvitees(
+        uuid,
+        count,
+        page_token
+      );
     const invitees = collection.map(formatInviteeDateTime);
 
     res.json({ invitees, pagination });

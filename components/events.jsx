@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 export default () => {
   const [events, setEvents] = useState([]);
@@ -37,7 +37,11 @@ export default () => {
           <tbody>
             {events.map((event) => (
               <tr key={event.uri}>
-                <td><Link to={`/events/${event.uri.split('/')[4]}`}>{event.name}</Link></td>
+                <td>
+                  <Link to={`/events/${event.uri.split('/')[4]}`}>
+                    {event.name}
+                  </Link>
+                </td>
                 <td>{event.date}</td>
                 <td>{event.start_time}</td>
                 <td>{event.end_time}</td>
