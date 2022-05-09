@@ -30,6 +30,7 @@ exports.formatEventDateTime = (event) => ({
 exports.formatEventTypeDate = (eventType) => ({
   ...eventType,
   last_updated: new Date(eventType.updated_at).toLocaleDateString()
+})
 
 exports.formatInviteeDateTime = (invitee) => ({
   ...invitee,
