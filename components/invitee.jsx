@@ -6,10 +6,8 @@ export default () => {
   const [pagination, setPagination] = useState({});
   const [noShow, setNoShow] = useState(false);
   const [inviteeUri, setInviteeUri] = useState(null);
-  //const [noShowMarked, setNoShowMarked] = useState(false);
-  const [parsedData, setParsedData] = useState(null);
-  const [showFirstUndo, setShowFirstUndo] = useState(null);
-  const [ firstUndoClicked, setFirstUndoClicked ] = useState(false);
+  const [parsedData, setParsedData] = useState(false);
+  const [showFirstUndo, setShowFirstUndo] = useState(false);
 
   const { uuid } = useParams();
 
@@ -24,75 +22,21 @@ export default () => {
 
     setInvitees([...invitees, ...result.invitees]);
     setPagination(result.pagination);
-
-    // if(invitees.length) {
-    //   if (!invitees[0].no_show) {
-    //   setShowFirstUndo(false)
-    // }
-    // } else {
-    //   console.log('Else statement of initial fetch')
-    //   setShowFirstUndo(true)
-    // }
-
-    // if (invitees.length) {
-    //     const noShowData = await fetch(
-    //     `/api/no_shows/${invitees[0].no_show.uri.split('/')[4]}`
-    // )
-    // if(noShowData) {
-    //     setNoShowMarked(true)
-    //     console.log('noShowMarked=', noShowMarked)
-    // }
-    //}
   };
 
   const setInitialUndoButton = () => {
     if (invitees.length) {
-      console.log('First IF statement of initial fetch');
       if (!invitees[0].no_show) {
-        console.log('Second IF statement of initial fetch');
         setShowFirstUndo(false);
       } else {
-        console.log('Else statement of initial fetch');
         setShowFirstUndo(true);
       }
     }
   };
-  //   const handleNoShowClickGet = async () => {
-  //     const markedUser = await fetch(`/api/no_shows/${inviteeUri}`).then((res) =>
-  //     res.json()
-  //   );
-  //   setNoShowMarked(markedUser);
-  //   }
-  console.log('invitees=', invitees);
-
-  //   const fetchNoShow = async (uuid) => {
-  //     // const uuid = invitees[0].no_show.uri.split('/')[4]
-  //       const result = await fetch(
-  //         `/api/no_shows/${uuid}`
-  //       ).then((res) => res.json());
-
-  //       if (result) {
-  //         setNoShowMarked(true);
-  //         console.log('noShowMarked as true?=', noShowMarked);
-  //       } else {
-  //         setNoShowMarked(!noShowMarked);
-  //         console.log('noShowMarked as false?=', noShowMarked);
-  //       }
-
-  //   };
 
   const handleNoShowClick = async (event) => {
-    console.log('handling no-show clicked')
-    //try {
     event.preventDefault();
-    //console.log(event);
 
-    //     const markedUser = await fetch(`/api/no_shows/${inviteeUri}`).then((res) =>
-    //     res.json()
-    //   );
-    //   setNoShowMarked(markedUser);
-    // };
-    // if (invitees[0].no_show === null) {
     const body = await JSON.stringify({ invitee: event.target.value });
 
     const result = await fetch('/api/no_shows', {
@@ -104,85 +48,37 @@ export default () => {
       body: body,
     });
 
-    console.log('result=', result)
     const capturedResult = await result.json();
-    console.log('right before parsing the capturedResult')
     const parsedResult = JSON.parse(JSON.stringify(capturedResult));
+
     setParsedData(parsedResult.resource);
-    console.log('parsedData=', parsedData)
-
-    //console.log('parsedResult=', parsedResult)
-    // if(!parsedResult.resource) {
-    //   window.alert('This invitee has already been marked as no-show')
-    // }
-
-    setNoShow(!noShow);
-    // setNoShowMarked(true)
+    setNoShow(true);
     setInviteeUri(parsedResult.resource.uri.split('/')[4]);
-    //   console.log('IF in handleNoShowClick noShowMarked=', noShowMarked)
-    //}
-
-    // else if (!inviteeUri) {
-
-    //   window.alert('This user has already been marked as a no-show.');
-    //   setNoShowMarked(true);
-    //   console.log('else in handleNoShowClick noShowMarked=', noShowMarked)
-    //   setInviteeUri(null);
-    // } else {
-    //     return
-    // }
-
-    //     const result2 = await fetch(`/api/no_shows/${inviteeUri}`).then((res) =>
-    //     res.json()
-    //   );
-    //   setNoShowMarked(result2.resource);
-
-    //}
-
-    // catch (error) {
-    //   setNoShowMarked(true);
-    //   window.alert('This user has already been marked as a no-show');
-    // }
-
-    // const markedUser = await fetch(`/api/no_shows/${inviteeUri}`).then((res) =>
-    //   res.json()
-    // );
-    // setNoShowMarked(markedUser);
+    setShowFirstUndo(false);
   };
-  console.log('SHOWFIRSTUNFO=', showFirstUndo);
-  console.log('NOSHOW=', noShow)
-  console.log('FIRSTUNDOCLICKED=', firstUndoClicked)
 
   const undoNoShowClick = async (event) => {
     event.preventDefault();
-    // if (!inviteeUri) {
-    //      await fetch(`/api/no_shows/${invitees[0].no_show.uri.split('/')[4]}`, { method: 'DELETE' });
-    // //     setNoShowMarked(false)
-    // setNoShow(!noShow);
-    //      setInviteeUri(null)
-    // //     setNoShowMarked(!noShowMarked);
-    // }
-    //if (inviteeUri) {
-    await fetch(`/api/no_shows/${inviteeUri}`, { method: 'DELETE' });
-    setNoShow(!noShow);
-    setInviteeUri(null);
-    // setNoShowMarked(!noShowMarked);
-    // console.log('undoNoShowClick noShowMarked=', noShowMarked)
-    //}
 
-     
+    await fetch(`/api/no_shows/${inviteeUri}`, { method: 'DELETE' });
+
+    setParsedData(null);
+    setNoShow(false);
+    setInviteeUri(null);
+    setShowFirstUndo(false);
   };
 
   const undoFirstNoShowClick = async (event) => {
     event.preventDefault();
-    //console.log('event target value=', event.target.value)
+
     await fetch(`/api/no_shows/${invitees[0].no_show.uri.split('/')[4]}`, {
       method: 'DELETE',
     });
-    //setNoShowMarked(false)
+
+    setParsedData(null);
+    setNoShow(false);
     setInviteeUri(null);
     setShowFirstUndo(false);
-    setFirstUndoClicked(true)
   };
 
   useEffect(() => {
@@ -192,12 +88,6 @@ export default () => {
   useEffect(() => {
     setInitialUndoButton();
   });
-
-  //   useEffect(() => {
-  //     fetchNoShow(invitees[0].no_show.uri.split('/')[4]);
-  //   }, [invitees]);
-
-  //   console.log('value of noShow then noShowMarked='), noShow, noShowMarked;
 
   return (
     <div>
@@ -235,29 +125,25 @@ export default () => {
               <td>{invitee.rescheduled === false ? 'No' : 'Yes'}</td>
               <td>{invitee.timezone}</td>
               <td>
-                { !noShow && !showFirstUndo && !firstUndoClicked || !noShow && showFirstUndo && firstUndoClicked ? (
-                  <button
-                    //disabled={inviteeUri}
-                    value={invitee.uri}
-                    onClick={handleNoShowClick}
-                  >
+                {(!noShow && !showFirstUndo) || parsedData === null ? (
+                  <button value={invitee.uri} onClick={handleNoShowClick}>
                     Mark As No-Show
                   </button>
                 ) : (
                   ''
                 )}
-                </td>
-                <td>
-                  { noShow && !showFirstUndo && !firstUndoClicked || noShow && showFirstUndo && firstUndoClicked ? (
-                    <button value={invitee.uri} onClick={undoNoShowClick}>
-                      Undo
-                    </button>
-                  ) : (
-                    ''
-                  )}
-                </td>
+              </td>
               <td>
-                {!parsedData && showFirstUndo && !firstUndoClicked && noShow || !parsedData && showFirstUndo && !noShow && !firstUndoClicked ? (
+                {parsedData ? (
+                  <button value={invitee.uri} onClick={undoNoShowClick}>
+                    Undo
+                  </button>
+                ) : (
+                  ''
+                )}
+              </td>
+              <td>
+                {parsedData === false && showFirstUndo ? (
                   <button value={invitee.uri} onClick={undoFirstNoShowClick}>
                     Undo No-Show
                   </button>

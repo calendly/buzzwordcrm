@@ -59,7 +59,6 @@ router
     const { access_token, refresh_token } = req.user;
     const { uuid } = req.params;
 
-    //console.log('uuid from invitees=', uuid)
     const { count, page_token } = req.query;
 
     const calendlyService = new CalendlyService(access_token, refresh_token);
@@ -71,8 +70,6 @@ router
         page_token
       );
     const invitees = collection.map(formatInviteeDateTime);
-    // console.log('access_token=', access_token)
-    //console.log('invitees=', invitees);
 
     res.json({ invitees, pagination });
   })
@@ -87,51 +84,16 @@ router
   })
   .post('/no_shows', isUserAuthenticated, async (req, res, next) => {
     try {
-      //let uuid;
       const { access_token, refresh_token } = req.user;
-      const { count, page_token } = req.query;
       const { invitee } = req.body;
-      //console.log('invitee=', invitee)
 
       const calendlyService = new CalendlyService(access_token, refresh_token);
 
-      // const uuid = invitee.split('/')[4]
-      // //console.log('uuid=', uuid)
+      const { resource } = await calendlyService.markAsNoShow(invitee);
 
-      // const { collection, pagination } =
-      // await calendlyService.getUserScheduledEventInvitees(
-      //   uuid,
-      //   count,
-      //   page_token
-      // );
-      
-      // const invitees = collection.map(formatInviteeDateTime);
-
-
-      // //let noShowUuid;
-      // const inviteeForFilter = await JSON.parse(JSON.stringify(invitee))
-      // const filteredInvitess = invitees.filter(invitee => invitee.uri === inviteeForFilter)
-      //console.log('invitees after filtering=', filteredInvitess)
-
-      //noShowUuid = filteredInvitess[0].no_show.uri.split('/')[4]
-      // console.log('noShowUuid=', noShowUuid)
-      // console.log('invitees from no_show=', invitees)
-
-      //await calendlyService.findNoShow(noShowUuid)
-
-      //if(!noShowUuid) {
-        const { resource } = await calendlyService.markAsNoShow(invitee);
-      //uuid = resource.uri.split('/')[4]
-      console.log('resource from /no-shows', resource);
       res.json({ resource });
-      //} 
-      
-      // else {
-      //   return res.status(409).send({message: 'This user has already been marked as no-show for this event.'})
-      // }
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
       next(error);
     }
   })
@@ -139,7 +101,6 @@ router
     try {
       const { access_token, refresh_token } = req.user;
       const { uuid } = req.params;
-      console.log('uuid from /no_shows/uuid=', uuid);
       const calendlyService = new CalendlyService(access_token, refresh_token);
 
       await calendlyService.undoNoShow(uuid);

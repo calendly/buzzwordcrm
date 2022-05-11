@@ -30,14 +30,6 @@ class CalendlyService {
     };
   }
 
-  // postRequestConfiguration(uri) {
-  //   return {
-  //     headers: {
-  //       Authorization: `Bearer ${this.accessToken}`,
-  //     },
-  //   };
-  // }
-
   getUserInfo = async () => {
     const { data } = await this.request.get(
       '/users/me',
@@ -119,8 +111,6 @@ class CalendlyService {
       `/invitee_no_shows/${inviteeUuid}`,
       this.requestConfiguration()
     );
-
-    return 'Inviteed no-show successfully undone';
   };
 
   findNoShow = async (inviteeUuid) => {
@@ -128,7 +118,7 @@ class CalendlyService {
       `/invitee_no_shows/${inviteeUuid}`,
       this.requestConfiguration()
     );
-    return data
+    return data;
   };
 
   requestNewAccessToken = () => {
