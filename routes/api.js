@@ -93,7 +93,6 @@ router
 
       res.json({ resource });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   })
@@ -118,7 +117,6 @@ router
       const calendlyService = new CalendlyService(access_token, refresh_token);
 
       const { resource } = await calendlyService.findNoShow(uuid);
-      console.log('found marked user=', resource);
 
       res.json({ resource });
     } catch (error) {

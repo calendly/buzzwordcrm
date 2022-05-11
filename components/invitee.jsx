@@ -71,9 +71,16 @@ export default () => {
   const undoFirstNoShowClick = async (event) => {
     event.preventDefault();
 
-    await fetch(`/api/no_shows/${invitees[0].no_show.uri.split('/')[4]}`, {
-      method: 'DELETE',
-    });
+    const filteredInvitees = invitees.filter(
+      (invitee) => invitee.uri === event.target.value
+    );
+
+    await fetch(
+      `/api/no_shows/${filteredInvitees[0].no_show.uri.split('/')[4]}`,
+      {
+        method: 'DELETE',
+      }
+    );
 
     setParsedData(null);
     setNoShow(false);
