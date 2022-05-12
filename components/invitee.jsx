@@ -4,10 +4,6 @@ import { useParams } from 'react-router-dom';
 export default () => {
   const [invitees, setInvitees] = useState([]);
   const [pagination, setPagination] = useState({});
-  const [noShow, setNoShow] = useState(false);
-  const [inviteeUri, setInviteeUri] = useState(null);
-  const [parsedData, setParsedData] = useState(false);
-  const [showFirstUndo, setShowFirstUndo] = useState(false);
 
   const { uuid } = useParams();
 
@@ -20,18 +16,8 @@ export default () => {
       `/api/events/${uuid}/invitees${nextPageQueryParams}`
     ).then((res) => res.json());
 
-    setInvitees([...invitees, ...result.invitees]);
+    setInvitees([...result.invitees]);
     setPagination(result.pagination);
-  };
-
-  const setInitialUndoButton = () => {
-    if (invitees.length) {
-      if (!invitees[0].no_show) {
-        setShowFirstUndo(false);
-      } else {
-        setShowFirstUndo(true);
-      }
-    }
   };
 
   const handleNoShowClick = async (event) => {
@@ -39,7 +25,7 @@ export default () => {
 
     const body = await JSON.stringify({ invitee: event.target.value });
 
-    const result = await fetch('/api/no_shows', {
+    await fetch('/api/no_shows', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -48,27 +34,10 @@ export default () => {
       body: body,
     });
 
-    const capturedResult = await result.json();
-    const parsedResult = JSON.parse(JSON.stringify(capturedResult));
-
-    setParsedData(parsedResult.resource);
-    setNoShow(true);
-    setInviteeUri(parsedResult.resource.uri.split('/')[4]);
-    setShowFirstUndo(false);
+    fetchData();
   };
 
   const undoNoShowClick = async (event) => {
-    event.preventDefault();
-
-    await fetch(`/api/no_shows/${inviteeUri}`, { method: 'DELETE' });
-
-    setParsedData(null);
-    setNoShow(false);
-    setInviteeUri(null);
-    setShowFirstUndo(false);
-  };
-
-  const undoFirstNoShowClick = async (event) => {
     event.preventDefault();
 
     const filteredInvitees = invitees.filter(
@@ -82,19 +51,12 @@ export default () => {
       }
     );
 
-    setParsedData(null);
-    setNoShow(false);
-    setInviteeUri(null);
-    setShowFirstUndo(false);
+    fetchData();
   };
 
   useEffect(() => {
     fetchData();
   }, []);
-
-  useEffect(() => {
-    setInitialUndoButton();
-  });
 
   return (
     <div>
@@ -132,30 +94,16 @@ export default () => {
               <td>{invitee.rescheduled === false ? 'No' : 'Yes'}</td>
               <td>{invitee.timezone}</td>
               <td>
-                {(!noShow && !showFirstUndo) || parsedData === null ? (
+                {invitee.no_show === null && (
                   <button value={invitee.uri} onClick={handleNoShowClick}>
                     Mark As No-Show
                   </button>
-                ) : (
-                  ''
                 )}
-              </td>
-              <td>
-                {parsedData ? (
+                
+                {invitee.no_show && invitee.no_show.uri && (
                   <button value={invitee.uri} onClick={undoNoShowClick}>
-                    Undo
-                  </button>
-                ) : (
-                  ''
-                )}
-              </td>
-              <td>
-                {parsedData === false && showFirstUndo ? (
-                  <button value={invitee.uri} onClick={undoFirstNoShowClick}>
                     Undo No-Show
                   </button>
-                ) : (
-                  ''
                 )}
               </td>
             </tr>
