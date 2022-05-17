@@ -104,21 +104,7 @@ router
 
       await calendlyService.undoNoShow(uuid);
 
-      res.status(204).send('No-show successfully undone');
-    } catch (error) {
-      next(error);
-    }
-  })
-  .get('/no_shows/:uuid', isUserAuthenticated, async (req, res, next) => {
-    try {
-      const { access_token, refresh_token } = req.user;
-      const { uuid } = req.params;
-
-      const calendlyService = new CalendlyService(access_token, refresh_token);
-
-      const { resource } = await calendlyService.findNoShow(uuid);
-
-      res.json({ resource });
+      res.status(204).end();
     } catch (error) {
       next(error);
     }

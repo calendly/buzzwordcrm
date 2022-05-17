@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 export default () => {
   const [invitees, setInvitees] = useState([]);
   const [pagination, setPagination] = useState({});
+  const [event, setEvent] = useState([]);
 
   const { uuid } = useParams();
 
@@ -37,26 +38,30 @@ export default () => {
     fetchData();
   };
 
-  const undoNoShowClick = async (event) => {
-    event.preventDefault();
-
-    const filteredInvitees = invitees.filter(
-      (invitee) => invitee.uri === event.target.value
-    );
-
-    await fetch(
-      `/api/no_shows/${filteredInvitees[0].no_show.uri.split('/')[4]}`,
-      {
-        method: 'DELETE',
-      }
-    );
+  const undoNoShowClick = async (invitee) => {
+    await fetch(`/api/no_shows/${invitee.no_show.uri.split('/')[4]}`, {
+      method: 'DELETE',
+    });
 
     fetchData();
+  };
+
+  const fetchEventData = async () => {
+    const result = await fetch(`/api/events/${uuid}`).then((res) => res.json());
+
+    setEvent(result.event);
   };
 
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    fetchEventData();
+  }, []);
+
+  const currentDate = Date.now();
+  const eventDate = Date.parse(`${event.date}, ${event.start_time}`);
 
   return (
     <div>
@@ -72,8 +77,8 @@ export default () => {
           </tr>
         </thead>
         <tbody>
-          {invitees.map((invitee, i) => (
-            <tr key={i}>
+          {invitees.map((invitee) => (
+            <tr key={invitee.uri}>
               <td>{invitee.name}</td>
               <td>{invitee.email}</td>
               <td>{invitee.scheduled_at}</td>
@@ -94,14 +99,17 @@ export default () => {
               <td>{invitee.rescheduled === false ? 'No' : 'Yes'}</td>
               <td>{invitee.timezone}</td>
               <td>
-                {invitee.no_show === null && (
+                {invitee.no_show === null && currentDate > eventDate && (
                   <button value={invitee.uri} onClick={handleNoShowClick}>
                     Mark As No-Show
                   </button>
                 )}
-                
+
                 {invitee.no_show && invitee.no_show.uri && (
-                  <button value={invitee.uri} onClick={undoNoShowClick}>
+                  <button
+                    value={invitee.uri}
+                    onClick={() => undoNoShowClick(invitee)}
+                  >
                     Undo No-Show
                   </button>
                 )}
@@ -110,6 +118,16 @@ export default () => {
           ))}
         </tbody>
       </table>
+      {pagination.next_page && (
+        <div className="center-align">
+          <button
+            className="waves-effect waves-light btn-small"
+            onClick={fetchData}
+          >
+            Load Next
+          </button>
+        </div>
+      )}
     </div>
   );
 };

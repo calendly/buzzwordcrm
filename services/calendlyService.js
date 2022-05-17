@@ -113,14 +113,6 @@ class CalendlyService {
     );
   };
 
-  findNoShow = async (inviteeUuid) => {
-    const { data } = await this.request.get(
-      `/invitee_no_shows/${inviteeUuid}`,
-      this.requestConfiguration()
-    );
-    return data;
-  };
-
   requestNewAccessToken = () => {
     return axios.post(`${CALENDLY_AUTH_BASE_URL}/oauth/token`, {
       client_id: CLIENT_ID,
