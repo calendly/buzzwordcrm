@@ -5,7 +5,7 @@
   "scripts": {
     "esbuild": "esbuild components/app.jsx --bundle --outfile=public/javascripts/bundle.js",
     "start": "node app.js",
-    "dev": "nodemon ./bin/www",
+    "dev": "nf start -j Procfile.dev",
     "test": "start-server-and-test 'NODE_ENV=test PORT=1234 npm start' 1234 'cypress open'"
   },
   "engines": {
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "cypress": "^9.6.0",
+    "foreman": "^3.0.1",
     "nodemon": "^2.0.4",
     "prettier": "2.6.2",
     "start-server-and-test": "^1.14.0"

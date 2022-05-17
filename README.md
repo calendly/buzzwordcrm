@@ -12,7 +12,7 @@ BuzzwordCRM is a sample application that demonstrates how to build applications 
    ```
 
 1. Run `npm install` to install dependencies.
-1. Run `npm start` to start the application.
+1. Run `npm run dev` to start the application.
 1. Navigate to `http://localhost:3000`.
 
 ## Tests
