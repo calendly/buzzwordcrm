@@ -1,6 +1,11 @@
 const express = require('express');
 const CalendlyService = require('../services/calendlyService');
-const { isUserAuthenticated, formatEventDateTime, formatEventTypeDate, formatInviteeDateTime } = require('../utils');
+const {
+  isUserAuthenticated,
+  formatEventDateTime,
+  formatEventTypeDate,
+  formatInviteeDateTime,
+} = require('../utils');
 const router = express.Router();
 const User = require('../models/userModel');
 
@@ -35,9 +40,9 @@ router
     const { uuid } = req.params;
     const { resource } = await calendlyService.getUserEventType(uuid);
 
-    const eventType = formatEventTypeDate(resource)
+    const eventType = formatEventTypeDate(resource);
 
-    res.json({ eventType })
+    res.json({ eventType });
   })
   .get('/events/:uuid', isUserAuthenticated, async (req, res) => {
     const { access_token, refresh_token } = req.user;
@@ -46,18 +51,24 @@ router
     const calendlyService = new CalendlyService(access_token, refresh_token);
 
     const { resource } = await calendlyService.getUserScheduledEvent(uuid);
-    const event = formatEventDateTime(resource)
+    const event = formatEventDateTime(resource);
 
     res.json({ event });
   })
   .get('/events/:uuid/invitees', isUserAuthenticated, async (req, res) => {
     const { access_token, refresh_token } = req.user;
     const { uuid } = req.params;
+
     const { count, page_token } = req.query;
 
     const calendlyService = new CalendlyService(access_token, refresh_token);
 
-    const { collection, pagination } = await calendlyService.getUserScheduledEventInvitees(uuid, count, page_token);
+    const { collection, pagination } =
+      await calendlyService.getUserScheduledEventInvitees(
+        uuid,
+        count,
+        page_token
+      );
     const invitees = collection.map(formatInviteeDateTime);
 
     res.json({ invitees, pagination });
@@ -70,6 +81,33 @@ router
     }
 
     res.json({ authenticated: !!user });
+  })
+  .post('/no_shows', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token } = req.user;
+      const { invitee } = req.body;
+
+      const calendlyService = new CalendlyService(access_token, refresh_token);
+
+      const { resource } = await calendlyService.markAsNoShow(invitee);
+
+      res.json({ resource });
+    } catch (error) {
+      next(error);
+    }
+  })
+  .delete('/no_shows/:uuid', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token } = req.user;
+      const { uuid } = req.params;
+      const calendlyService = new CalendlyService(access_token, refresh_token);
+
+      await calendlyService.undoNoShow(uuid);
+
+      res.status(204).end();
+    } catch (error) {
+      next(error);
+    }
   });
 
 module.exports = router;

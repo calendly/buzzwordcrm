@@ -22,7 +22,7 @@ class CalendlyService {
     );
   }
 
-  getRequestConfiguration() {
+  requestConfiguration() {
     return {
       headers: {
         Authorization: `Bearer ${this.accessToken}`,
@@ -33,7 +33,7 @@ class CalendlyService {
   getUserInfo = async () => {
     const { data } = await this.request.get(
       '/users/me',
-      this.getRequestConfiguration()
+      this.requestConfiguration()
     );
 
     return data;
@@ -42,7 +42,7 @@ class CalendlyService {
   getUserEventTypes = async (userUri) => {
     const { data } = await this.request.get(
       `/event_types?user=${userUri}`,
-      this.getRequestConfiguration()
+      this.requestConfiguration()
     );
 
     return data;
@@ -51,7 +51,7 @@ class CalendlyService {
   getUserEventType = async (uuid) => {
     const { data } = await this.request.get(
       `/event_types/${uuid}`,
-      this.getRequestConfiguration()
+      this.requestConfiguration()
     );
 
     return data;
@@ -68,10 +68,7 @@ class CalendlyService {
 
     const url = `/scheduled_events?${queryParams}`;
 
-    const { data } = await this.request.get(
-      url,
-      this.getRequestConfiguration()
-    );
+    const { data } = await this.request.get(url, this.requestConfiguration());
 
     return data;
   };
@@ -79,28 +76,43 @@ class CalendlyService {
   getUserScheduledEvent = async (uuid) => {
     const { data } = await this.request.get(
       `/scheduled_events/${uuid}`,
-      this.getRequestConfiguration()
+      this.requestConfiguration()
     );
 
-    return data
-  }
+    return data;
+  };
 
   getUserScheduledEventInvitees = async (uuid, count, pageToken) => {
-    let queryParams = [
-      `count=${count || 10}`,
-    ].join('&')
+    let queryParams = [`count=${count || 10}`].join('&');
 
     if (pageToken) queryParams += `&page_token=${pageToken}`;
 
     const url = `/scheduled_events/${uuid}/invitees?${queryParams}`;
 
-    const { data } = await this.request.get(
-      url,
-      this.getRequestConfiguration()
-    )
+    const { data } = await this.request.get(url, this.requestConfiguration());
 
     return data;
-  }
+  };
+
+  markAsNoShow = async (uri) => {
+    const { data } = await this.request.post(
+      '/invitee_no_shows',
+      {
+        invitee: uri,
+      },
+      this.requestConfiguration()
+    );
+
+    return data;
+  };
+
+  undoNoShow = async (inviteeUuid) => {
+    await this.request.delete(
+      `/invitee_no_shows/${inviteeUuid}`,
+      this.requestConfiguration()
+    );
+  };
+
   requestNewAccessToken = () => {
     return axios.post(`${CALENDLY_AUTH_BASE_URL}/oauth/token`, {
       client_id: CLIENT_ID,
