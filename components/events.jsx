@@ -9,12 +9,6 @@ export default () => {
   const [eventUri, setEventUri] = useState(null);
   const [reasonInput, setReasonInput] = useState('');
 
-  //const sortEvents = (a) => {
-  //   if (a.status === 'active') {
-  //     return -1
-  //   }
-  // }
-
   const fetchData = async () => {
     const nextPageQueryParams = pagination.next_page
       ? pagination.next_page.slice(pagination.next_page.indexOf('?'))
@@ -24,13 +18,7 @@ export default () => {
       `/api/scheduled_events${nextPageQueryParams}`
     ).then((res) => res.json());
 
-    // console.log('result.events=', result.events)
-
-    const filteredEvents = result.events.filter(
-      (event) => event.status === 'active'
-    );
-
-    setEvents([...events, ...filteredEvents]);
+    setEvents([...events, ...result.events]);
     setPagination(result.pagination);
   };
 
@@ -51,16 +39,13 @@ export default () => {
     }).then((res) => res.json());
 
     window.location.reload();
-
-    //togglePopup()
   };
 
   const togglePopup = (event) => {
     setPopupOpen(!popupOpen);
     setEventUri(event.target.value);
+    setReasonInput('');
   };
-
-  console.log('events=', events);
 
   useEffect(() => {
     fetchData();
@@ -92,13 +77,15 @@ export default () => {
                 <td>{event.start_time}</td>
                 <td>{event.end_time}</td>
                 {currentDate <
-                  Date.parse(`${event.date}, ${event.start_time}`) && (
-                  <td>
-                    <button value={event.uri} onClick={togglePopup}>
-                      Cancel Event
-                    </button>
-                  </td>
-                )}
+                  Date.parse(`${event.date}, ${event.start_time}`) &&
+                  event.status === 'active' && (
+                    <td>
+                      <button value={event.uri} onClick={togglePopup}>
+                        Cancel Event
+                      </button>
+                    </td>
+                  )}
+                {event.status === 'canceled' && <td>CANCELED</td>}
                 {popupOpen && event.uri === eventUri && (
                   <Popup
                     content={

@@ -44,8 +44,6 @@ button {
     width: 60%;
     margin: 0 auto;
     height: auto;
-    max-height: 5rem;
-    margin-top: calc(100vh - 85vh - 20px);
     background: #E5DCC5;
     border-radius: 50%;
     padding: 10rem;
