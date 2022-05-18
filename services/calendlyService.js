@@ -61,7 +61,7 @@ class CalendlyService {
     let queryParams = [
       `user=${userUri}`,
       `count=${count || 10}`,
-      `sort=start_time:desc`,
+      `sort=start_time:asc`,
     ].join('&');
 
     if (pageToken) queryParams += `&page_token=${pageToken}`;
