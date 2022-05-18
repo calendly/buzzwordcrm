@@ -113,6 +113,18 @@ class CalendlyService {
     );
   };
 
+  cancelEvent = async (uuid, reason) => {
+    const { data } = await this.request.post(
+      `/scheduled_events/${uuid}/cancellation`,
+      {
+        reason: reason,
+      },
+      this.requestConfiguration()
+    );
+
+    return data;
+  };
+
   requestNewAccessToken = () => {
     return axios.post(`${CALENDLY_AUTH_BASE_URL}/oauth/token`, {
       client_id: CLIENT_ID,

@@ -108,6 +108,20 @@ router
     } catch (error) {
       next(error);
     }
+  })
+  .post('/cancel_event/:uuid', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token } = req.user;
+      const { uuid } = req.params;
+      const { reason } = req.body;
+      const calendlyService = new CalendlyService(access_token, refresh_token);
+
+      const resource = await calendlyService.cancelEvent(uuid, reason);
+
+      res.json({ resource });
+    } catch (error) {
+      next(error);
+    }
   });
 
 module.exports = router;
