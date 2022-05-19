@@ -8,24 +8,44 @@ button {
     padding-left: 10px;
 }
 
+.invitee-details-link {
+    color: blue;
+}
+
+.invitee-details-link:hover {
+    color: antiquewhite;
+}
+
 .scheduled-event-container {
-    margin: auto;
-    margin-top: 6%;
-    text-align: center;
-    background-color: aquamarine;
-    border-radius: 50%;
+    background-color: rgb(58, 140, 140);
+    border-radius: 25px;
+    border-top: 5em;
     color: white;
+    height: 50em;
+    margin: auto;
+    padding-top: 0.2em;
+    padding-bottom: 5em;
+    position: center;
+    text-align: center;
+    width: 100em;
 }
 
 .scheduled-event-header {
-    color: #1c9ad5;
-    text-decoration: underline;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin-top: 6%;
+    text-align: center;
+    opacity: 1;
 }
 
 .scheduled-event-details {
+    background-color: rgb(238,110,115);
+    border-radius: 25px;
+    padding-top: 5em;
+    padding-bottom: 6em;
     margin-left: 25%;
     margin-right: 25%;
     margin-top: 2rem;
-    background-color: #ee6e73;
-    border-radius: 50%;
+    font-weight: 400;
+    letter-spacing: -0.00833em;
 }
