@@ -29,7 +29,7 @@ export default () => {
   };
 
   useEffect(() => {
-    fetchData();
+    fetchData()
   }, []);
 
   const currentDate = Date.now();

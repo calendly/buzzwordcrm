@@ -60,7 +60,7 @@ class CalendlyService {
   getUserScheduledEvents = async (userUri, count, pageToken) => {
     let queryParams = [
       `user=${userUri}`,
-      `count=${count || 10}`,
+      `count=${count || 30}`,
       `sort=start_time:asc`,
     ].join('&');
 
