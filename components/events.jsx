@@ -12,6 +12,7 @@ export default () => {
     { value: 'active-events', label: 'Active Events' },
     { value: 'canceled-events', label: 'Canceled Events' },
     { value: 'past-events', label: 'Past Events' },
+    { value: 'future-events', label: 'Future Events' },
   ];
 
   const fetchData = async () => {
@@ -30,7 +31,7 @@ export default () => {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   const currentDate = Date.now();
 
   return (
@@ -99,6 +100,21 @@ export default () => {
 
                 {selectedOption === 'past-events' &&
                   Date.parse(`${event.date}, ${event.start_time}`) <
+                    currentDate && (
+                    <React.Fragment>
+                      <td>
+                        <Link to={`/events/${event.uri.split('/')[4]}`}>
+                          {event.name}
+                        </Link>
+                      </td>
+                      <td>{event.date}</td>
+                      <td>{event.start_time}</td>
+                      <td>{event.end_time}</td>
+                    </React.Fragment>
+                  )}
+
+                {selectedOption === 'future-events' &&
+                  Date.parse(`${event.date}, ${event.start_time}`) >
                     currentDate && (
                     <React.Fragment>
                       <td>
