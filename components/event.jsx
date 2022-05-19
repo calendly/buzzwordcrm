@@ -19,7 +19,7 @@ export default () => {
   return (
     <div className="scheduled-event-container">
       <h5 className="scheduled-event-header">
-        <p>"{event.name}"</p>
+        <p>{event.name}</p>
         <p>on</p>
         <p>{event.date}</p>
       </h5>
