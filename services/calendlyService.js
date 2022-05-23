@@ -61,7 +61,7 @@ class CalendlyService {
     let queryParams = [
       `user=${userUri}`,
       `count=${count || 10}`,
-      `sort=start_time:desc`,
+      `sort=start_time:asc`,
     ].join('&');
 
     if (pageToken) queryParams += `&page_token=${pageToken}`;
@@ -111,6 +111,18 @@ class CalendlyService {
       `/invitee_no_shows/${inviteeUuid}`,
       this.requestConfiguration()
     );
+  };
+
+  cancelEvent = async (uuid, reason) => {
+    const { data } = await this.request.post(
+      `/scheduled_events/${uuid}/cancellation`,
+      {
+        reason: reason,
+      },
+      this.requestConfiguration()
+    );
+
+    return data;
   };
 
   requestNewAccessToken = () => {
