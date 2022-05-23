@@ -19,8 +19,8 @@ router
       await calendlyService.getUserScheduledEvents(
         calendly_uid,
         count,
-        page_token, 
-        status, 
+        page_token,
+        status,
         maxStartTime,
         minStartTime
       );

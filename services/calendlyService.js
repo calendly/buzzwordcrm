@@ -65,9 +65,9 @@ class CalendlyService {
     ].join('&');
 
     if (pageToken) queryParams += `&page_token=${pageToken}`;
-    if (status) queryParams += `status=${status}`;
-    if (maxStartTime) queryParams += `max_start_time=${maxStartTime}`;
-    if (minStartTime) queryParams += `min_start_time=${minStartTime}`;
+    if (status) queryParams += `&status=${status}`;
+    if (maxStartTime) queryParams += `&max_start_time=${maxStartTime}`;
+    if (minStartTime) queryParams += `&min_start_time=${minStartTime}`;
 
     const url = `/scheduled_events?${queryParams}`;
 

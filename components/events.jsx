@@ -10,6 +10,7 @@ export default () => {
   const [eventUri, setEventUri] = useState(null);
   const [reasonInput, setReasonInput] = useState('');
   const [selectedOption, setSelectedOption] = useState('all-events');
+  const [nextPageRequested, setNextPageRequested] = useState(false);
 
   const currentDate = new Date().toISOString();
   console.log('date=', currentDate);
@@ -23,14 +24,18 @@ export default () => {
   ];
 
   const fetchData = async () => {
-    let nextPageQueryParams = pagination.next_page
-      ? pagination.next_page.slice(pagination.next_page.indexOf('?'))
-      : '';
+    let nextPageQueryParams = '?';
+
+    if(nextPageRequested) {
+      nextPageQueryParams += pagination.next_page_token
+        ? `page_token=${pagination.next_page_token}`
+        : '';
+    }
 
     if (selectedOption === 'active-events') {
       console.log('filtering to active events');
 
-      nextPageQueryParams += '?status=active';
+      nextPageQueryParams += '&status=active';
 
       console.log('nextPageQueryParams=', nextPageQueryParams);
 
@@ -40,49 +45,52 @@ export default () => {
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
 
-      setEvents([...result.events]);
+      setEvents([...events, ...result.events]);
       setPagination(result.pagination);
+      return;
     }
 
     if (selectedOption === 'canceled-events') {
       console.log('filtering to canceleed events');
 
-      nextPageQueryParams += '?status=canceled';
+      nextPageQueryParams += '&status=canceled';
       console.log('nextPageQueryParams=', nextPageQueryParams);
 
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
 
-      setEvents([...result.events]);
+      setEvents([...events, ...result.events]);
       setPagination(result.pagination);
+      return;
     }
 
     if (selectedOption === 'past-events') {
       console.log('filtering to past events');
 
-      nextPageQueryParams += `?max_start_time=${currentDate}`;
+      nextPageQueryParams += `&max_start_time=${currentDate}`;
       console.log('nextPageQueryParams=', nextPageQueryParams);
 
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
 
-      setEvents([...result.events]);
+      setEvents([...events, ...result.events]);
       setPagination(result.pagination);
+      return;
     }
 
     if (selectedOption === 'future-events') {
       console.log('filtering to future events');
 
-      nextPageQueryParams += `?min_start_time=${currentDate}`;
+      nextPageQueryParams += `&min_start_time=${currentDate}`;
       console.log('nextPageQueryParams=', nextPageQueryParams);
 
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
 
-      setEvents([...result.events]);
+      setEvents([...events, ...result.events]);
       setPagination(result.pagination);
     } else {
       console.log('filtering to all events via ELSE statement');
@@ -124,9 +132,15 @@ export default () => {
     setReasonInput('');
   };
 
+  const handleSelectedOptionChange = (value) => {
+    setNextPageRequested(false);
+    setSelectedOption(value);
+    setEvents([]);
+  }
+
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [selectedOption, nextPageRequested]);
 
   return (
     <div className="container" style={{ marginTop: '50px' }}>
@@ -135,10 +149,7 @@ export default () => {
           defaultValue={selectedOption}
           options={options}
           placeholder="Choose Filter"
-          onChange={(event) => {
-            setSelectedOption(event.value);
-            fetchData();
-          }}
+          onChange={(event) => handleSelectedOptionChange(event.value)}
         />
       </div>
       <div className="row">
@@ -171,7 +182,7 @@ export default () => {
                       </button>
                     </td>
                   )}
-                {event.status === 'canceled' && <td>CANCELED</td>}
+                <td>{event.status}</td>
                 {popupOpen && event.uri === eventUri && (
                   <Popup
                     content={
@@ -205,11 +216,11 @@ export default () => {
           </tbody>
         </table>
       </div>
-      {pagination.next_page && (
+      {pagination.next_page_token && (
         <div className="center-align">
           <button
             className="waves-effect waves-light btn-small"
-            onClick={fetchData}
+            onClick={() => setNextPageRequested(true)}
           >
             Load More
           </button>
