@@ -23,6 +23,8 @@ exports.isUserAuthenticated = async (req, res, next) => {
 exports.formatEventDateTime = (event) => ({
   ...event,
   date: new Date(event.start_time).toLocaleDateString(),
+  start_time_UTC: event.start_time,
+  end_time_UTC: event.end_time,
   start_time: formatTime(event.start_time),
   end_time: formatTime(event.end_time),
 });

@@ -30,6 +30,7 @@
     "react-calendly": "^4.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0",
+    "react-select": "^5.3.2",
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Popup from './popup';
-import { Link } from 'react-router-dom';
+import Select from 'react-select';
+import { Link, useParams } from 'react-router-dom';
 
 export default () => {
   const [events, setEvents] = useState([]);
@@ -8,19 +9,95 @@ export default () => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [eventUri, setEventUri] = useState(null);
   const [reasonInput, setReasonInput] = useState('');
+  const [selectedOption, setSelectedOption] = useState('all-events');
+
+  const currentDate = new Date().toISOString();
+  console.log('date=', currentDate);
+
+  const options = [
+    { value: 'all-events', label: 'All Events' },
+    { value: 'active-events', label: 'Active Events' },
+    { value: 'canceled-events', label: 'Canceled Events' },
+    { value: 'past-events', label: 'Past Events' },
+    { value: 'future-events', label: 'Future Events' },
+  ];
 
   const fetchData = async () => {
-    const nextPageQueryParams = pagination.next_page
+    let nextPageQueryParams = pagination.next_page
       ? pagination.next_page.slice(pagination.next_page.indexOf('?'))
       : '';
 
-    const result = await fetch(
-      `/api/scheduled_events${nextPageQueryParams}`
-    ).then((res) => res.json());
+    if (selectedOption === 'active-events') {
+      console.log('filtering to active events');
 
-    setEvents([...events, ...result.events]);
-    setPagination(result.pagination);
+      nextPageQueryParams += '?status=active';
+
+      console.log('nextPageQueryParams=', nextPageQueryParams);
+
+      console.log('nextPageQueryParams=', nextPageQueryParams);
+
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...result.events]);
+      setPagination(result.pagination);
+    }
+
+    if (selectedOption === 'canceled-events') {
+      console.log('filtering to canceleed events');
+
+      nextPageQueryParams += '?status=canceled';
+      console.log('nextPageQueryParams=', nextPageQueryParams);
+
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...result.events]);
+      setPagination(result.pagination);
+    }
+
+    if (selectedOption === 'past-events') {
+      console.log('filtering to past events');
+
+      nextPageQueryParams += `?max_start_time=${currentDate}`;
+      console.log('nextPageQueryParams=', nextPageQueryParams);
+
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...result.events]);
+      setPagination(result.pagination);
+    }
+
+    if (selectedOption === 'future-events') {
+      console.log('filtering to future events');
+
+      nextPageQueryParams += `?min_start_time=${currentDate}`;
+      console.log('nextPageQueryParams=', nextPageQueryParams);
+
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...result.events]);
+      setPagination(result.pagination);
+    } else {
+      console.log('filtering to all events via ELSE statement');
+      console.log('nextPageQueryParams=', nextPageQueryParams);
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...events, ...result.events]);
+      setPagination(result.pagination);
+    }
   };
+
+  console.log('selectedOption=', selectedOption);
+  console.log('events=', events);
 
   const handleCancellation = async (event) => {
     event.preventDefault();
@@ -51,10 +128,19 @@ export default () => {
     fetchData();
   }, []);
 
-  const currentDate = Date.now();
-
   return (
     <div className="container" style={{ marginTop: '50px' }}>
+      <div style={{ alignSelf: 'center', textAlign: 'center' }}>
+        <Select
+          defaultValue={selectedOption}
+          options={options}
+          placeholder="Choose Filter"
+          onChange={(event) => {
+            setSelectedOption(event.value);
+            fetchData();
+          }}
+        />
+      </div>
       <div className="row">
         <table className="striped centered">
           <thead>

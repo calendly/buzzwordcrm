@@ -12,14 +12,17 @@ const User = require('../models/userModel');
 router
   .get('/scheduled_events', isUserAuthenticated, async (req, res) => {
     const { access_token, refresh_token, calendly_uid } = req.user;
-    const { count, page_token } = req.query;
+    const { count, page_token, status, maxStartTime, minStartTime } = req.query;
     const calendlyService = new CalendlyService(access_token, refresh_token);
 
     const { collection, pagination } =
       await calendlyService.getUserScheduledEvents(
         calendly_uid,
         count,
-        page_token
+        page_token, 
+        status, 
+        maxStartTime,
+        minStartTime
       );
 
     const events = collection.map(formatEventDateTime);
