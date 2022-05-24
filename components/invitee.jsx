@@ -61,7 +61,7 @@ export default () => {
   }, []);
 
   const currentDate = Date.now();
-  const eventDate = Date.parse(`${event.date}, ${event.start_time}`);
+  const eventDate = Date.parse(event.start_time);
 
   return (
     <div>

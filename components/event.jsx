@@ -25,10 +25,10 @@ export default () => {
       </h5>
       <div className="scheduled-event-details">
         <p>
-          <strong>Start time: </strong> {event.start_time}
+          <strong>Start time: </strong> {event.start_time_formatted}
         </p>
         <p>
-          <strong>End time: </strong> {event.end_time}
+          <strong>End time: </strong> {event.end_time_formatted}
         </p>
         <p>
           <strong>Location: </strong>

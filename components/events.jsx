@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Popup from './popup';
 import Select from 'react-select';
-import { Link, useParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default () => {
   const [events, setEvents] = useState([]);
@@ -11,9 +11,11 @@ export default () => {
   const [reasonInput, setReasonInput] = useState('');
   const [selectedOption, setSelectedOption] = useState('all-events');
   const [nextPageToken, setNextPageToken] = useState(null);
+  //const [currentDate, setCurrentDate] = useState('');
 
-  const currentDate = new Date().toISOString();
-  console.log('date=', currentDate);
+  //console.log('date=', currentDate);
+  const currentDate = useRef(new Date().toISOString());
+  const currentDateMillisec = Date.now()
 
   const options = [
     { value: 'all-events', label: 'All Events' },
@@ -32,8 +34,6 @@ export default () => {
       console.log('filtering to active events');
 
       nextPageQueryParams += '&status=active';
-
-      console.log('nextPageQueryParams=', nextPageQueryParams);
 
       console.log('nextPageQueryParams=', nextPageQueryParams);
 
@@ -63,8 +63,7 @@ export default () => {
 
     if (selectedOption === 'past-events') {
       console.log('filtering to past events');
-
-      nextPageQueryParams += `&max_start_time=${currentDate}`;
+      nextPageQueryParams += `&max_start_time=${currentDate.current}`;
       console.log('nextPageQueryParams=', nextPageQueryParams);
 
       const result = await fetch(
@@ -79,7 +78,7 @@ export default () => {
     if (selectedOption === 'future-events') {
       console.log('filtering to future events');
 
-      nextPageQueryParams += `&min_start_time=${currentDate}`;
+      nextPageQueryParams += `&min_start_time=${currentDate.current}`;
       console.log('nextPageQueryParams=', nextPageQueryParams);
 
       const result = await fetch(
@@ -129,7 +128,7 @@ export default () => {
   };
 
   const handleSelectedOptionChange = (value) => {
-    setNextPageRequested(false);
+    setNextPageToken(false);
     setSelectedOption(value);
     setEvents([]);
   }
@@ -167,10 +166,11 @@ export default () => {
                   </Link>
                 </td>
                 <td>{event.date}</td>
-                <td>{event.start_time}</td>
-                <td>{event.end_time}</td>
-                {currentDate <
-                  Date.parse(`${event.date}, ${event.start_time}`) &&
+                <td>{event.start_time_formatted}</td>
+                <td>{event.end_time_formatted}</td>
+                <td>{event.status && event.status.toUpperCase()}</td>
+                {currentDateMillisec <
+                  Date.parse(event.start_time) &&
                   event.status === 'active' && (
                     <td>
                       <button value={event.uri} onClick={togglePopup}>
@@ -178,7 +178,7 @@ export default () => {
                       </button>
                     </td>
                   )}
-                <td>{event.status}</td>
+                
                 {popupOpen && event.uri === eventUri && (
                   <Popup
                     content={
@@ -188,7 +188,7 @@ export default () => {
                           <h6>"{event.name}"</h6>
                           <h6>{event.date}</h6>
                           <h6>
-                            {event.start_time}-{event.end_time}
+                            {event.start_time_formatted}-{event.end_time_formatted}
                           </h6>
                           Reason:
                           <textarea
