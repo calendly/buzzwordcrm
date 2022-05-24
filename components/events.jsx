@@ -155,6 +155,7 @@ export default () => {
               <th>Date</th>
               <th>Start Time</th>
               <th>End Time</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
