@@ -10,7 +10,7 @@ export default () => {
   const [eventUri, setEventUri] = useState(null);
   const [reasonInput, setReasonInput] = useState('');
   const [selectedOption, setSelectedOption] = useState('all-events');
-  const [nextPageRequested, setNextPageRequested] = useState(false);
+  const [nextPageToken, setNextPageToken] = useState(null);
 
   const currentDate = new Date().toISOString();
   console.log('date=', currentDate);
@@ -26,11 +26,7 @@ export default () => {
   const fetchData = async () => {
     let nextPageQueryParams = '?';
 
-    if(nextPageRequested) {
-      nextPageQueryParams += pagination.next_page_token
-        ? `page_token=${pagination.next_page_token}`
-        : '';
-    }
+    if(nextPageToken) nextPageQueryParams += `&page_token=${nextPageToken}`;
 
     if (selectedOption === 'active-events') {
       console.log('filtering to active events');
@@ -140,7 +136,7 @@ export default () => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedOption, nextPageRequested]);
+  }, [selectedOption, nextPageToken]);
 
   return (
     <div className="container" style={{ marginTop: '50px' }}>
@@ -220,7 +216,7 @@ export default () => {
         <div className="center-align">
           <button
             className="waves-effect waves-light btn-small"
-            onClick={() => setNextPageRequested(true)}
+            onClick={() => setNextPageToken(pagination.next_page_token)}
           >
             Load More
           </button>
