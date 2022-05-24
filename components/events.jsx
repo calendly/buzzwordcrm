@@ -15,7 +15,7 @@ export default () => {
 
   //console.log('date=', currentDate);
   const currentDate = useRef(new Date().toISOString());
-  const currentDateMillisec = Date.now()
+  const currentDateMillisec = Date.now();
 
   const options = [
     { value: 'all-events', label: 'All Events' },
@@ -28,7 +28,7 @@ export default () => {
   const fetchData = async () => {
     let nextPageQueryParams = '?';
 
-    if(nextPageToken) nextPageQueryParams += `&page_token=${nextPageToken}`;
+    if (nextPageToken) nextPageQueryParams += `&page_token=${nextPageToken}`;
 
     if (selectedOption === 'active-events') {
       console.log('filtering to active events');
@@ -131,7 +131,7 @@ export default () => {
     setNextPageToken(false);
     setSelectedOption(value);
     setEvents([]);
-  }
+  };
 
   useEffect(() => {
     fetchData();
@@ -170,8 +170,7 @@ export default () => {
                 <td>{event.start_time_formatted}</td>
                 <td>{event.end_time_formatted}</td>
                 <td>{event.status && event.status.toUpperCase()}</td>
-                {currentDateMillisec <
-                  Date.parse(event.start_time) &&
+                {currentDateMillisec < Date.parse(event.start_time) &&
                   event.status === 'active' && (
                     <td>
                       <button value={event.uri} onClick={togglePopup}>
@@ -179,7 +178,7 @@ export default () => {
                       </button>
                     </td>
                   )}
-                
+
                 {popupOpen && event.uri === eventUri && (
                   <Popup
                     content={
@@ -189,7 +188,8 @@ export default () => {
                           <h6>"{event.name}"</h6>
                           <h6>{event.date}</h6>
                           <h6>
-                            {event.start_time_formatted}-{event.end_time_formatted}
+                            {event.start_time_formatted}-
+                            {event.end_time_formatted}
                           </h6>
                           Reason:
                           <textarea
