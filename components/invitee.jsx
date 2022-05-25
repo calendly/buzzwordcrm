@@ -5,13 +5,21 @@ export default () => {
   const [invitees, setInvitees] = useState([]);
   const [pagination, setPagination] = useState({});
   const [event, setEvent] = useState([]);
+  const [nextPageToken, setNextPageToken] = useState(null);
+  const [prevPageToken, setPrevPageToken] = useState(null);
+  const [paginationCount, setPaginationCount] = useState(0);
 
   const { uuid } = useParams();
 
   const fetchData = async () => {
-    const nextPageQueryParams = pagination.next_page
-      ? pagination.next_page.slice(pagination.next_page.indexOf('?'))
-      : '';
+    let nextPageQueryParams = '?';
+
+    if (nextPageToken) nextPageQueryParams += `&page_token=${nextPageToken}`;
+
+    if (prevPageToken) {
+      nextPageQueryParams = '?';
+      nextPageQueryParams += `&page_token=${prevPageToken}`;
+    }
 
     const result = await fetch(
       `/api/events/${uuid}/invitees${nextPageQueryParams}`
@@ -54,7 +62,7 @@ export default () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [nextPageToken, prevPageToken]);
 
   useEffect(() => {
     fetchEventData();
@@ -122,9 +130,26 @@ export default () => {
         <div className="center-align">
           <button
             className="waves-effect waves-light btn-small"
-            onClick={fetchData}
+            onClick={() => {
+              setPaginationCount(paginationCount + 1)
+              setNextPageToken(pagination.next_page_token)
+              setPrevPageToken(false);
+            }}
           >
             Load Next
+          </button>
+        </div>
+      )}
+      {paginationCount > 0 && (
+        <div className="center-align">
+          <button
+            className="waves-effect waves-light btn-small"
+            onClick={() => {
+              setPaginationCount(paginationCount - 1)
+              setPrevPageToken(pagination.previous_page_token)
+            }}
+          >
+            Back
           </button>
         </div>
       )}

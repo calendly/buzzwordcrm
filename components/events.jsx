@@ -11,9 +11,9 @@ export default () => {
   const [reasonInput, setReasonInput] = useState('');
   const [selectedOption, setSelectedOption] = useState('all-events');
   const [nextPageToken, setNextPageToken] = useState(null);
-  //const [currentDate, setCurrentDate] = useState('');
+  const [prevPageToken, setPrevPageToken] = useState(null);
+  const [paginationCount, setPaginationCount] = useState(0);
 
-  //console.log('date=', currentDate);
   const currentDate = useRef(new Date().toISOString());
   const currentDateMillisec = Date.now();
 
@@ -30,77 +30,70 @@ export default () => {
 
     if (nextPageToken) nextPageQueryParams += `&page_token=${nextPageToken}`;
 
+    if (prevPageToken) {
+      nextPageQueryParams = '?';
+      nextPageQueryParams += `&page_token=${prevPageToken}`;
+    }
+
     if (selectedOption === 'active-events') {
-      console.log('filtering to active events');
 
       nextPageQueryParams += '&status=active';
-
-      console.log('nextPageQueryParams=', nextPageQueryParams);
 
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
 
-      setEvents([...events, ...result.events]);
+      setEvents([...result.events]);
       setPagination(result.pagination);
       return;
     }
 
     if (selectedOption === 'canceled-events') {
-      console.log('filtering to canceleed events');
 
       nextPageQueryParams += '&status=canceled';
-      console.log('nextPageQueryParams=', nextPageQueryParams);
 
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
 
-      setEvents([...events, ...result.events]);
+      setEvents([...result.events]);
       setPagination(result.pagination);
       return;
     }
 
     if (selectedOption === 'past-events') {
-      console.log('filtering to past events');
+
       nextPageQueryParams += `&max_start_time=${currentDate.current}`;
-      console.log('nextPageQueryParams=', nextPageQueryParams);
 
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
 
-      setEvents([...events, ...result.events]);
+      setEvents([...result.events]);
       setPagination(result.pagination);
       return;
     }
 
     if (selectedOption === 'future-events') {
-      console.log('filtering to future events');
 
       nextPageQueryParams += `&min_start_time=${currentDate.current}`;
-      console.log('nextPageQueryParams=', nextPageQueryParams);
 
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
 
-      setEvents([...events, ...result.events]);
+      setEvents([...result.events]);
       setPagination(result.pagination);
     } else {
-      console.log('filtering to all events via ELSE statement');
-      console.log('nextPageQueryParams=', nextPageQueryParams);
+
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
 
-      setEvents([...events, ...result.events]);
+      setEvents([...result.events]);
       setPagination(result.pagination);
     }
   };
-
-  console.log('selectedOption=', selectedOption);
-  console.log('events=', events);
 
   const handleCancellation = async (event) => {
     event.preventDefault();
@@ -128,14 +121,16 @@ export default () => {
   };
 
   const handleSelectedOptionChange = (value) => {
+    setPaginationCount(0)
     setNextPageToken(false);
+    setPrevPageToken(false);
     setSelectedOption(value);
     setEvents([]);
   };
 
   useEffect(() => {
     fetchData();
-  }, [selectedOption, nextPageToken]);
+  }, [selectedOption, nextPageToken, prevPageToken]);
 
   return (
     <div className="container" style={{ marginTop: '50px' }}>
@@ -217,9 +212,27 @@ export default () => {
         <div className="center-align">
           <button
             className="waves-effect waves-light btn-small"
-            onClick={() => setNextPageToken(pagination.next_page_token)}
+            onClick={() => {
+              setPaginationCount(paginationCount + 1)
+              setNextPageToken(pagination.next_page_token)
+              setPrevPageToken(false);
+            }
+            }
           >
             Load More
+          </button>
+        </div>
+      )}
+      {paginationCount > 0 && (
+        <div className="center-align">
+          <button
+            className="waves-effect waves-light btn-small"
+            onClick={() => {
+              setPaginationCount(paginationCount - 1)
+              setPrevPageToken(pagination.previous_page_token)
+            }}
+          >
+            Back
           </button>
         </div>
       )}
