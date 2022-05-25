@@ -131,12 +131,12 @@ export default () => {
           <button
             className="waves-effect waves-light btn-small"
             onClick={() => {
-              setPaginationCount(paginationCount + 1)
-              setNextPageToken(pagination.next_page_token)
+              setPaginationCount(paginationCount + 1);
+              setNextPageToken(pagination.next_page_token);
               setPrevPageToken(false);
             }}
           >
-            Load Next
+            Show Next
           </button>
         </div>
       )}
@@ -145,8 +145,8 @@ export default () => {
           <button
             className="waves-effect waves-light btn-small"
             onClick={() => {
-              setPaginationCount(paginationCount - 1)
-              setPrevPageToken(pagination.previous_page_token)
+              setPaginationCount(paginationCount - 1);
+              setPrevPageToken(pagination.previous_page_token);
             }}
           >
             Back

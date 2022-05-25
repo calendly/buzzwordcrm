@@ -21,8 +21,6 @@ export default () => {
     { value: 'all-events', label: 'All Events' },
     { value: 'active-events', label: 'Active Events' },
     { value: 'canceled-events', label: 'Canceled Events' },
-    { value: 'past-events', label: 'Past Events' },
-    { value: 'future-events', label: 'Future Events' },
   ];
 
   const fetchData = async () => {
@@ -36,7 +34,6 @@ export default () => {
     }
 
     if (selectedOption === 'active-events') {
-
       nextPageQueryParams += '&status=active';
 
       const result = await fetch(
@@ -49,7 +46,6 @@ export default () => {
     }
 
     if (selectedOption === 'canceled-events') {
-
       nextPageQueryParams += '&status=canceled';
 
       const result = await fetch(
@@ -59,33 +55,7 @@ export default () => {
       setEvents([...result.events]);
       setPagination(result.pagination);
       return;
-    }
-
-    if (selectedOption === 'past-events') {
-
-      nextPageQueryParams += `&max_start_time=${currentDate.current}`;
-
-      const result = await fetch(
-        `/api/scheduled_events${nextPageQueryParams}`
-      ).then((res) => res.json());
-
-      setEvents([...result.events]);
-      setPagination(result.pagination);
-      return;
-    }
-
-    if (selectedOption === 'future-events') {
-
-      nextPageQueryParams += `&min_start_time=${currentDate.current}`;
-
-      const result = await fetch(
-        `/api/scheduled_events${nextPageQueryParams}`
-      ).then((res) => res.json());
-
-      setEvents([...result.events]);
-      setPagination(result.pagination);
     } else {
-
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
       ).then((res) => res.json());
@@ -121,7 +91,7 @@ export default () => {
   };
 
   const handleSelectedOptionChange = (value) => {
-    setPaginationCount(0)
+    setPaginationCount(0);
     setNextPageToken(false);
     setPrevPageToken(false);
     setSelectedOption(value);
@@ -213,13 +183,12 @@ export default () => {
           <button
             className="waves-effect waves-light btn-small"
             onClick={() => {
-              setPaginationCount(paginationCount + 1)
-              setNextPageToken(pagination.next_page_token)
+              setPaginationCount(paginationCount + 1);
+              setNextPageToken(pagination.next_page_token);
               setPrevPageToken(false);
-            }
-            }
+            }}
           >
-            Load More
+            Show Next
           </button>
         </div>
       )}
@@ -228,8 +197,8 @@ export default () => {
           <button
             className="waves-effect waves-light btn-small"
             onClick={() => {
-              setPaginationCount(paginationCount - 1)
-              setPrevPageToken(pagination.previous_page_token)
+              setPaginationCount(paginationCount - 1);
+              setPrevPageToken(pagination.previous_page_token);
             }}
           >
             Back
