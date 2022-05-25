@@ -14,7 +14,6 @@ export default () => {
   const [prevPageToken, setPrevPageToken] = useState(null);
   const [paginationCount, setPaginationCount] = useState(0);
 
-  const currentDate = useRef(new Date().toISOString());
   const currentDateMillisec = Date.now();
 
   const options = [
