@@ -57,14 +57,17 @@ class CalendlyService {
     return data;
   };
 
-  getUserScheduledEvents = async (userUri, count, pageToken) => {
+  getUserScheduledEvents = async (userUri, count, pageToken, status, maxStartTime, minStartTime) => {
     let queryParams = [
       `user=${userUri}`,
       `count=${count || 10}`,
-      `sort=start_time:desc`,
+      `sort=start_time:asc`,
     ].join('&');
 
     if (pageToken) queryParams += `&page_token=${pageToken}`;
+    if (status) queryParams += `&status=${status}`;
+    if (maxStartTime) queryParams += `&max_start_time=${maxStartTime}`;
+    if (minStartTime) queryParams += `&min_start_time=${minStartTime}`;
 
     const url = `/scheduled_events?${queryParams}`;
 
@@ -111,6 +114,18 @@ class CalendlyService {
       `/invitee_no_shows/${inviteeUuid}`,
       this.requestConfiguration()
     );
+  };
+
+  cancelEvent = async (uuid, reason) => {
+    const { data } = await this.request.post(
+      `/scheduled_events/${uuid}/cancellation`,
+      {
+        reason: reason,
+      },
+      this.requestConfiguration()
+    );
+
+    return data;
   };
 
   requestNewAccessToken = () => {

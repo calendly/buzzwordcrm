@@ -5,13 +5,21 @@ export default () => {
   const [invitees, setInvitees] = useState([]);
   const [pagination, setPagination] = useState({});
   const [event, setEvent] = useState([]);
+  const [nextPageToken, setNextPageToken] = useState(null);
+  const [prevPageToken, setPrevPageToken] = useState(null);
+  const [paginationCount, setPaginationCount] = useState(0);
 
   const { uuid } = useParams();
 
   const fetchData = async () => {
-    const nextPageQueryParams = pagination.next_page
-      ? pagination.next_page.slice(pagination.next_page.indexOf('?'))
-      : '';
+    let nextPageQueryParams = '?';
+
+    if (nextPageToken) nextPageQueryParams += `&page_token=${nextPageToken}`;
+
+    if (prevPageToken) {
+      nextPageQueryParams = '?';
+      nextPageQueryParams += `&page_token=${prevPageToken}`;
+    }
 
     const result = await fetch(
       `/api/events/${uuid}/invitees${nextPageQueryParams}`
@@ -54,14 +62,14 @@ export default () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [nextPageToken, prevPageToken]);
 
   useEffect(() => {
     fetchEventData();
   }, []);
 
   const currentDate = Date.now();
-  const eventDate = Date.parse(`${event.date}, ${event.start_time}`);
+  const eventDate = Date.parse(event.start_time);
 
   return (
     <div>
@@ -99,11 +107,13 @@ export default () => {
               <td>{invitee.rescheduled === false ? 'No' : 'Yes'}</td>
               <td>{invitee.timezone}</td>
               <td>
-                {invitee.no_show === null && currentDate > eventDate && (
-                  <button value={invitee.uri} onClick={handleNoShowClick}>
-                    Mark As No-Show
-                  </button>
-                )}
+                {invitee.no_show === null &&
+                  currentDate > eventDate &&
+                  event.status !== 'canceled' && (
+                    <button value={invitee.uri} onClick={handleNoShowClick}>
+                      Mark As No-Show
+                    </button>
+                  )}
 
                 {invitee.no_show && invitee.no_show.uri && (
                   <button
@@ -122,9 +132,26 @@ export default () => {
         <div className="center-align">
           <button
             className="waves-effect waves-light btn-small"
-            onClick={fetchData}
+            onClick={() => {
+              setPaginationCount(paginationCount + 1);
+              setNextPageToken(pagination.next_page_token);
+              setPrevPageToken(false);
+            }}
           >
-            Load Next
+            Show Next
+          </button>
+        </div>
+      )}
+      {paginationCount > 0 && (
+        <div className="center-align">
+          <button
+            className="waves-effect waves-light btn-small"
+            onClick={() => {
+              setPaginationCount(paginationCount - 1);
+              setPrevPageToken(pagination.previous_page_token);
+            }}
+          >
+            Back
           </button>
         </div>
       )}

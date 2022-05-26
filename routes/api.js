@@ -10,21 +10,29 @@ const router = express.Router();
 const User = require('../models/userModel');
 
 router
-  .get('/scheduled_events', isUserAuthenticated, async (req, res) => {
-    const { access_token, refresh_token, calendly_uid } = req.user;
-    const { count, page_token } = req.query;
-    const calendlyService = new CalendlyService(access_token, refresh_token);
+  .get('/scheduled_events', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token, calendly_uid } = req.user;
+      const { count, page_token, status, max_start_time, min_start_time } =
+        req.query;
+      const calendlyService = new CalendlyService(access_token, refresh_token);
 
-    const { collection, pagination } =
-      await calendlyService.getUserScheduledEvents(
-        calendly_uid,
-        count,
-        page_token
-      );
+      const { collection, pagination } =
+        await calendlyService.getUserScheduledEvents(
+          calendly_uid,
+          count,
+          page_token,
+          status,
+          max_start_time,
+          min_start_time
+        );
 
-    const events = collection.map(formatEventDateTime);
+      const events = collection.map(formatEventDateTime);
 
-    res.json({ events, pagination });
+      res.json({ events, pagination });
+    } catch (error) {
+      next(error);
+    }
   })
   .get('/event_types', isUserAuthenticated, async (req, res) => {
     const { access_token, refresh_token, calendly_uid } = req.user;
@@ -105,6 +113,20 @@ router
       await calendlyService.undoNoShow(uuid);
 
       res.status(204).end();
+    } catch (error) {
+      next(error);
+    }
+  })
+  .post('/cancel_event/:uuid', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token } = req.user;
+      const { uuid } = req.params;
+      const { reason } = req.body;
+      const calendlyService = new CalendlyService(access_token, refresh_token);
+
+      const resource = await calendlyService.cancelEvent(uuid, reason);
+
+      res.json({ resource });
     } catch (error) {
       next(error);
     }
