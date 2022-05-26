@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Popup from './popup';
+import Select from 'react-select';
 import { Link } from 'react-router-dom';
 
 export default () => {
@@ -8,18 +9,59 @@ export default () => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [eventUri, setEventUri] = useState(null);
   const [reasonInput, setReasonInput] = useState('');
+  const [selectedOption, setSelectedOption] = useState('all-events');
+  const [nextPageToken, setNextPageToken] = useState(null);
+  const [prevPageToken, setPrevPageToken] = useState(null);
+  const [paginationCount, setPaginationCount] = useState(0);
+
+  const currentDateMillisec = Date.now();
+
+  const options = [
+    { value: 'all-events', label: 'All Events' },
+    { value: 'active-events', label: 'Active Events' },
+    { value: 'canceled-events', label: 'Canceled Events' },
+  ];
 
   const fetchData = async () => {
-    const nextPageQueryParams = pagination.next_page
-      ? pagination.next_page.slice(pagination.next_page.indexOf('?'))
-      : '';
+    let nextPageQueryParams = '?';
 
-    const result = await fetch(
-      `/api/scheduled_events${nextPageQueryParams}`
-    ).then((res) => res.json());
+    if (nextPageToken) nextPageQueryParams += `&page_token=${nextPageToken}`;
 
-    setEvents([...events, ...result.events]);
-    setPagination(result.pagination);
+    if (prevPageToken) {
+      nextPageQueryParams = '?';
+      nextPageQueryParams += `&page_token=${prevPageToken}`;
+    }
+
+    if (selectedOption === 'active-events') {
+      nextPageQueryParams += '&status=active';
+
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...result.events]);
+      setPagination(result.pagination);
+      return;
+    }
+
+    if (selectedOption === 'canceled-events') {
+      nextPageQueryParams += '&status=canceled';
+
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...result.events]);
+      setPagination(result.pagination);
+      return;
+    } else {
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...result.events]);
+      setPagination(result.pagination);
+    }
   };
 
   const handleCancellation = async (event) => {
@@ -47,14 +89,28 @@ export default () => {
     setReasonInput('');
   };
 
+  const handleSelectedOptionChange = (value) => {
+    setPaginationCount(0);
+    setNextPageToken(false);
+    setPrevPageToken(false);
+    setSelectedOption(value);
+    setEvents([]);
+  };
+
   useEffect(() => {
     fetchData();
-  }, []);
-
-  const currentDate = Date.now();
+  }, [selectedOption, nextPageToken, prevPageToken]);
 
   return (
     <div className="container" style={{ marginTop: '50px' }}>
+      <div style={{ alignSelf: 'center', textAlign: 'center' }}>
+        <Select
+          defaultValue={selectedOption}
+          options={options}
+          placeholder="Choose Filter"
+          onChange={(event) => handleSelectedOptionChange(event.value)}
+        />
+      </div>
       <div className="row">
         <table className="striped centered">
           <thead>
@@ -63,6 +119,7 @@ export default () => {
               <th>Date</th>
               <th>Start Time</th>
               <th>End Time</th>
+              <th>Status</th>
             </tr>
           </thead>
           <tbody>
@@ -74,10 +131,10 @@ export default () => {
                   </Link>
                 </td>
                 <td>{event.date}</td>
-                <td>{event.start_time}</td>
-                <td>{event.end_time}</td>
-                {currentDate <
-                  Date.parse(`${event.date}, ${event.start_time}`) &&
+                <td>{event.start_time_formatted}</td>
+                <td>{event.end_time_formatted}</td>
+                <td>{event.status && event.status.toUpperCase()}</td>
+                {currentDateMillisec < Date.parse(event.start_time) &&
                   event.status === 'active' && (
                     <td>
                       <button value={event.uri} onClick={togglePopup}>
@@ -85,7 +142,7 @@ export default () => {
                       </button>
                     </td>
                   )}
-                {event.status === 'canceled' && <td>CANCELED</td>}
+
                 {popupOpen && event.uri === eventUri && (
                   <Popup
                     content={
@@ -95,7 +152,8 @@ export default () => {
                           <h6>"{event.name}"</h6>
                           <h6>{event.date}</h6>
                           <h6>
-                            {event.start_time}-{event.end_time}
+                            {event.start_time_formatted}-
+                            {event.end_time_formatted}
                           </h6>
                           Reason:
                           <textarea
@@ -119,13 +177,30 @@ export default () => {
           </tbody>
         </table>
       </div>
-      {pagination.next_page && (
+      {pagination.next_page_token && (
         <div className="center-align">
           <button
             className="waves-effect waves-light btn-small"
-            onClick={fetchData}
+            onClick={() => {
+              setPaginationCount(paginationCount + 1);
+              setNextPageToken(pagination.next_page_token);
+              setPrevPageToken(false);
+            }}
           >
-            Load More
+            Show Next
+          </button>
+        </div>
+      )}
+      {paginationCount > 0 && (
+        <div className="center-align">
+          <button
+            className="waves-effect waves-light btn-small"
+            onClick={() => {
+              setPaginationCount(paginationCount - 1);
+              setPrevPageToken(pagination.previous_page_token);
+            }}
+          >
+            Back
           </button>
         </div>
       )}

@@ -57,7 +57,7 @@ class CalendlyService {
     return data;
   };
 
-  getUserScheduledEvents = async (userUri, count, pageToken) => {
+  getUserScheduledEvents = async (userUri, count, pageToken, status, maxStartTime, minStartTime) => {
     let queryParams = [
       `user=${userUri}`,
       `count=${count || 10}`,
@@ -65,6 +65,9 @@ class CalendlyService {
     ].join('&');
 
     if (pageToken) queryParams += `&page_token=${pageToken}`;
+    if (status) queryParams += `&status=${status}`;
+    if (maxStartTime) queryParams += `&max_start_time=${maxStartTime}`;
+    if (minStartTime) queryParams += `&min_start_time=${minStartTime}`;
 
     const url = `/scheduled_events?${queryParams}`;
 

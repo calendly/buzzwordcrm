@@ -19,15 +19,16 @@ export default () => {
   return (
     <div className="scheduled-event-container">
       <h5 className="scheduled-event-header">
-        Details for <strong>"{event.name}"</strong> scheduled for{' '}
-        <strong>{event.date}</strong>
+        <p>"{event.name}"</p>
+        <p>on</p>
+        <p>{event.date}</p>
       </h5>
       <div className="scheduled-event-details">
         <p>
-          <strong>Start time: </strong> {event.start_time}
+          <strong>Start time: </strong> {event.start_time_formatted}
         </p>
         <p>
-          <strong>End time: </strong> {event.end_time}
+          <strong>End time: </strong> {event.end_time_formatted}
         </p>
         <p>
           <strong>Location: </strong>
@@ -39,7 +40,7 @@ export default () => {
             `${event.invitees_counter.active}/${event.invitees_counter.limit}`}
         </p>
         <Link to={`/events/${uuid}/invitees`}>
-          <p>Click here for invitee details</p>
+          <p className="invitee-details-link">Click here for invitee details</p>
         </Link>
         <div>
           <strong>Invitee guests: </strong>{' '}
