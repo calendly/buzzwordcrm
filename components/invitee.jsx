@@ -107,11 +107,13 @@ export default () => {
               <td>{invitee.rescheduled === false ? 'No' : 'Yes'}</td>
               <td>{invitee.timezone}</td>
               <td>
-                {invitee.no_show === null && currentDate > eventDate && (
-                  <button value={invitee.uri} onClick={handleNoShowClick}>
-                    Mark As No-Show
-                  </button>
-                )}
+                {invitee.no_show === null &&
+                  currentDate > eventDate &&
+                  event.status !== 'canceled' && (
+                    <button value={invitee.uri} onClick={handleNoShowClick}>
+                      Mark As No-Show
+                    </button>
+                  )}
 
                 {invitee.no_show && invitee.no_show.uri && (
                   <button
