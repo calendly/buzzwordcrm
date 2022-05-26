@@ -191,7 +191,7 @@ export default () => {
           </button>
         </div>
       )}
-      {paginationCount > 0 && (
+      {paginationCount > 0 && !popupOpen && (
         <div className="center-align">
           <button
             className="waves-effect waves-light btn-small"
