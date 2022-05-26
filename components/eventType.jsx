@@ -23,14 +23,15 @@ export default () => {
       <p>{`Last updated ${eventType.last_updated}`}</p>
       <h5>"{eventType.name}"</h5>
       <div className="event-details">
-        <p className='event-status'>
+        <p className="event-status">
           <strong>Status: </strong>
           {eventType.active ? 'Active' : 'Deactivated'}
         </p>
         {eventType.active === false && (
           <p>
             <strong>Deleted: </strong>
-            {new Date(new Date(eventType.deleted_at).getTime())}
+            {eventType.deleted_at &&
+              new Date(new Date(eventType.deleted_at).getTime())}
           </p>
         )}
         <p className="event-type-kind">
