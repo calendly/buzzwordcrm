@@ -110,13 +110,18 @@ export default () => {
                 {invitee.no_show === null &&
                   currentDate > eventDate &&
                   event.status !== 'canceled' && (
-                    <button value={invitee.uri} onClick={handleNoShowClick}>
+                    <button
+                      className="toggle-btn"
+                      value={invitee.uri}
+                      onClick={handleNoShowClick}
+                    >
                       Mark As No-Show
                     </button>
                   )}
 
                 {invitee.no_show && invitee.no_show.uri && (
                   <button
+                    className="toggle-btn"
                     value={invitee.uri}
                     onClick={() => undoNoShowClick(invitee)}
                   >
@@ -129,7 +134,7 @@ export default () => {
         </tbody>
       </table>
       {pagination.next_page && (
-        <div className="center-align">
+        <div className="next-back-btns">
           <button
             className="waves-effect waves-light btn-small"
             onClick={() => {
@@ -143,7 +148,7 @@ export default () => {
         </div>
       )}
       {paginationCount > 0 && (
-        <div className="center-align">
+        <div className="next-back-btns">
           <button
             className="waves-effect waves-light btn-small"
             onClick={() => {
