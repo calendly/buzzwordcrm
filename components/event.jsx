@@ -17,13 +17,16 @@ export default () => {
   }, []);
 
   return (
-    <div className="scheduled-event-container">
+    <div className="event-container">
       <h5 className="scheduled-event-header">
         <p>"{event.name}"</p>
         <p>on</p>
         <p>{event.date}</p>
       </h5>
-      <div className="scheduled-event-details">
+      <div className="event-details">
+        <p className='event-status'>
+          <strong>Status: </strong> {event.status && event.status.toUpperCase()}
+        </p>
         <p>
           <strong>Start time: </strong> {event.start_time_formatted}
         </p>

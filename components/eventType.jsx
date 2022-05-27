@@ -19,25 +19,40 @@ export default () => {
   }, []);
 
   return (
-    <div>
-      <p
-        style={{ textAlign: 'center' }}
-      >{`Last updated ${eventType.last_updated}`}</p>
-      <h5>{eventType.name}</h5>
-      <div>
-        <strong>Invitee Questions: </strong>
-        {eventType.custom_questions &&
-          eventType.custom_questions.map((question) => (
-            // It doesn't increment correctly with an ol, so I've done it this way (below) to create a numbered list.
-            <p key={question.position}>{`${question.position + 1}. ${
-              question.name
-            }`}</p>
-          ))}
+    <div className="event-container">
+      <p>{`Last updated ${eventType.last_updated}`}</p>
+      <h5>"{eventType.name}"</h5>
+      <div className="event-details">
+        <p className="event-status">
+          <strong>Status: </strong>
+          {eventType.active ? 'Active' : 'Deactivated'}
+        </p>
+        {eventType.active === false && (
+          <p>
+            <strong>Deleted: </strong>
+            {eventType.deleted_at &&
+              new Date(new Date(eventType.deleted_at).getTime())}
+          </p>
+        )}
+        <p className="event-type-kind">
+          <strong>Type: </strong>
+          {eventType.kind && eventType.kind}
+        </p>
+        <div className="event-type-custom-questions">
+          <strong>Custom Questions: </strong>
+          {eventType.custom_questions &&
+            eventType.custom_questions.map((question) => (
+              // It doesn't increment correctly with an ol, so I've done it this way (below) to create a numbered list.
+              <p key={question.position}>{`${question.position + 1}. ${
+                question.name
+              }`}</p>
+            ))}
+        </div>
+        <p>
+          <strong>Duration: </strong>
+          {`${eventType.duration} minutes`}
+        </p>
       </div>
-      <p>
-        <strong>Duration: </strong>
-        {`${eventType.duration} minutes`}
-      </p>
     </div>
   );
 };
