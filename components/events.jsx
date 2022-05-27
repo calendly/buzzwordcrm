@@ -80,6 +80,7 @@ export default () => {
       body: body,
     }).then((res) => res.json());
 
+    window.alert('Event canceled successfully!');
     window.location.reload();
   };
 
