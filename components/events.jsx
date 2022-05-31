@@ -138,7 +138,11 @@ export default () => {
                 {currentDateMillisec < Date.parse(event.start_time) &&
                   event.status === 'active' && (
                     <td>
-                      <button value={event.uri} onClick={togglePopup}>
+                      <button
+                        className="toggle-btn"
+                        value={event.uri}
+                        onClick={togglePopup}
+                      >
                         Cancel Event
                       </button>
                     </td>
@@ -179,7 +183,7 @@ export default () => {
         </table>
       </div>
       {pagination.next_page_token && (
-        <div className="center-align">
+        <div className="next-back-btns">
           <button
             className="waves-effect waves-light btn-small"
             onClick={() => {
@@ -193,7 +197,7 @@ export default () => {
         </div>
       )}
       {paginationCount > 0 && !popupOpen && (
-        <div className="center-align">
+        <div className="next-back-btns">
           <button
             className="waves-effect waves-light btn-small"
             onClick={() => {

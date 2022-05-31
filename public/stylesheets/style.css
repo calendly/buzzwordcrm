@@ -1,3 +1,19 @@
+.box {
+    position: relative;
+    width: 60%;
+    margin: 0 auto;
+    height: auto;
+    background: #E5DCC5;
+    border-radius: 50%;
+    padding: 10rem;
+    border: 3px solid #999;
+    overflow: auto;
+    text-align: center;
+    color: rgb(77, 77, 196);
+    font-size: x-large;
+    font-weight: bold;
+}
+
 button {
     background-color: #ee6e73;
 }
@@ -67,12 +83,9 @@ button {
     color: antiquewhite;
 }
 
-.scheduled-event-header {
-    color: white;
-    font-family: Arial, sans-serif;
-    margin-top: 6%;
+.next-back-btns {
     text-align: center;
-    opacity: 1;
+    padding: 0.5rem;
 }
 
 .popup-box {
@@ -82,25 +95,21 @@ button {
     height: 100%;
     top: 0;
     left: 0;
-  }
-   
-  .box {
-    position: relative;
-    width: 60%;
-    margin: 0 auto;
-    height: auto;
-    background: #E5DCC5;
-    border-radius: 50%;
-    padding: 10rem;
-    border: 3px solid #999;
-    overflow: auto;
+}
+
+.scheduled-event-header {
+    color: white;
+    font-family: Arial, sans-serif;
+    margin-top: 6%;
     text-align: center;
-    color: rgb(77, 77, 196);
-    font-size: x-large;
-    font-weight: bold;
-  }
+    opacity: 1;
+}
+
+.toggle-btn {
+    border-radius: 25px;
+}
    
-  .x-icon {
+.x-icon {
     content: 'x';
     cursor: pointer;
     position: fixed;
@@ -114,4 +123,4 @@ button {
     text-align: center;
     border: 1px solid #999;
     font-size: 20px;
-  }
+}
