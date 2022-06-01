@@ -32,3 +32,20 @@ describe('Authentication', () => {
     cy.get('nav').contains('Logout').should('not.exist');
   });
 });
+
+describe('Nav bar render', () => {
+  it('Should NOT be present if user has not logged in', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/event_types',
+      },
+      {
+        eventTypes: [],
+      }
+    );
+
+    cy.visit('/login');
+    cy.get('nav').should('not.exist')
+  })
+})
