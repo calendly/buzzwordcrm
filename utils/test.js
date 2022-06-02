@@ -16,3 +16,79 @@ exports.mockCalendlyAuthentication = () => {
       },
     });
 };
+
+exports.mockCalendlyScheduledEvents = () => {
+  nock(CALENDLY_API_BASE_URL)
+    .persist()
+    .get('/scheduled_events')
+    .reply(200, {
+      resource: {
+        collection: [],
+        pagination: {},
+      },
+    });
+};
+
+exports.mockCalendlyEventTypes = () => {
+  nock(CALENDLY_API_BASE_URL)
+    .persist()
+    .get('/event_types')
+    .reply(200, {
+      resource: {
+        collection: [],
+        pagination: {},
+      },
+    });
+};
+
+exports.mockCalendlyEvent = () => {
+  nock(CALENDLY_API_BASE_URL)
+    .persist()
+    .get('/scheduled_events/:uuid')
+    .reply(200, {
+      resource: {
+        uri: 'Event uri',
+      },
+    });
+};
+
+exports.mockCalendlyInvitees = () => {
+  nock(CALENDLY_API_BASE_URL)
+    .persist()
+    .get('/scheduled_events/:uuid/invitees')
+    .reply(200, {
+      resource: {
+        collection: [],
+        pagination: {},
+      },
+    });
+};
+
+exports.mockCalendlyNoShows = () => {
+  nock(CALENDLY_API_BASE_URL)
+    .persist()
+    .post('/invitee_no_shows', 'invitee=inviteeUri')
+    .reply(201, {
+      resource: {
+        uri: 'no-showUri',
+      },
+    });
+};
+
+exports.mockCalendlyUndoNoShow = () => {
+  nock(CALENDLY_API_BASE_URL)
+    .persist()
+    .delete('/invitee_no_shows/:uuid')
+    .reply(204);
+};
+
+exports.mockCalendlyCancelEvent = () => {
+  nock(CALENDLY_API_BASE_URL)
+    .persist()
+    .post('/scheduled_events/:uuid/cancellation', 'reason=TBD')
+    .reply(201, {
+      resource: {
+        canceled_by: 'someName',
+      },
+    });
+};
