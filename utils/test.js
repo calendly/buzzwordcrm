@@ -42,9 +42,11 @@ exports.mockCalendlyEventTypes = () => {
 };
 
 exports.mockCalendlyEvent = () => {
+  const uuid = 'someUuid';
+
   nock(CALENDLY_API_BASE_URL)
     .persist()
-    .get('/scheduled_events/:uuid')
+    .get(`/scheduled_events/${uuid}`)
     .reply(200, {
       resource: {
         uri: 'Event uri',
@@ -53,9 +55,11 @@ exports.mockCalendlyEvent = () => {
 };
 
 exports.mockCalendlyInvitees = () => {
+  const uuid = 'someUuid';
+
   nock(CALENDLY_API_BASE_URL)
     .persist()
-    .get('/scheduled_events/:uuid/invitees')
+    .get(`/scheduled_events/${uuid}/invitees`)
     .reply(200, {
       resource: {
         collection: [],
@@ -67,7 +71,7 @@ exports.mockCalendlyInvitees = () => {
 exports.mockCalendlyNoShows = () => {
   nock(CALENDLY_API_BASE_URL)
     .persist()
-    .post('/invitee_no_shows', 'invitee=inviteeUri')
+    .post('/invitee_no_shows', { invitee: inviteeUri })
     .reply(201, {
       resource: {
         uri: 'no-showUri',
@@ -76,16 +80,20 @@ exports.mockCalendlyNoShows = () => {
 };
 
 exports.mockCalendlyUndoNoShow = () => {
+  const uuid = 'someUuid';
+
   nock(CALENDLY_API_BASE_URL)
     .persist()
-    .delete('/invitee_no_shows/:uuid')
+    .delete(`/invitee_no_shows/${uuid}`)
     .reply(204);
 };
 
 exports.mockCalendlyCancelEvent = () => {
+  const uuid = 'someUuid';
+
   nock(CALENDLY_API_BASE_URL)
     .persist()
-    .post('/scheduled_events/:uuid/cancellation', 'reason=TBD')
+    .post(`/scheduled_events/${uuid}/cancellation`, { reason: 'TBD' })
     .reply(201, {
       resource: {
         canceled_by: 'someName',
