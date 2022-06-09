@@ -69,6 +69,8 @@ exports.mockCalendlyInvitees = () => {
 };
 
 exports.mockCalendlyNoShows = () => {
+  const inviteeUri = 'someUri';
+
   nock(CALENDLY_API_BASE_URL)
     .persist()
     .post('/invitee_no_shows', { invitee: inviteeUri })
