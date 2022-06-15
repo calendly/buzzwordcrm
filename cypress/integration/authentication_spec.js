@@ -46,6 +46,6 @@ describe('Nav bar render', () => {
     );
 
     cy.visit('/login');
-    cy.get('nav').should('not.exist')
-  })
-})
+    cy.get('nav').should('not.exist');
+  });
+});
