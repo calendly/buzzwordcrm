@@ -1,5 +1,4 @@
-//This test is okay, but I'm wondering if it should be more visually apparent that 
-//the scheduling popup renders before closing
+//This test is okay, but I'm wondering if it should be more visually apparent that the scheduling popup renders before closing
 const eventTypeList = [
   {
     uri: 'https://api.calendly.com/users/AAAAAAAAAAAAAAAA',

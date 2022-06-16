@@ -1,5 +1,4 @@
-// I get a 500 with this test (at /scheduled_events): 'Uncaught (in promise) SyntaxError: Unexpected 
-//token < in JSON at position 0'
+// I get a 500 with this test (at /scheduled_events): 'Uncaught (in promise) SyntaxError: Unexpected token < in JSON at position 0'
 const scheduledEvents = [
     {
         uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ2',
