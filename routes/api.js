@@ -81,6 +81,30 @@ router
 
     res.json({ invitees, pagination });
   })
+  .get(
+    '/event_type_avail_times',
+    isUserAuthenticated,
+    async (req, res, next) => {
+      try {
+        const { access_token, refresh_token } = req.body;
+        const calendlyService = new CalendlyService(
+          access_token,
+          refresh_token
+        );
+        const { start_time, end_time, event_type } = req.query;
+
+        const { collection } = await calendlyService.getUserEventTypeAvailTimes(
+          start_time,
+          end_time,
+          event_type
+        );
+
+        res.json({ collection });
+      } catch (error) {
+        next(error);
+      }
+    }
+  )
   .get('/authenticate', async (req, res) => {
     let user;
 

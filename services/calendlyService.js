@@ -97,6 +97,20 @@ class CalendlyService {
     return data;
   };
 
+  getUserEventTypeAvailTimes = async (startTIme, endTime, eventUri) => {
+    let queryParams= [
+      `start_time=${startTIme}`,
+      `end_time=${endTime}`,
+      `event_type=${eventUri}`
+    ].join('&');
+
+    const url = `/event_type_available_times?${queryParams}`
+
+    const { data } = await this.request.get(url, this.requestConfiguration());
+
+    return data
+  }
+
   markAsNoShow = async (uri) => {
     const { data } = await this.request.post(
       '/invitee_no_shows',

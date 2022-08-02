@@ -24,6 +24,11 @@ button {
     padding-left: 10px;
 }
 
+.event-avail-calendar {
+    background-color: rgb(255, 255, 255, 0.1);
+    color: black;
+}
+
 .event-container {
     background-color: rgb(58, 140, 140);
     border-radius: 25px;

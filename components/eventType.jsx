@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
+import { useForm, Controller } from 'react-hook-form';
 
 export default () => {
   const [eventType, setEventType] = useState([]);
+  const [date, setDate] = useState(new Date());
+  const [endDate, setEndDate] = useState();
+  const [copyDate, setCopyDate] = useState(date);
+  const [eventUri, setEventUri] = useState();
 
   const { uuid } = useParams();
 
@@ -14,9 +20,20 @@ export default () => {
     setEventType(result.eventType);
   };
 
+  const fetchEventTypeSlotsData = async (startTime, endTime) => {
+    let queryParams = `?start_time=${startTime}&end_time=${endTime}&event_uri=${eventType.uri}`
+    const result = await fetch(`/api/event_type_avail_times${queryParams}`).then((res) => res.json())
+
+    seEventTypesSlots(result.collection)
+  }
+
   useEffect(() => {
     fetchData();
   }, []);
+
+  useEffect(() => {
+    setEndDate(copyDate)
+  })
 
   return (
     <div className="event-container">
@@ -52,6 +69,27 @@ export default () => {
           <strong>Duration: </strong>
           {`${eventType.duration} minutes`}
         </p>
+        {/* <form onSubmit={fetchEventTypeSlotsData(date, endDate)}> */}
+        <div className="event-avail-calendar">
+          <DatePicker
+            selected={date}
+            onChange={(date) => {
+              setDate(new Date(date));
+              //setEndDate(new Date(date))
+              setCopyDate(new Date(date.getTime()))
+              // setCopyDate(copy)
+              // console.log('copyDate=', copyDate)
+              setEndDate(new Date(copyDate.setDate(copyDate.getDate() + 7)))
+              //console.log('end=', end)
+              //setEndDate(end)
+              console.log('entered date=', date);
+              console.log('END DATE=', endDate)
+            }}
+          />
+        </div>
+        <input type="submit" />
+        {/* </form> */}
+        {/* <p>End Date: {enteredDate && }</p> */}
       </div>
     </div>
   );
