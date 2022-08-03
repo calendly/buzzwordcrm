@@ -1,16 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import { useForm, Controller } from 'react-hook-form';
+import EventTypeAvailTimes from './eventTypeAvailTimes';
+
+var endDate;
+
+export const UriContext = React.createContext()
 
 export default () => {
   const [eventType, setEventType] = useState([]);
   const [date, setDate] = useState(new Date());
-  const [endDate, setEndDate] = useState();
-  const [copyDate, setCopyDate] = useState(date);
+  const [eventTypesSlots, seEventTypesSlots] = useState([]);
   const [eventUri, setEventUri] = useState();
 
   const { uuid } = useParams();
+  // const value = eventType.uri
+  //console.log('UriContext=', UriContext)
 
   const fetchData = async () => {
     const result = await fetch(`/api/event_types/${uuid}`).then((res) =>
@@ -18,24 +23,49 @@ export default () => {
     );
 
     setEventType(result.eventType);
+    setEventUri(result.eventType.uri)
   };
 
   const fetchEventTypeSlotsData = async (startTime, endTime) => {
-    let queryParams = `?start_time=${startTime}&end_time=${endTime}&event_uri=${eventType.uri}`
-    const result = await fetch(`/api/event_type_avail_times${queryParams}`).then((res) => res.json())
+    //event.preventDefault()
+    let queryParams = `?start_time=${startTime}&end_time=${endTime}&event_uri=${eventType.uri}`;
+  
+    const result = await fetch(
+      `/api/event_type_available_times${queryParams}`
+    ).then((res) => console.log(res));
+   
+    //console.log('eventUri=', eventType.uri);
 
-    seEventTypesSlots(result.collection)
-  }
+    //seEventTypesSlots(result.collection);
+  };
+
+
+  //console.log('eventTypesSlots=', eventTypesSlots);
+
+  // const handleDateChange = () => {
+  //   setDate(new Date(date));
+  //   setCopyDate(new Date(date.getTime()));
+  //   console.log('copyDate=', copyDate);
+  //   let dayDiff = date.getDay() - copyDate.getDay();
+  //   setEndDate(new Date(copyDate.setDate(copyDate.getDate() + 7 + dayDiff)));
+  //   console.log('entered date=', date);
+  //   console.log('END DATE=', endDate);
+  // };
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    setEndDate(copyDate)
-  })
-
+  // useEffect(() => {
+  //   handleDateChange()
+  // }, [date])
+//let value = eventUri
+//console.log('value=', value)
   return (
+    <React.Fragment>
+    <UriContext.Provider value={eventUri}>
+        <EventTypeAvailTimes style={{opacity: 0.0}}/>
+    </UriContext.Provider>
     <div className="event-container">
       <p>{`Last updated ${eventType.last_updated}`}</p>
       <h5>"{eventType.name}"</h5>
@@ -69,28 +99,51 @@ export default () => {
           <strong>Duration: </strong>
           {`${eventType.duration} minutes`}
         </p>
-        {/* <form onSubmit={fetchEventTypeSlotsData(date, endDate)}> */}
+        <h6 className="event-type-avail-banner">
+          Click below to see availability for this event type by start date
+        </h6>
+        <div>
+          <strong>
+            *Note: Time range will be 7 days from your chosen start date
+          </strong>
+        </div>
         <div className="event-avail-calendar">
           <DatePicker
             selected={date}
+            timeFormat="HH:mm"
+            timeIntervals={15}
+            timeCaption="time"
+            dateFormat="MMMM d, yyyy h:mm aa"
             onChange={(date) => {
               setDate(new Date(date));
-              //setEndDate(new Date(date))
-              setCopyDate(new Date(date.getTime()))
-              // setCopyDate(copy)
-              // console.log('copyDate=', copyDate)
-              setEndDate(new Date(copyDate.setDate(copyDate.getDate() + 7)))
-              //console.log('end=', end)
-              //setEndDate(end)
-              console.log('entered date=', date);
-              console.log('END DATE=', endDate)
+              let copyDate = new Date(date.getTime());
+              endDate = new Date(copyDate.setDate(copyDate.getDate() + 7));
             }}
           />
         </div>
-        <input type="submit" />
-        {/* </form> */}
+        <button
+          onClick={() =>
+            fetchEventTypeSlotsData(
+              date.toISOString(),
+              endDate.toISOString(),
+              eventType.uri
+            )
+          }
+        >
+          Submit
+        </button>
+        <Link to={'/event_type_avail_times'}>Click Here to See Availability for this Event Type</Link>
         {/* <p>End Date: {enteredDate && }</p> */}
       </div>
     </div>
+    </React.Fragment>
   );
 };
+
+// const EventTypeAvailTimes = () => {
+//   const value = useContext(Context)
+
+//   return (
+//     <div>{value}</div>
+//   )
+// }

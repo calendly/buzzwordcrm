@@ -57,7 +57,14 @@ class CalendlyService {
     return data;
   };
 
-  getUserScheduledEvents = async (userUri, count, pageToken, status, maxStartTime, minStartTime) => {
+  getUserScheduledEvents = async (
+    userUri,
+    count,
+    pageToken,
+    status,
+    maxStartTime,
+    minStartTime
+  ) => {
     let queryParams = [
       `user=${userUri}`,
       `count=${count || 10}`,
@@ -98,18 +105,20 @@ class CalendlyService {
   };
 
   getUserEventTypeAvailTimes = async (startTIme, endTime, eventUri) => {
-    let queryParams= [
+    let queryParams = [
       `start_time=${startTIme}`,
       `end_time=${endTime}`,
-      `event_type=${eventUri}`
+      `event_type=${eventUri}`,
     ].join('&');
 
-    const url = `/event_type_available_times?${queryParams}`
+    const url = `/event_type_available_times?${queryParams}`;
 
     const { data } = await this.request.get(url, this.requestConfiguration());
 
-    return data
-  }
+    console.log('from calendly service, avail times data=', data)
+
+    return data;
+  };
 
   markAsNoShow = async (uri) => {
     const { data } = await this.request.post(

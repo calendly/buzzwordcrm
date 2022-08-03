@@ -10,6 +10,7 @@ import { RequireAuth, AuthConsumer, AuthProvider } from './auth.jsx';
 import { Routes, Route } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import Event from './event.jsx';
+import EventTypeAvailTimes from './eventTypeAvailTimes.jsx';
 
 let App = () => (
   <Routes>
@@ -51,6 +52,13 @@ let App = () => (
           <Invitee />
         </RequireAuth>
       }
+    />
+    <Route path="/event_type_avail_times"
+    element={
+      <RequireAuth>
+        <EventTypeAvailTimes />
+      </RequireAuth>
+    }
     />
   </Routes>
 );

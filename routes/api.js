@@ -86,20 +86,25 @@ router
     isUserAuthenticated,
     async (req, res, next) => {
       try {
-        const { access_token, refresh_token } = req.body;
+        console.log('avail times API called')
+        const { access_token, refresh_token, calendly_uid } = req.user;
         const calendlyService = new CalendlyService(
           access_token,
           refresh_token
         );
         const { start_time, end_time, event_type } = req.query;
+        console.log('start_time=', start_time)
 
         const { collection } = await calendlyService.getUserEventTypeAvailTimes(
+          calendly_uid,
           start_time,
           end_time,
           event_type
         );
 
-        res.json({ collection });
+        console.log(collection);
+
+        res.json({collection});
       } catch (error) {
         next(error);
       }
