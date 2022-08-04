@@ -53,7 +53,7 @@ let App = () => (
         </RequireAuth>
       }
     />
-    <Route path="/event_type_avail_times"
+    <Route path="/event_type_available_times"
     element={
       <RequireAuth>
         <EventTypeAvailTimes />

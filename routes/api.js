@@ -12,6 +12,7 @@ const User = require('../models/userModel');
 router
   .get('/scheduled_events', isUserAuthenticated, async (req, res, next) => {
     try {
+      console.log('scheduled events API called')
       const { access_token, refresh_token, calendly_uid } = req.user;
       const { count, page_token, status, max_start_time, min_start_time } =
         req.query;
@@ -82,27 +83,24 @@ router
     res.json({ invitees, pagination });
   })
   .get(
-    '/event_type_avail_times',
+    '/event_type_available_times',
     isUserAuthenticated,
     async (req, res, next) => {
       try {
-        console.log('avail times API called')
         const { access_token, refresh_token, calendly_uid } = req.user;
         const calendlyService = new CalendlyService(
           access_token,
           refresh_token
         );
-        const { start_time, end_time, event_type } = req.query;
-        console.log('start_time=', start_time)
+        const { event_type, end_time, start_time } = req.query;
+        
 
         const { collection } = await calendlyService.getUserEventTypeAvailTimes(
-          calendly_uid,
+          event_type,
           start_time,
           end_time,
-          event_type
+          calendly_uid
         );
-
-        console.log(collection);
 
         res.json({collection});
       } catch (error) {

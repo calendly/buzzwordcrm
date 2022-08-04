@@ -1,11 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
-import EventTypeAvailTimes from './eventTypeAvailTimes';
-
-var endDate;
-
-export const UriContext = React.createContext()
 
 export default () => {
   const [eventType, setEventType] = useState([]);
@@ -26,18 +21,18 @@ export default () => {
     setEventUri(result.eventType.uri)
   };
 
-  const fetchEventTypeSlotsData = async (startTime, endTime) => {
-    //event.preventDefault()
-    let queryParams = `?start_time=${startTime}&end_time=${endTime}&event_uri=${eventType.uri}`;
+  // const fetchEventTypeSlotsData = async (startTime, endTime) => {
+  //   //event.preventDefault()
+  //   let queryParams = `?start_time=${startTime}&end_time=${endTime}&event_uri=${eventType.uri}`;
   
-    const result = await fetch(
-      `/api/event_type_available_times${queryParams}`
-    ).then((res) => console.log(res));
+  //   const result = await fetch(
+  //     `/api/event_type_available_times${queryParams}`
+  //   ).then((res) => console.log(res));
    
-    //console.log('eventUri=', eventType.uri);
+  //   //console.log('eventUri=', eventType.uri);
 
-    //seEventTypesSlots(result.collection);
-  };
+  //   //seEventTypesSlots(result.collection);
+  // };
 
 
   //console.log('eventTypesSlots=', eventTypesSlots);
@@ -62,10 +57,6 @@ export default () => {
 //let value = eventUri
 //console.log('value=', value)
   return (
-    <React.Fragment>
-    <UriContext.Provider value={eventUri}>
-        <EventTypeAvailTimes style={{opacity: 0.0}}/>
-    </UriContext.Provider>
     <div className="event-container">
       <p>{`Last updated ${eventType.last_updated}`}</p>
       <h5>"{eventType.name}"</h5>
@@ -99,7 +90,7 @@ export default () => {
           <strong>Duration: </strong>
           {`${eventType.duration} minutes`}
         </p>
-        <h6 className="event-type-avail-banner">
+        {/* <h6 className="event-type-avail-banner">
           Click below to see availability for this event type by start date
         </h6>
         <div>
@@ -131,19 +122,10 @@ export default () => {
           }
         >
           Submit
-        </button>
-        <Link to={'/event_type_avail_times'}>Click Here to See Availability for this Event Type</Link>
-        {/* <p>End Date: {enteredDate && }</p> */}
+        </button> */}
+        <Link to={`/event_type_available_times?event_type=${eventUri}&`}>Click Here to See Availability for this Event Type</Link>
       </div>
     </div>
-    </React.Fragment>
   );
 };
 
-// const EventTypeAvailTimes = () => {
-//   const value = useContext(Context)
-
-//   return (
-//     <div>{value}</div>
-//   )
-// }

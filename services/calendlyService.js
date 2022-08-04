@@ -104,9 +104,9 @@ class CalendlyService {
     return data;
   };
 
-  getUserEventTypeAvailTimes = async (startTIme, endTime, eventUri) => {
+  getUserEventTypeAvailTimes = async (eventUri, startTime, endTime) => {
     let queryParams = [
-      `start_time=${startTIme}`,
+      `start_time=${startTime}`,
       `end_time=${endTime}`,
       `event_type=${eventUri}`,
     ].join('&');
@@ -114,8 +114,6 @@ class CalendlyService {
     const url = `/event_type_available_times?${queryParams}`;
 
     const { data } = await this.request.get(url, this.requestConfiguration());
-
-    console.log('from calendly service, avail times data=', data)
 
     return data;
   };

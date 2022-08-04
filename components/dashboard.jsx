@@ -13,11 +13,13 @@ export default () => {
       });
   }, []);
 
+  console.log('eventTypes=', eventTypes)
+
   return (
     <div className="container" style={{ marginTop: '50px' }}>
       <div className="row">
         {eventTypes.map((eventType) => (
-          <div className="col s6" key={eventType.uri}>
+          eventType.active === true && <div className="col s6" key={eventType.uri}>
              <Link to={`/event_types/${eventType.uri.split('/')[4]}`}>
             <div className="card">
               <div
