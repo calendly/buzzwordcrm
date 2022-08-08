@@ -114,7 +114,7 @@ class CalendlyService {
     const url = `/event_type_available_times?${queryParams}`;
 
     const { data } = await this.request.get(url, this.requestConfiguration());
-
+    
     return data;
   };
 

@@ -88,12 +88,12 @@ router
     async (req, res, next) => {
       try {
         const { access_token, refresh_token, calendly_uid } = req.user;
+        
         const calendlyService = new CalendlyService(
           access_token,
           refresh_token
         );
         const { event_type, end_time, start_time } = req.query;
-        
 
         const { collection } = await calendlyService.getUserEventTypeAvailTimes(
           event_type,
