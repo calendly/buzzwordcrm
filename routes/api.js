@@ -12,7 +12,6 @@ const User = require('../models/userModel');
 router
   .get('/scheduled_events', isUserAuthenticated, async (req, res, next) => {
     try {
-      console.log('scheduled events API called')
       const { access_token, refresh_token, calendly_uid } = req.user;
       const { count, page_token, status, max_start_time, min_start_time } =
         req.query;

@@ -30,8 +30,6 @@ export default () => {
     seEventTypesSlots(result.collection);
   };
 
-  console.log(eventTypesSlots)
-
   useEffect(() => {
     fetchEventTypeData();
   }, []);
