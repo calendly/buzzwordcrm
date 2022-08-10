@@ -13,8 +13,6 @@ export default () => {
       });
   }, []);
 
-  console.log('eventTypes=', eventTypes)
-
   return (
     <div className="container" style={{ marginTop: '50px' }}>
       <div className="row">
