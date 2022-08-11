@@ -12,6 +12,9 @@
     "node": ">=12"
   },
   "dependencies": {
+    "@datepicker-react/hooks": "^2.8.4",
+    "@emotion/react": "^11.10.0",
+    "@mui/x-date-pickers": "^5.0.0-beta.4",
     "axios": "^0.21.1",
     "cookie-parser": "~1.4.4",
     "cookie-session": "^1.4.0",
@@ -21,16 +24,21 @@
     "express": "~4.16.1",
     "hbs": "^4.1.2",
     "http-errors": "~1.6.3",
-    "moment": "^2.27.0",
+    "moment": "^2.29.4",
     "morgan": "~1.9.1",
     "nock": "^13.2.4",
     "passport": "^0.4.1",
     "passport-oauth2": "^1.5.0",
     "react": "^18.0.0",
     "react-calendly": "^4.0.0",
-    "react-dom": "^18.0.0",
+    "react-datepicker": "^4.8.0",
+    "react-datetime-picker": "^3.5.0",
+    "react-dom": "^18.2.0",
+    "react-hook-form": "^7.34.0",
+    "react-multi-date-picker": "^3.3.0",
     "react-router-dom": "^6.3.0",
     "react-select": "^5.3.2",
+    "react-time-picker": "^4.5.0",
     "sqlite3": "^5.0.2"
   },
   "devDependencies": {

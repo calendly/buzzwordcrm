@@ -4,3 +4,4 @@ node_modules
 public/javascripts/bundle.js
 cypress/videos
 cypress/screenshots
+.tool-versions
