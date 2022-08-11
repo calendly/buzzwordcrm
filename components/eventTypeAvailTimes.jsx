@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 
 export default () => {
@@ -73,7 +73,7 @@ export default () => {
             type="time"
             id="selected-time"
             name="selected-time"
-            defaultValue="09:00"
+            defaultValue="--:--"
             step="900"
             onChange={(event) => {
               let dateToModify = date.toString().split(' ');
@@ -98,12 +98,40 @@ export default () => {
             if (finalDateMillisec > new Date().getTime()) {
               fetchEventTypeSlotsData(queryParams);
             } else {
-              alert('Date/time selection must be in the future.')
+              alert('Date/time selection must be in the future.');
             }
           }}
         >
           Submit
         </button>
+      )}
+      {eventTypesSlots.length ? (
+        <div className="row">
+          <table className="striped centered">
+            <thead>
+              <tr>
+                <th>Start Time</th>
+                <th>Invitees Remaining</th>
+                <th>Status</th>
+                <th>Scheduling Link</th>
+              </tr>
+            </thead>
+            {eventTypesSlots && (
+              <tbody>
+                {eventTypesSlots.map((slot, i) => (
+                  <tr key={i}>
+                    <td>{slot.start_time}</td>
+                    <td>{slot.invitees_remaining}</td>
+                    <td>{`${slot.status.substring(0, 1).toUpperCase()}${slot.status.substring(1)}`}</td>
+                    <td><Link to={slot.scheduling_url}>Book this time slot</Link></td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
+          </table>
+        </div>
+      ) : (
+        ''
       )}
     </div>
   );
