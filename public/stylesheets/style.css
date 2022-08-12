@@ -24,10 +24,33 @@ button {
     padding-left: 10px;
 }
 
-.event-avail-calendar {
+.event-avail-selection-box, .date-picker-calendar {
+    display: block;
+    margin: auto;
+    position: relative;
+    text-align: center;
+    color: black;
+}
+
+.event-avail-selection-box {
+    background-color: rgb(58, 140, 140);
+    border-radius: 25px;
+    border-top: 5em;
+    color: white;
+    height: 20em;
+    margin: auto;
+    padding-top: 0.2em;
+    padding-bottom: 5em;
+    position: relative;
+    text-align: center;
+    width: 100em;
+}
+
+.event-type-availability {
     background-color: rgb(255, 255, 255, 0.1);
     color: black;
     margin: auto;
+    padding-top: 5rem;
 }
 
 .event-container {
