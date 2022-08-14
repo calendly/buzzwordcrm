@@ -28,22 +28,27 @@ const stubEventTypes = () => {
 };
 
 describe('Authentication', () => {
-  it('Enables users to login and out', () => {
-    stubAuth();
-    stubEventTypes();
-    cy.visit('/login');
-    cy.get('nav').contains('Logout').should('not.exist');
-    cy.get('.btn-large').click();
-    cy.get('nav').contains('Logout').click();
-    cy.get('nav').contains('Logout').should('not.exist');
-  });
-});
+  context('when user has logged in', () => {
+    beforeEach(() => {
+      stubAuth();
+      stubEventTypes();
+    });
 
-describe.only('Nav bar render', () => {
-  it('Should NOT be present if user has not logged in', () => {
-    cy.intercept('/api/authenticate').as('auth');
-    cy.visit('/login');
-    cy.wait('@auth');
-    cy.get('#nav-mobile').should('not.exist');
+    it('Enables users to login and out', () => {
+      cy.visit('/login');
+      cy.get('nav').contains('Logout').should('not.exist');
+      cy.get('.btn-large').click();
+      cy.get('nav').contains('Logout').click();
+      cy.get('nav').contains('Logout').should('not.exist');
+    });
+  });
+
+  context('when user has NOT logged in', () => {
+    it('navbar should NOT be present', () => {
+      cy.intercept('/api/authenticate').as('auth');
+      cy.visit('/login');
+      cy.wait('@auth');
+      cy.get('#nav-mobile').should('not.exist');
+    });
   });
 });
