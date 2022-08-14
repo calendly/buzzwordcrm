@@ -13,7 +13,7 @@ const stubAuth = () => {
       );
     }
   );
-}
+};
 
 const stubEventTypes = () => {
   cy.intercept(
@@ -25,12 +25,12 @@ const stubEventTypes = () => {
       eventTypes: [],
     }
   );
-}
+};
 
 describe('Authentication', () => {
   it('Enables users to login and out', () => {
-    stubAuth()
-    stubEventTypes()
+    stubAuth();
+    stubEventTypes();
     cy.visit('/login');
     cy.get('nav').contains('Logout').should('not.exist');
     cy.get('.btn-large').click();
@@ -41,9 +41,9 @@ describe('Authentication', () => {
 
 describe.only('Nav bar render', () => {
   it('Should NOT be present if user has not logged in', () => {
-    cy.intercept('/api/authenticate').as('auth')
+    cy.intercept('/api/authenticate').as('auth');
     cy.visit('/login');
-    cy.wait('@auth')
+    cy.wait('@auth');
     cy.get('#nav-mobile').should('not.exist');
   });
 });
