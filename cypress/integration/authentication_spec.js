@@ -39,10 +39,11 @@ describe('Authentication', () => {
   });
 });
 
-describe('Nav bar render', () => {
+describe.only('Nav bar render', () => {
   it('Should NOT be present if user has not logged in', () => {
-    stubEventTypes()
+    cy.intercept('/api/authenticate').as('auth')
     cy.visit('/login');
-    cy.get('nav').should('not.exist');
+    cy.wait('@auth')
+    cy.get('#nav-mobile').should('not.exist');
   });
 });
