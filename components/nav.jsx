@@ -18,7 +18,7 @@ export default () => {
         )}
 
         {auth?.authenticated && (
-        <ul id="nav-mobile" className="right hide-on-med-and-down">
+          <ul id="nav-mobile" className="right hide-on-med-and-down">
             <>
               <li>
                 <a href="/">Dashboard</a>
@@ -30,7 +30,7 @@ export default () => {
                 <a href="/logout">Logout</a>
               </li>
             </>
-        </ul>
+          </ul>
         )}
       </div>
     </nav>
