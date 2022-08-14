@@ -1,30 +1,36 @@
+const stubAuth = () => {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: '/oauth/authorize*',
+    },
+    (req) => {
+      req.redirect(
+        `${
+          Cypress.config().baseUrl
+        }/oauth/callback?code=5BbtpL2SJIeDP4yClOJPHMJZwEDF1QkbPNaJgkTymeI`,
+        302
+      );
+    }
+  );
+}
+
+const stubEventTypes = () => {
+  cy.intercept(
+    {
+      method: 'GET',
+      url: '/api/event_types',
+    },
+    {
+      eventTypes: [],
+    }
+  );
+}
+
 describe('Authentication', () => {
   it('Enables users to login and out', () => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/oauth/authorize*',
-      },
-      (req) => {
-        req.redirect(
-          `${
-            Cypress.config().baseUrl
-          }/oauth/callback?code=5BbtpL2SJIeDP4yClOJPHMJZwEDF1QkbPNaJgkTymeI`,
-          302
-        );
-      }
-    );
-
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/api/event_types',
-      },
-      {
-        eventTypes: [],
-      }
-    );
-
+    stubAuth()
+    stubEventTypes()
     cy.visit('/login');
     cy.get('nav').contains('Logout').should('not.exist');
     cy.get('.btn-large').click();
@@ -35,16 +41,7 @@ describe('Authentication', () => {
 
 describe('Nav bar render', () => {
   it('Should NOT be present if user has not logged in', () => {
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/api/event_types',
-      },
-      {
-        eventTypes: [],
-      }
-    );
-
+    stubEventTypes()
     cy.visit('/login');
     cy.get('nav').should('not.exist');
   });
