@@ -38,8 +38,7 @@ export default () => {
     seEventTypesSlots(result.availableSlots);
   };
 
-  console.log('eventTypesSlots=', eventTypesSlots)
-
+  console.log(eventTypesSlots)
 
   useEffect(() => {
     fetchEventTypeData();
@@ -134,7 +133,7 @@ export default () => {
                 <tbody>
                   {eventTypesSlots.map((slot) => (
                     <tr key={slot.scheduling_url}>
-                      <td>{slot.date}</td>
+                      <td>{`${new Date(slot.start_time).toString().split(' ')[0]}, ${slot.date}`}</td>
                       {slot.standard_start_time_hour.substring(0, 1) === '0' ? <td>{slot.standard_start_time_hour.substring(1)}</td> : <td>{slot.standard_start_time_hour}</td>}
                       <td>{slot.invitees_remaining}</td>
                       <td>{`${slot.status
