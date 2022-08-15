@@ -23,25 +23,16 @@ export default () => {
     setEventType(result.eventType);
   };
 
-  const fetchEventTypeSlotsData = async (params) => {
-    const result = await fetch(`/api/event_type_available_times${params}`).then(
-      (res) => {
-        //Daylight savings time issue, actually
-        if(res.status === 500) {
-          alert('This event cannot be scheduled so far in advance.');
-      window.location.reload();
-          return 
-        } 
-         return res.json()
-        
-        
-      }
+  const fetchEventTypeSlotsData = async () => {
+    const result = await fetch(`/api/event_type_available_times${queryParams}`).then(
+      (res) => res.json() 
     );
 
     if (result.availableSlots.length === 0) {
-      console.log("res is OK, length is 0")
-      alert('This event cannot be scheduled so far in advance.');
-      // window.location.reload();
+      let start = new Date(queryParams.split('=')[1].substring(0, 24)).toString().split(' ')
+      let end = new Date(queryParams.split('=')[2].substring(0, 24)).toString().split(' ')
+
+      alert(`No available slots found. Either those times are blocked off from ${start[1]} ${start[2]}, ${start[3]} to ${end[1]} ${end[2]}, ${end[3]} or this event cannot be scheduled so far in advance.`);
     } 
 
     seEventTypesSlots(result.availableSlots);
@@ -78,8 +69,8 @@ export default () => {
           onChange={(date) => {
             setDate(date);
             setShowTIme(true);
-            let copyDate = new Date(date.getTime());
-            let endDate = new Date(copyDate.setDate(copyDate.getDate() + 7));
+            let copyDate = new Date(date);
+            let endDate = new Date(copyDate.setTime(copyDate.getTime() + (7 * 24 * 3600 * 1000)))
             setFinalDateMillisec(new Date(date).getTime());
             setQueryParams(
               `?start_time=${date.toISOString()}&end_time=${endDate.toISOString()}&event_type=${eventUri}`
@@ -101,8 +92,8 @@ export default () => {
               dateToModify[4] = time;
               let dateWithTime = new Date(dateToModify.join(' '));
               setDate(dateWithTime);
-              let copyDate = new Date(dateWithTime.getTime());
-              let endDate = new Date(copyDate.setDate(copyDate.getDate() + 7));
+              let copyDate = new Date(dateWithTime);
+              let endDate = new Date(copyDate.setTime(copyDate.getTime() + (7 * 24 * 3600 * 1000)))
               setShowSubmit(true);
               setFinalDateMillisec(new Date(dateWithTime).getTime());
               setQueryParams(
@@ -116,18 +107,8 @@ export default () => {
         <button
           onClick={() => {
             if (finalDateMillisec > new Date().getTime()) {
-              fetchEventTypeSlotsData(queryParams);
-              // if(eventTypesSlots === undefined) {
-              //   //setTooFarInAdvanceClicked(true)
-              //   alert('This event cannot be scheduled so far in advance.')
-              //   //window.location.reload();
-              // }
+              fetchEventTypeSlotsData();
             } 
-            // else if (eventTypesSlots === undefined) {
-            //   //setTooFarInAdvanceClicked(true)
-            //   alert('This event cannot be scheduled so far in advance.')
-            //   //window.location.reload();
-            // }
             else {
               alert('Date/time selection must be in the future.');
             }
@@ -151,10 +132,10 @@ export default () => {
               </thead>
               {eventTypesSlots && (
                 <tbody>
-                  {eventTypesSlots.map((slot, i) => (
-                    <tr key={i}>
+                  {eventTypesSlots.map((slot) => (
+                    <tr key={slot.scheduling_url}>
                       <td>{slot.date}</td>
-                      <td>{slot.standard_start_time_hour}</td>
+                      {slot.standard_start_time_hour.substring(0, 1) === '0' ? <td>{slot.standard_start_time_hour.substring(1)}</td> : <td>{slot.standard_start_time_hour}</td>}
                       <td>{slot.invitees_remaining}</td>
                       <td>{`${slot.status
                         .substring(0, 1)
