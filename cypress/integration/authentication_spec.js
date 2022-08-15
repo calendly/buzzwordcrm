@@ -45,9 +45,10 @@ describe('Authentication', () => {
 
   context('when user has NOT logged in', () => {
     it('navbar should NOT be present', () => {
+      cy.intercept('/login').as('login');
       cy.intercept('/api/authenticate').as('auth');
       cy.visit('/login');
-      cy.wait('@auth');
+      cy.wait(['@login', '@auth']);
       cy.get('#nav-mobile').should('not.exist');
     });
   });
