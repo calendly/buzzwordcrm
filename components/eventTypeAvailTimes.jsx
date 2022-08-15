@@ -29,6 +29,7 @@ export default () => {
     );
 
     if (result.availableSlots.length === 0) {
+      //This takes care of if a user sets a certain date range when an event type can be scheduled, or how far in advance the event type can be scheduled.
       let start = new Date(queryParams.split('=')[1].substring(0, 24)).toString().split(' ')
       let end = new Date(queryParams.split('=')[2].substring(0, 24)).toString().split(' ')
 
