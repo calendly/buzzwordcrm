@@ -43,7 +43,7 @@ export default () => {
             `${event.invitees_counter.active}/${event.invitees_counter.limit}`}
         </p>
         <Link to={`/events/${uuid}/invitees`}>
-          <p className="invitee-details-link">Click here for invitee details</p>
+          <p className="details-link">Click here for invitee details</p>
         </Link>
         <div>
           <strong>Invitee guests: </strong>{' '}

@@ -24,15 +24,37 @@ button {
     padding-left: 10px;
 }
 
-.event-agit puvail-selection-box, .date-picker-calendar {
-    display: block;
+.date-and-time-pickers {
     margin: auto;
-    position: relative;
-    text-align: center;
+    overflow: hidden;
+    margin-top: 2rem;
+    width: 50%;
+}
+
+.date-picker {
+    float: left;
+}
+
+.date-time-submit {
+    margin-top: 5rem;
+}
+
+.details-link {
+    color: blue;
+}
+
+.details-link:hover {
+    color: antiquewhite;
+}
+
+.event-avail-header {
+    margin: 2rem;
     color: black;
+    background-color: white;
 }
 
 .event-avail-selection-box {
+    align-items: center;
     background-color: rgb(58, 140, 140);
     border-radius: 25px;
     border-top: 5em;
@@ -41,7 +63,7 @@ button {
     margin: auto;
     padding-top: 0.2em;
     padding-bottom: 5em;
-    position: relative;
+    position: center;
     text-align: center;
     width: 100em;
 }
@@ -84,11 +106,6 @@ button {
     color: black;
 }
 
-.event-type-container {
-    padding-top: 2rem;
-    text-align: center;
-}
-
 .event-type-custom-questions {
     background-color: rgb(255, 255, 255, 0.1);
     color: black;
@@ -96,20 +113,18 @@ button {
 }
 
 .event-type-details-container {
-    padding-top: 2rem;
     line-height: 3rem;
+    padding-top: 2rem;
 }
 
 .event-type-kind {
     text-transform: capitalize;
 }
 
-.invitee-details-link {
-    color: blue;
-}
-
-.invitee-details-link:hover {
-    color: antiquewhite;
+input {
+    color: rgb(56, 49, 109);
+    font-weight: bolder;
+    text-align: center;
 }
 
 .next-back-btns {
@@ -132,6 +147,14 @@ button {
     margin-top: 6%;
     text-align: center;
     opacity: 1;
+}
+
+.scheduling-urls {
+    background-color: rgb(238,110,115);
+}
+
+.time-picker {
+    float: right;
 }
 
 .toggle-btn {
