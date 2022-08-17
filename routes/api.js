@@ -102,11 +102,6 @@ router
           calendly_uid
         );
 
-        // if(res.status === 500) {
-        //   res.json('No data that match the criteria.')
-        //   return
-        // }
-
         const availableSlots = collection.map(formatEventTypeAvailTime)
 
         res.json({availableSlots});

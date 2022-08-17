@@ -30,10 +30,10 @@ export default () => {
 
     if (result.availableSlots.length === 0) {
       //This takes care of if a user sets a certain date range when an event type can be scheduled, or how far in advance the event type can be scheduled.
-      let start = new Date(queryParams.split('=')[1].substring(0, 24))
+      const start = new Date(queryParams.split('=')[1].substring(0, 24))
         .toString()
         .split(' ');
-      let end = new Date(queryParams.split('=')[2].substring(0, 24))
+      const end = new Date(queryParams.split('=')[2].substring(0, 24))
         .toString()
         .split(' ');
 
@@ -44,8 +44,6 @@ export default () => {
 
     seEventTypesSlots(result.availableSlots);
   };
-
-  console.log(eventTypesSlots);
 
   useEffect(() => {
     fetchEventTypeData();
@@ -77,8 +75,8 @@ export default () => {
             onChange={(date) => {
               setDate(date);
               setShowTIme(true);
-              let copyDate = new Date(date);
-              let endDate = new Date(
+              const copyDate = new Date(date);
+              const endDate = new Date(
                 copyDate.setTime(copyDate.getTime() + 7 * 24 * 3600 * 1000)
               );
               setFinalDateMillisec(new Date(date).getTime());
@@ -98,12 +96,12 @@ export default () => {
               step="900"
               onChange={(event) => {
                 let dateToModify = date.toString().split(' ');
-                let time = event.target.value;
+                const time = event.target.value;
                 dateToModify[4] = time;
-                let dateWithTime = new Date(dateToModify.join(' '));
+                const dateWithTime = new Date(dateToModify.join(' '));
                 setDate(dateWithTime);
-                let copyDate = new Date(dateWithTime);
-                let endDate = new Date(
+                const copyDate = new Date(dateWithTime);
+                const endDate = new Date(
                   copyDate.setTime(copyDate.getTime() + 7 * 24 * 3600 * 1000)
                 );
                 setShowSubmit(true);
