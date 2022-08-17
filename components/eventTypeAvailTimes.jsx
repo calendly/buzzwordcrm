@@ -69,7 +69,7 @@ export default () => {
         <div className="date-picker">
           <DatePicker
             selected={date}
-            placeholderText="        CHOOSE DATE        "
+            placeholderText="CHOOSE DATE"
             minDate={new Date()}
             dateFormat="MMMM d, yyyy"
             onChange={(date) => {

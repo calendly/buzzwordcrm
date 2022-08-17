@@ -51,6 +51,7 @@ button {
     margin: 2rem;
     color: black;
     background-color: white;
+    font-weight: 500;
 }
 
 .event-avail-selection-box {
