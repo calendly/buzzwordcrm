@@ -63,8 +63,8 @@ export default () => {
       </h6>
       <div>
         <strong>
-          **Selected date/time must be in future. Time range will be 7 days from
-          your chosen start date.**
+          **Selected date/time must be in future. (Time range will be 7 days from
+          your chosen start date.)**
         </strong>
       </div>
       <div className="date-and-time-pickers">
