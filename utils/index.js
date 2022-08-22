@@ -41,3 +41,9 @@ exports.formatInviteeDateTime = (invitee) => ({
   ),
   updated_at: formatTime(invitee.updated_at),
 });
+
+exports.formatEventTypeAvailTime = (eventType) => ({
+  ...eventType,
+  standard_start_time_hour: formatTime(eventType.start_time),
+  date: new Date(eventType.start_time).toLocaleDateString()
+});

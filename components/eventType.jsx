@@ -16,7 +16,7 @@ export default () => {
     );
 
     setEventType(result.eventType);
-    setEventUri(result.eventType.uri)
+    setEventUri(result.eventType.uri);
   };
 
   useEffect(() => {
@@ -57,9 +57,12 @@ export default () => {
           <strong>Duration: </strong>
           {`${eventType.duration} minutes`}
         </p>
-        <Link to={`/event_type_available_times?event_type=${eventUri}&`}>Click Here to See Availability for this Event Type</Link>
+        <Link to={`/event_type_available_times?event_type=${eventUri}&`}>
+          <p className="details-link">
+            Click Here to See Availability for this Event Type
+          </p>
+        </Link>
       </div>
     </div>
   );
 };
-

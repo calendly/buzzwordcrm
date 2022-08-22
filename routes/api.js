@@ -5,6 +5,7 @@ const {
   formatEventDateTime,
   formatEventTypeDate,
   formatInviteeDateTime,
+  formatEventTypeAvailTime
 } = require('../utils');
 const router = express.Router();
 const User = require('../models/userModel');
@@ -101,7 +102,9 @@ router
           calendly_uid
         );
 
-        res.json({collection});
+        const availableSlots = collection.map(formatEventTypeAvailTime)
+
+        res.json({availableSlots});
       } catch (error) {
         next(error);
       }
