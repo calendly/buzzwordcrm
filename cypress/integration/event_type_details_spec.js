@@ -1,7 +1,7 @@
 //Get a failed to fetch error with this test
 const eventTypeList = [
   {
-    uri: 'https://api.calendly.com/event_types/AAAAAAAAAAAAAAA',
+    uri: 'https://api.calendly.com/event_types/ABBBAAAAAAAAAAAAAA',
     name: 'First chat',
     active: true,
     scheduling_url: 'https://calendly.com/acmesales',
@@ -47,6 +47,9 @@ const eventTypeList = [
 
 describe('Dashboard', () => {
   it('Should have clickable event-type cards to view event-type details', () => {
+   n
+   
+    
     cy.intercept(
       {
         method: 'GET',
@@ -65,7 +68,7 @@ describe('Dashboard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/api/event_types*',
+        url: '/api/event_types',
       },
       {
         eventTypes: eventTypeList
@@ -79,7 +82,7 @@ describe('Dashboard', () => {
         url: '/api/event_types/:uuid',
       },
       {
-        eventType: eventTypeList
+        eventType: eventTypeList[0]
       }
       
     );
