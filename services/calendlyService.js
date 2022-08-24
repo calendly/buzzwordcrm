@@ -138,7 +138,6 @@ class CalendlyService {
   };
 
   _onCalendlyError = async (error) => {
-    console.log('error=', error)
     if (error.response.status !== 401) return Promise.reject(error);
 
     this.request.interceptors.response.eject(this.requestInterceptor);
