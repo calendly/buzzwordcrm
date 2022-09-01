@@ -64,9 +64,6 @@ export default () => {
     }
   };
 
-  console.log('next_page_token events comp=', nextPageToken)
-  console.log('previous page token events comp=', prevPageToken)
-
   const handleCancellation = async (event) => {
     event.preventDefault();
 

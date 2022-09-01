@@ -30,9 +30,6 @@ export default () => {
     setPagination(result.pagination);
   };
 
-  console.log('next_page_token invitee comp=', nextPageToken)
-  console.log('previous page token invitee comp=', prevPageToken)
-
   const handleNoShowClick = async (event) => {
     event.preventDefault();
 
