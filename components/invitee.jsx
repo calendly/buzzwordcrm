@@ -14,9 +14,10 @@ export default () => {
   const fetchData = async () => {
     let nextPageQueryParams = '?';
 
-    if (nextPageToken) nextPageQueryParams += `&page_token=${nextPageToken}`;
+    if (nextPageToken && nextPageToken === pagination.next_page_token) nextPageQueryParams += `&page_token=${nextPageToken}`;
 
-    if (prevPageToken) {
+
+    if (prevPageToken && prevPageToken === pagination.previous_page_token) {
       nextPageQueryParams = '?';
       nextPageQueryParams += `&page_token=${prevPageToken}`;
     }
@@ -28,6 +29,9 @@ export default () => {
     setInvitees([...result.invitees]);
     setPagination(result.pagination);
   };
+
+  console.log('next_page_token invitee comp=', nextPageToken)
+  console.log('previous page token invitee comp=', prevPageToken)
 
   const handleNoShowClick = async (event) => {
     event.preventDefault();
