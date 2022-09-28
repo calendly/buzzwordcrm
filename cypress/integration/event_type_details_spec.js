@@ -12,7 +12,7 @@ const eventTypeList = [
     },
   ]
 
-describe('Dashboard', () => {
+describe('Event Type Details', () => {
   it('Should have clickable event-type cards to view event-type details', () => {
     cy.intercept(
       {

@@ -1,109 +1,48 @@
-// I get a 500 with this test (at /scheduled_events): 'Uncaught (in promise) SyntaxError: Unexpected token < in JSON at position 0'
-// const eventTypeList = [
-//   {
-//     uri: 'https://api.calendly.com/users/AAAAAAAAAAAAAAAA',
-//     name: 'First chat',
-//     scheduling_url: 'https://calendly.com/acmesales',
-//     description_plain: 'Introductory meeting',
-//   },
-//   {
-//     uri: 'https://api.calendly.com/users/BAAAAAAAAAAAAAAA',
-//     name: 'Second chat',
-//     scheduling_url: 'https://calendly.com/acmesales',
-//     description_plain: 'Follow-up meeting',
-//   },
-//   {
-//     uri: 'https://api.calendly.com/users/CAAAAAAAAAAAAAAA',
-//     name: 'Third chat',
-//     scheduling_url: 'https://calendly.com/acmesales',
-//     description_plain: 'Follow-up to the follow-up meeting',
-// //   },
-// //   {
-// //     uri: 'https://api.calendly.com/users/DAAAAAAAAAAAAAAA',
-// //     name: 'Fourth chat',
-// //     scheduling_url: 'https://calendly.com/acmesales',
-// //   },
-// // ]
-
 const scheduledEvents = [
     {
         uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ2',
         name: 'First chat',
-        date: '2020-01-02T03:00:00.000000Z',
-        start_time_formatted: '2020-01-02T03:00:00.000000Z',
-        end_time_formatted: '2020-01-02T03:00:00.000000Z',
+        date: '04/28/2022',
+        start_time_formatted: '04:00 PM',
+        end_time_formatted: '05:00 PM',
         status: 'active'
     },
     {
         uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ4',
         name: 'Second chat',
-        date: '2020-01-02T03:00:00.000000Z',
-        start_time_formatted: '2020-01-02T03:00:00.000000Z',
-        end_time_formatted: '2020-01-02T03:00:00.000000Z',
+        date: '05/03/2022',
+        start_time_formatted: '03:00 PM',
+        end_time_formatted: '03:30 PM',
         status: 'canceled'
     },
-]
-  
-//   describe('Events tab in dashboard', () => {
-//     it('Should route user to page with all scheduled events', () => {
-//       cy.intercept(
-//         {
-//           method: 'GET',
-//           url: '/oauth/authorize*',
-//         },
-//         (req) => {
-//           req.redirect(
-//             `${
-//               Cypress.config().baseUrl
-//             }/oauth/callback?code=5BbtpL2SJIeDP4yClOJPHMJZwEDF1QkbPNaJgkTymeI`,
-//             302
-//           );
-//         }
-//       );
-  
-//       cy.intercept(
-//         {
-//           method: 'GET',
-//           url: '/api/event_types',
-//         },
-//         {
-//           eventTypes: []
-//         }
-//       );
-
-      // cy.intercept(
-      //   {
-      //       method: 'GET',
-      //       url: '/api/scheduled_events*',
-      //     },
-      //     {
-      //       events: scheduledEvents
-      //     }
-      // )
-
-//       cy.visit('/')
-//       cy.get('.btn-large').click();
-      // cy.get('nav').contains('Events').click( {force: true })
-//       cy.get('.striped centered').contains('Name')
-//     });
-//   });
-
-const eventTypeList = [
-  {
-    uri: 'https://api.calendly.com/event_types/ABBBAAAAAAAAAAAAAA',
-    name: 'First chat',
-    active: true,
-    scheduling_url: 'https://calendly.com/acmesales',
-    duration: 30,
-    kind: 'solo',
-    last_updated: '08/14/2022',
-    description_plain: 'Introductory meeting',
-    custom_questions: [{position: 0, name: 'What would you like the power to do?'}]
+    {
+      uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ4',
+      name: 'Third chat',
+      date: '05/10/2022',
+      start_time_formatted: '03:00 PM',
+      end_time_formatted: '03:30 PM',
+      status: 'active'
   },
+  {
+    uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ4',
+    name: 'Fourth chat',
+    date: '05/17/2022',
+    start_time_formatted: '03:00 PM',
+    end_time_formatted: '03:30 PM',
+    status: 'canceled'
+},
+{
+  uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ4',
+  name: 'Fifth chat',
+  date: '05/24/2022',
+  start_time_formatted: '03:00 PM',
+  end_time_formatted: '03:30 PM',
+  status: 'active'
+},
 ]
 
-describe('Dashboard', () => {
-it('Should have clickable event-type cards to view event-type details', () => {
+describe('Scheduled Events', () => {
+it('Should render a table of all scheduled events', () => {
   cy.intercept(
     {
       method: 'GET',
@@ -130,17 +69,6 @@ it('Should have clickable event-type cards to view event-type details', () => {
     
   );
 
-  // cy.intercept(
-  //   {
-  //     method: 'GET',
-  //     url: '/api/event_types/*',
-  //   },
-  //   {
-  //     eventType: eventTypeList[0]
-  //   }
-    
-  // );
-
   cy.intercept(
     {
         method: 'GET',
@@ -154,5 +82,31 @@ it('Should have clickable event-type cards to view event-type details', () => {
   cy.visit('/login');
   cy.get('.btn-large').click();
   cy.get('nav').contains('Events').click()
+  cy.get('td').eq(0).should('have.text', 'First chat')
+  cy.get('td').eq(1).should('have.text', '04/28/2022')
+  cy.get('td').eq(2).should('have.text', '04:00 PM')
+  cy.get('td').eq(3).should('have.text', '05:00 PM')
+  cy.get('td').eq(4).should('have.text', 'ACTIVE')
+  cy.get('td').eq(5).should('have.text', 'Second chat')
+  cy.get('td').eq(6).should('have.text', '05/03/2022')
+  cy.get('td').eq(7).should('have.text', '03:00 PM')
+  cy.get('td').eq(8).should('have.text', '03:30 PM')
+  cy.get('td').eq(9).should('have.text', 'CANCELED')
+  cy.get('td').eq(10).should('have.text', 'Third chat')
+  cy.get('td').eq(11).should('have.text', '05/10/2022')
+  cy.get('td').eq(12).should('have.text', '03:00 PM')
+  cy.get('td').eq(13).should('have.text', '03:30 PM')
+  cy.get('td').eq(14).should('have.text', 'ACTIVE')
+  cy.get('td').eq(15).should('have.text', 'Fourth chat')
+  cy.get('td').eq(16).should('have.text', '05/17/2022')
+  cy.get('td').eq(17).should('have.text', '03:00 PM')
+  cy.get('td').eq(18).should('have.text', '03:30 PM')
+  cy.get('td').eq(19).should('have.text', 'CANCELED')
+  cy.get('td').eq(20).should('have.text', 'Fifth chat')
+  cy.get('td').eq(21).should('have.text', '05/24/2022')
+  cy.get('td').eq(22).should('have.text', '03:00 PM')
+  cy.get('td').eq(23).should('have.text', '03:30 PM')
+  cy.get('td').eq(24).should('have.text', 'ACTIVE')
+
 })
 });
