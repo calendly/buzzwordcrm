@@ -23,7 +23,7 @@ const eventTypeList = [
     name: 'Fourth chat',
     scheduling_url: 'https://calendly.com/acmesales',
   },
-]
+];
 
 describe('Dashboard', () => {
   it('Should show indv event-type cards', () => {
@@ -48,20 +48,20 @@ describe('Dashboard', () => {
         url: '/api/event_types',
       },
       {
-        eventTypes: eventTypeList
+        eventTypes: eventTypeList,
       }
     );
 
     cy.visit('/');
     cy.get('.btn-large').click();
-    cy.get('.card-content').contains('First chat')
-    cy.get('.card-content').contains('Second chat')
-    cy.get('.card-content').contains('Third chat')
-    cy.get('.card-content').contains('Fourth chat')
-    cy.get('.card-content').contains('Introductory meeting')
-    cy.get('.card-content').contains('Follow-up meeting')
-    cy.get('.card-content').contains('Follow-up to the follow-up meeting')
-    cy.get('.card-content').contains('No description')
+    cy.get('.card-content').contains('First chat');
+    cy.get('.card-content').contains('Second chat');
+    cy.get('.card-content').contains('Third chat');
+    cy.get('.card-content').contains('Fourth chat');
+    cy.get('.card-content').contains('Introductory meeting');
+    cy.get('.card-content').contains('Follow-up meeting');
+    cy.get('.card-content').contains('Follow-up to the follow-up meeting');
+    cy.get('.card-content').contains('No description');
   });
 
   it('Should allow scheduling popup to render and close', () => {
@@ -86,14 +86,14 @@ describe('Dashboard', () => {
         url: '/api/event_types',
       },
       {
-        eventTypes: eventTypeList
+        eventTypes: eventTypeList,
       }
     );
 
     cy.visit('/');
     cy.get('.btn-large').click();
-    cy.get('.card-action > button').click({ multiple: true, force: true })
-    cy.get('.calendly-popup-content').should('exist')
-    cy.get('.calendly-close-overlay').click({ multiple: true, force: true  })
-  })
+    cy.get('.card-action > button').click({ multiple: true, force: true });
+    cy.get('.calendly-popup-content').should('exist');
+    cy.get('.calendly-close-overlay').click({ multiple: true, force: true });
+  });
 });
