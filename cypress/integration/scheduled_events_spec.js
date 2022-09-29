@@ -6,6 +6,15 @@ const scheduledEvents = [
     start_time_formatted: '04:00 PM',
     end_time_formatted: '05:00 PM',
     status: 'active',
+    location: {
+      type: 'physical',
+      location: 'A remote island of choice',
+    },
+    invitees_counter: {
+      total: 1,
+      active: 1,
+      limit: 1,
+    },
   },
   {
     uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ4',
@@ -19,22 +28,6 @@ const scheduledEvents = [
     uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ4',
     name: 'Third chat',
     date: '05/10/2022',
-    start_time_formatted: '03:00 PM',
-    end_time_formatted: '03:30 PM',
-    status: 'active',
-  },
-  {
-    uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ4',
-    name: 'Fourth chat',
-    date: '05/17/2022',
-    start_time_formatted: '03:00 PM',
-    end_time_formatted: '03:30 PM',
-    status: 'canceled',
-  },
-  {
-    uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ4',
-    name: 'Fifth chat',
-    date: '05/24/2022',
     start_time_formatted: '03:00 PM',
     end_time_formatted: '03:30 PM',
     status: 'active',
@@ -96,15 +89,5 @@ describe('Scheduled Events', () => {
     cy.get('td').eq(12).should('have.text', '03:00 PM');
     cy.get('td').eq(13).should('have.text', '03:30 PM');
     cy.get('td').eq(14).should('have.text', 'ACTIVE');
-    cy.get('td').eq(15).should('have.text', 'Fourth chat');
-    cy.get('td').eq(16).should('have.text', '05/17/2022');
-    cy.get('td').eq(17).should('have.text', '03:00 PM');
-    cy.get('td').eq(18).should('have.text', '03:30 PM');
-    cy.get('td').eq(19).should('have.text', 'CANCELED');
-    cy.get('td').eq(20).should('have.text', 'Fifth chat');
-    cy.get('td').eq(21).should('have.text', '05/24/2022');
-    cy.get('td').eq(22).should('have.text', '03:00 PM');
-    cy.get('td').eq(23).should('have.text', '03:30 PM');
-    cy.get('td').eq(24).should('have.text', 'ACTIVE');
   });
 });
