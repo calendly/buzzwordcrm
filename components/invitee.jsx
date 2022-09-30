@@ -133,7 +133,7 @@ export default () => {
           ))}
         </tbody>
       </table>
-      {pagination.next_page && (
+      {pagination && pagination.next_page && (
         <div className="next-back-btns">
           <button
             className="waves-effect waves-light btn-small"

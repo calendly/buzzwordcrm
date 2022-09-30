@@ -1,6 +1,6 @@
 const scheduledEvents = [
   {
-    uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ2',
+    uri: 'https://api.calendly.com/scheduled_events/GFGBDCAADAEDCRZ2',
     name: 'First chat',
     date: '04/28/2022',
     start_time_formatted: '04:00 PM',
@@ -20,7 +20,7 @@ const scheduledEvents = [
 
 const eventInvitees = [
   {
-    event: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ2',
+    event: 'https://api.calendly.com/scheduled_events/GFGBDCAADAEDCRZ2',
     name: 'John Doe',
     email: 'john_doe@hotmail.com',
     scheduled_at: '4/26/2022, 7:48:19 PM',
@@ -111,7 +111,7 @@ describe('Scheduled Event Invitee Details', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/api/events/*/invitees',
+        url: '/api/events/*/invitees*',
       },
       {
         invitees: eventInvitees,
@@ -121,9 +121,24 @@ describe('Scheduled Event Invitee Details', () => {
     cy.visit('/login');
     cy.get('.btn-large').click();
     cy.get('nav').contains('Events').click();
-    cy.get('td').eq(0).contains('First chat').click({ force: true });
+    cy.get('td').eq(0).contains('First chat').click();
+    cy.get('.scheduled-event-header').contains('First chat');
     cy.get('.invitee-details-link')
       .contains('Click here for invitee details')
-      .click({ force: true });
+      .click();
+    cy.get('tbody').contains('John Doe')
+    cy.get('tbody').contains('john_doe@hotmail.com')
+    cy.get('tbody').contains('4/26/2022, 7:48:19 PM')
+    cy.get('tbody').contains('Question: What is your favorite animal? Answer: Dolphin')
+    cy.get('tbody').contains('Question: What type of cuisine do you like the most? Answer: Japanese')
+    cy.get('tbody').contains('No')
+    cy.get('tbody').contains('America/New_York')
+    cy.get('tbody').contains('Jane Doe')
+    cy.get('tbody').contains('jane_doe@gmail.com')
+    cy.get('tbody').contains('4/20/2022, 5:30:22 PM')
+    cy.get('tbody').contains('Question: What is your favorite animal? Answer: Elephant')
+    cy.get('tbody').contains('Question: What type of cuisine do you like the most? Answer: Mexican')
+    cy.get('tbody').contains('No')
+    cy.get('tbody').contains('America/Los_Angeles')
   });
 });
