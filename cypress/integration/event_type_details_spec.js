@@ -15,7 +15,7 @@ const eventTypeList = [
 ];
 
 describe('Event Type Details', () => {
-  it('Should have clickable event-type cards to view event-type details', () => {
+  it('Should have clickable event-type cards to view event type availability and details', () => {
     cy.intercept(
       {
         method: 'GET',
@@ -53,6 +53,8 @@ describe('Event Type Details', () => {
 
     cy.visit('/');
     cy.get('.btn-large').click();
+    cy.get('.container').contains('View Availability').click({ force: true })
+    cy.get('.calendly-close-overlay').click({force: true})
     cy.get('.card-content').click({ force: true });
     cy.get('h5').contains('First chat');
     cy.get('.event-status').contains('Active');

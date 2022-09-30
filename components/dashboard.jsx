@@ -35,7 +35,7 @@ export default () => {
                 <PopupButton
                   url={eventType.scheduling_url}
                   rootElement={document.getElementById('root')}
-                  text="View Availbility"
+                  text="View Availability"
                   styles={{
                     borderWidth: 0,
                     backgroundColor: '#fff',
