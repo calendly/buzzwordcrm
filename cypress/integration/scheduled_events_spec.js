@@ -71,6 +71,26 @@ describe('Scheduled Events', () => {
       }
     );
 
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/scheduled_events?&status=active',
+      },
+      {
+        events: [scheduledEvents[0], scheduledEvents[2]],
+      }
+    );
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/scheduled_events?&status=canceled',
+      },
+      {
+        events: [scheduledEvents[1]],
+      }
+    );
+
     cy.visit('/login');
     cy.get('.btn-large').click();
     cy.get('nav').contains('Events').click();
@@ -90,16 +110,40 @@ describe('Scheduled Events', () => {
     cy.get('td').eq(13).should('have.text', '03:30 PM');
     cy.get('td').eq(14).should('have.text', 'ACTIVE');
     cy.get('.css-4xgw5l-IndicatorsContainer2').click()
-    cy.get('.css-1plh46m-MenuList2', {timeout: 5000}).contains('Active Events').click()
+    cy.get('.css-1plh46m-MenuList2').contains('Active Events').click()
     cy.get('td').eq(0).should('have.text', 'First chat');
     cy.get('td').eq(1).should('have.text', '04/28/2022');
     cy.get('td').eq(2).should('have.text', '04:00 PM');
     cy.get('td').eq(3).should('have.text', '05:00 PM');
     cy.get('td').eq(4).should('have.text', 'ACTIVE');
     cy.get('td').eq(5).should('have.text', 'Third chat');
-    cy.get('td').eq(6).should('have.text', '05/10/2022');
+    cy.get('td').eq(6).should('have.text', '11/11/2022');
     cy.get('td').eq(7).should('have.text', '03:00 PM');
     cy.get('td').eq(8).should('have.text', '03:30 PM');
     cy.get('td').eq(9).should('have.text', 'ACTIVE');
+    cy.get('.css-4xgw5l-IndicatorsContainer2').click()
+    cy.get('.css-1plh46m-MenuList2').contains('Canceled Events').click()
+    cy.get('td').eq(0).should('have.text', 'Second chat')
+    cy.get('td').eq(1).should('have.text', '05/03/2022');
+    cy.get('td').eq(2).should('have.text', '03:00 PM');
+    cy.get('td').eq(3).should('have.text', '03:30 PM');
+    cy.get('td').eq(4).should('have.text', 'CANCELED');
+    cy.get('.css-4xgw5l-IndicatorsContainer2').click()
+    cy.get('.css-1plh46m-MenuList2').contains('All Events').click()
+    cy.get('td').eq(0).should('have.text', 'First chat');
+    cy.get('td').eq(1).should('have.text', '04/28/2022');
+    cy.get('td').eq(2).should('have.text', '04:00 PM');
+    cy.get('td').eq(3).should('have.text', '05:00 PM');
+    cy.get('td').eq(4).should('have.text', 'ACTIVE');
+    cy.get('td').eq(5).should('have.text', 'Second chat');
+    cy.get('td').eq(6).should('have.text', '05/03/2022');
+    cy.get('td').eq(7).should('have.text', '03:00 PM');
+    cy.get('td').eq(8).should('have.text', '03:30 PM');
+    cy.get('td').eq(9).should('have.text', 'CANCELED');
+    cy.get('td').eq(10).should('have.text', 'Third chat');
+    cy.get('td').eq(11).should('have.text', '11/11/2022');
+    cy.get('td').eq(12).should('have.text', '03:00 PM');
+    cy.get('td').eq(13).should('have.text', '03:30 PM');
+    cy.get('td').eq(14).should('have.text', 'ACTIVE');
   });
 });
