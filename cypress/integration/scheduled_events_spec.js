@@ -149,4 +149,58 @@ describe('Scheduled Events', () => {
     cy.get('td').eq(13).should('have.text', '03:30 PM');
     cy.get('td').eq(14).should('have.text', 'ACTIVE');
   });
+
+  it('Should allow cancellation of future events', () => {
+  
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/scheduled_events*',
+      },
+      {
+        events: scheduledEvents,
+      }
+    );
+
+    cy.intercept(
+      {
+        method: 'POST',
+        url: 'api/cancel_event/*',
+      },
+      {
+        events: scheduledEvents,
+      }
+    );
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/oauth/authorize*',
+      },
+      (req) => {
+        req.redirect(
+          `${
+            Cypress.config().baseUrl
+          }/oauth/callback?code=5BbtpL2SJIeDP4yClOJPHMJZwEDF1QkbPNaJgkTymeI`,
+          302
+        );
+      }
+    );
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/event_types',
+      },
+      {
+        eventTypes: [],
+      }
+    );
+
+    cy.get('tbody').contains('Cancel Event').click();
+    cy.get('.popup-box').contains('Yes, cancel').click({ force: true })
+    cy.visit('/events')
+    cy.get('.btn-large').click();
+    cy.get('nav').contains('Events').click();
 });
+})
