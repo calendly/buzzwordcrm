@@ -5,6 +5,7 @@ const {
   formatEventDateTime,
   formatEventTypeDate,
   formatInviteeDateTime,
+  formatEventTypeAvailTime
 } = require('../utils');
 const router = express.Router();
 const User = require('../models/userModel');
@@ -81,6 +82,34 @@ router
 
     res.json({ invitees, pagination });
   })
+  .get(
+    '/event_type_available_times',
+    isUserAuthenticated,
+    async (req, res, next) => {
+      try {
+        const { access_token, refresh_token, calendly_uid } = req.user;
+        
+        const calendlyService = new CalendlyService(
+          access_token,
+          refresh_token
+        );
+        const { event_type, end_time, start_time } = req.query;
+
+        const { collection } = await calendlyService.getUserEventTypeAvailTimes(
+          event_type,
+          start_time,
+          end_time,
+          calendly_uid
+        );
+
+        const availableSlots = collection.map(formatEventTypeAvailTime)
+
+        res.json({availableSlots});
+      } catch (error) {
+        next(error);
+      }
+    }
+  )
   .get('/authenticate', async (req, res) => {
     let user;
 
