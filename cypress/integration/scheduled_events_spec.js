@@ -27,7 +27,7 @@ const scheduledEvents = [
     status: 'canceled',
   },
   {
-    uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ4',
+    uri: 'https://api.calendly.com/scheduled_events/GFBGBDCAADAEDCRZ4',
     name: 'Third chat',
     date: '11/11/2022',
     start_time: '2022-11-11T20:00:00.000Z',
@@ -151,7 +151,8 @@ describe('Scheduled Events', () => {
   });
 
   it('Should allow cancellation of future events', () => {
-  
+    const stub = cy.stub()
+
     cy.intercept(
       {
         method: 'GET',
@@ -168,39 +169,18 @@ describe('Scheduled Events', () => {
         url: 'api/cancel_event/*',
       },
       {
-        events: scheduledEvents,
+        body: {
+          reason: 'Forgot I have a different meeting.'
+        },
       }
     );
 
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/oauth/authorize*',
-      },
-      (req) => {
-        req.redirect(
-          `${
-            Cypress.config().baseUrl
-          }/oauth/callback?code=5BbtpL2SJIeDP4yClOJPHMJZwEDF1QkbPNaJgkTymeI`,
-          302
-        );
-      }
-    );
-
-    cy.intercept(
-      {
-        method: 'GET',
-        url: '/api/event_types',
-      },
-      {
-        eventTypes: [],
-      }
-    );
-
+    //The scheduled events test console will show an alert that the specific event was successfully canceled. This test asserts that the alert output is correct.
     cy.get('tbody').contains('Cancel Event').click();
     cy.get('.popup-box').contains('Yes, cancel').click({ force: true })
-    cy.visit('/events')
-    cy.get('.btn-large').click();
-    cy.get('nav').contains('Events').click();
+    cy.on('window:alert', (string) => {
+      expect(string).to.equal('You have successfully canceled the following event: "Third chat" on 11/11/2022 at 03:00 PM!')
+    })
+   
 });
 })

@@ -3,6 +3,7 @@ const scheduledEvents = [
     uri: 'https://api.calendly.com/scheduled_events/GFGBDCAADAEDCRZ2',
     name: 'First chat',
     date: '04/28/2022',
+    start_time: '2022-04-28T20:00:00.000Z',
     start_time_formatted: '04:00 PM',
     end_time_formatted: '05:00 PM',
     status: 'active',
@@ -37,6 +38,8 @@ const eventInvitees = [
       },
     ],
     rescheduled: false,
+    no_show: null,
+    status: 'active',
     timezone: 'America/New_York',
   },
   {
@@ -57,6 +60,8 @@ const eventInvitees = [
       },
     ],
     rescheduled: false,
+    no_show: null,
+    status: 'active',
     timezone: 'America/Los_Angeles',
   },
 ];
@@ -141,4 +146,35 @@ describe('Scheduled Event Invitee Details', () => {
     cy.get('tbody').contains('No')
     cy.get('tbody').contains('America/Los_Angeles')
   });
+
+  it('Should allow user to toggle an invitee as a no-show or not', () => {
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/events/*/invitees*',
+      },
+      {
+        invitees: eventInvitees,
+      }
+    );
+
+    cy.intercept(
+      {
+       method: 'POST',
+       url: 'api/no_shows'
+      },
+      [scheduledEvents[0], scheduledEvents[1]]
+    ).as('markNoShow')
+
+    cy.intercept(
+      {
+       method: 'DELETE',
+       url: 'api/no_shows/*'
+      },
+      [scheduledEvents[0], scheduledEvents[1]]
+    ).as('removeNoShow')
+
+    cy.get('tbody').contains('Mark As No-Show').click().wait('@markNoShow')
+    cy.get('tbody').contains('Mark As No-Show').click().wait('@removeNoShow')
+  })
 });
