@@ -80,9 +80,11 @@ export default () => {
       body: body,
     }).then((res) => res.json());
 
-    const deletedEvent = events.filter(event => event.uri.includes(uuid))
-    
-    window.alert(`You have successfully canceled the following event: "${deletedEvent[0].name}" on ${deletedEvent[0].date} at ${deletedEvent[0].start_time_formatted}!`);
+    const deletedEvent = events.filter((event) => event.uri.includes(uuid));
+
+    window.alert(
+      `You have successfully canceled the following event: "${deletedEvent[0].name}" on ${deletedEvent[0].date} at ${deletedEvent[0].start_time_formatted}!`
+    );
     window.location.reload();
   };
 

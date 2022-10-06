@@ -24,7 +24,7 @@ export default () => {
         <p>{event.date}</p>
       </h5>
       <div className="event-details">
-        <p className='event-status'>
+        <p className="event-status">
           <strong>Status: </strong> {event.status && event.status.toUpperCase()}
         </p>
         <p>

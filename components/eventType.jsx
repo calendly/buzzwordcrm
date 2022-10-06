@@ -48,7 +48,7 @@ export default () => {
               }`}</p>
             ))}
         </div>
-        <p className='event-duration'>
+        <p className="event-duration">
           <strong>Duration: </strong>
           {`${eventType.duration} minutes`}
         </p>

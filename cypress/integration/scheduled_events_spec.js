@@ -112,8 +112,8 @@ describe('Scheduled Events', () => {
     cy.get('td').eq(12).should('have.text', '03:00 PM');
     cy.get('td').eq(13).should('have.text', '03:30 PM');
     cy.get('td').eq(14).should('have.text', 'ACTIVE');
-    cy.get('.css-4xgw5l-IndicatorsContainer2').click()
-    cy.get('.css-1plh46m-MenuList2').contains('Active Events').click()
+    cy.get('.css-4xgw5l-IndicatorsContainer2').click();
+    cy.get('.css-1plh46m-MenuList2').contains('Active Events').click();
     cy.get('td').eq(0).should('have.text', 'First chat');
     cy.get('td').eq(1).should('have.text', '04/28/2022');
     cy.get('td').eq(2).should('have.text', '04:00 PM');
@@ -124,15 +124,15 @@ describe('Scheduled Events', () => {
     cy.get('td').eq(7).should('have.text', '03:00 PM');
     cy.get('td').eq(8).should('have.text', '03:30 PM');
     cy.get('td').eq(9).should('have.text', 'ACTIVE');
-    cy.get('.css-4xgw5l-IndicatorsContainer2').click()
-    cy.get('.css-1plh46m-MenuList2').contains('Canceled Events').click()
-    cy.get('td').eq(0).should('have.text', 'Second chat')
+    cy.get('.css-4xgw5l-IndicatorsContainer2').click();
+    cy.get('.css-1plh46m-MenuList2').contains('Canceled Events').click();
+    cy.get('td').eq(0).should('have.text', 'Second chat');
     cy.get('td').eq(1).should('have.text', '05/03/2022');
     cy.get('td').eq(2).should('have.text', '03:00 PM');
     cy.get('td').eq(3).should('have.text', '03:30 PM');
     cy.get('td').eq(4).should('have.text', 'CANCELED');
-    cy.get('.css-4xgw5l-IndicatorsContainer2').click()
-    cy.get('.css-1plh46m-MenuList2').contains('All Events').click()
+    cy.get('.css-4xgw5l-IndicatorsContainer2').click();
+    cy.get('.css-1plh46m-MenuList2').contains('All Events').click();
     cy.get('td').eq(0).should('have.text', 'First chat');
     cy.get('td').eq(1).should('have.text', '04/28/2022');
     cy.get('td').eq(2).should('have.text', '04:00 PM');
@@ -151,7 +151,7 @@ describe('Scheduled Events', () => {
   });
 
   it('Should allow cancellation of future events', () => {
-    const stub = cy.stub()
+    const stub = cy.stub();
 
     cy.intercept(
       {
@@ -170,17 +170,18 @@ describe('Scheduled Events', () => {
       },
       {
         body: {
-          reason: 'Forgot I have a different meeting.'
+          reason: 'Forgot I have a different meeting.',
         },
       }
     );
 
     //The scheduled events test console will show an alert that the specific event was successfully canceled. This test asserts that the alert output is correct.
     cy.get('tbody').contains('Cancel Event').click();
-    cy.get('.popup-box').contains('Yes, cancel').click({ force: true })
-    cy.on('window:alert', (string) => {
-      expect(string).to.equal('You have successfully canceled the following event: "Third chat" on 11/11/2022 at 03:00 PM!')
-    })
-   
+    cy.get('.popup-box').contains('Yes, cancel').click({ force: true });
+    cy.on('window:alert', (alertMessage) => {
+      expect(alertMessage).to.equal(
+        'You have successfully canceled the following event: "Third chat" on 11/11/2022 at 03:00 PM!'
+      );
+    });
+  });
 });
-})
