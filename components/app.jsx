@@ -6,11 +6,12 @@ import Login from './login.jsx';
 import Nav from './nav.jsx';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { RequireAuth, AuthConsumer, AuthProvider } from './auth.jsx';
+import { RequireAuth, AuthProvider } from './auth.jsx';
 import { Routes, Route } from 'react-router-dom';
 import { createRoot } from 'react-dom/client';
 import Event from './event.jsx';
 import EventTypeAvailTimes from './eventTypeAvailTimes.jsx';
+import UserBusyTimes from "./userBusyTimes";
 
 let App = () => (
   <Routes>
@@ -57,6 +58,13 @@ let App = () => (
     element={
       <RequireAuth>
         <EventTypeAvailTimes />
+      </RequireAuth>
+    }
+    />
+    <Route path="/user_busy_times"
+    element={
+      <RequireAuth>
+        <UserBusyTimes />
       </RequireAuth>
     }
     />
