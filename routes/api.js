@@ -110,6 +110,33 @@ router
       }
     }
   )
+  .get('/user_busy_times',
+  isUserAuthenticated,
+  async (req, res, next) => {
+    try {
+      const { access_token, refresh_token, calendly_uid } = req.user
+
+      const calendlyService = new CalendlyService(
+        access_token,
+        refresh_token
+      )
+      const { user, start_time, end_time } = req.query;
+
+      const { collection } = await calendlyService.getUserBusyTimes(
+        user,
+        start_time,
+        end_time,
+        calendly_uid
+      )
+
+      const busyTimes = collection.map(formatEventDateTime)
+
+      res.json({busyTimes})
+    } catch (error) {
+      next(error)
+    }
+  }
+  )
   .get('/authenticate', async (req, res) => {
     let user;
 

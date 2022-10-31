@@ -13,7 +13,6 @@ export default () => {
   const [nextPageToken, setNextPageToken] = useState(null);
   const [prevPageToken, setPrevPageToken] = useState(null);
   const [paginationCount, setPaginationCount] = useState(0);
-  const [user, setUser] = useState();
 
   const currentDateMillisec = Date.now();
 

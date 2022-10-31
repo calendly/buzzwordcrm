@@ -114,7 +114,21 @@ class CalendlyService {
     const url = `/event_type_available_times?${queryParams}`;
 
     const { data } = await this.request.get(url, this.requestConfiguration());
-    
+
+    return data;
+  };
+
+  getUserBusyTimes = async (userUri, startTime, endTime) => {
+    let queryParams = [
+      `user=${userUri}`,
+      `start_time=${startTime}`,
+      `end_time=${endTime}`,
+    ].join('&');
+
+    const url = `/user_busy_times?${queryParams}`;
+
+    const { data } = await this.request.get(url, this.requestConfiguration());
+
     return data;
   };
 
