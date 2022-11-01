@@ -186,7 +186,7 @@ export default () => {
           </tbody>
         </table>
       </div>
-      {pagination && pagination.next_page_token && (
+      {pagination?.next_page_token && (
         <div className="next-back-btns">
           <button
             className="waves-effect waves-light btn-small"
