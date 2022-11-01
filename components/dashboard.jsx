@@ -48,25 +48,6 @@ export default () => {
                         }}
                       />
                     </div>
-                    <div className="card-content" style={{ color: 'black' }}>
-                      <p>{eventType.name}</p>
-                      <p style={{ fontSize: 'small' }}>
-                        Description:{' '}
-                        {eventType.description_plain || 'No description'}
-                      </p>
-                    </div>
-                    <div className="card-action">
-                      <PopupButton
-                        url={eventType.scheduling_url}
-                        rootElement={document.getElementById('root')}
-                        text="View Availability"
-                        styles={{
-                          borderWidth: 0,
-                          backgroundColor: '#fff',
-                          cursor: 'pointer',
-                        }}
-                      />
-                    </div>
                   </div>
                 </Link>
               </div>
