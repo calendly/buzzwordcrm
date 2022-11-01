@@ -9,7 +9,7 @@ export default () => {
   const fetchData = async () => {
     const result = await fetch(`/api/user_availability_schedules?user=${user}`).then((res) => res.json())
 
-    setSchedule(result.collection)
+    setSchedule(result.availabilitySchedules)
   }
 
   useEffect(() => {

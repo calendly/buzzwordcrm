@@ -145,15 +145,14 @@ router
 
         const { user } = req.query;
 
-        const { collection } =
+        const { collection: availabilitySchedules } =
           await calendlyService.getUserAvailabilitySchedules(
             user,
             calendly_uid
           );
 
-        res.json({collection});
+        res.json({availabilitySchedules});
       } catch (error) {
-        console.log(error)
         next(error);
       }
     }

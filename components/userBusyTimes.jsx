@@ -7,7 +7,7 @@ export default () => {
     const [busyTimes, setBusyTimes] = useState([]);
 
     const fetchData = async () => {
-        const result = await fetch(`/api/user_busy_times?user=${user}&start_time=2022-05-02T20:30:00.000000Z&end_time=2022-05-08T20:30:00.000000Z`).then((res) => res.json());
+        const result = await fetch(`/api/user_busy_times?user=${user}&start_time=2022-05-02T20:30:00.000000Z&end_time=2022-05-09T20:30:00.000000Z`).then((res) => res.json());
 
         setBusyTimes(result.busyTimes)
     }
@@ -18,7 +18,7 @@ export default () => {
 
    return (
     <div className='testing'>
-        <p>{busyTimes?.length && JSON.stringify(busyTimes)}</p> 
+        <p>{busyTimes?.length && JSON.stringify(busyTimes)}</p>
     </div>
 //     <div className='container'>
 //         <div className='user-availability'>
