@@ -25,9 +25,9 @@ export default () => {
   const fetchData = async () => {
     let nextPageQueryParams = '?';
 
-    if (nextPageToken) nextPageQueryParams += `&page_token=${nextPageToken}`;
+    if (nextPageToken === pagination.next_page_token) nextPageQueryParams += `&page_token=${nextPageToken}`;
 
-    if (prevPageToken) {
+    if (prevPageToken === pagination.previous_page_token) {
       nextPageQueryParams = '?';
       nextPageQueryParams += `&page_token=${prevPageToken}`;
     }

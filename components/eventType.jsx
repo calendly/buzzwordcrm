@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
+import DatePicker from 'react-datepicker';
 
 export default () => {
   const [eventType, setEventType] = useState([]);
+  const [date, setDate] = useState(new Date());
+  const [eventTypesSlots, seEventTypesSlots] = useState([]);
+  const [eventUri, setEventUri] = useState();
 
   const { uuid } = useParams();
 
@@ -12,6 +16,7 @@ export default () => {
     );
 
     setEventType(result.eventType);
+    setEventUri(result.eventType.uri);
   };
 
   useEffect(() => {
@@ -52,6 +57,11 @@ export default () => {
           <strong>Duration: </strong>
           {`${eventType.duration} minutes`}
         </p>
+        <Link to={`/event_type_available_times?event_type=${eventUri}&`}>
+          <p className="details-link">
+            Click Here to See Availability for this Event Type
+          </p>
+        </Link>
       </div>
     </div>
   );
