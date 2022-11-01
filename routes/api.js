@@ -5,7 +5,7 @@ const {
   formatEventDateTime,
   formatEventTypeDate,
   formatInviteeDateTime,
-  formatEventTypeAvailTime
+  formatEventTypeAvailTime,
 } = require('../utils');
 const router = express.Router();
 const User = require('../models/userModel');
@@ -88,7 +88,7 @@ router
     async (req, res, next) => {
       try {
         const { access_token, refresh_token, calendly_uid } = req.user;
-        
+
         const calendlyService = new CalendlyService(
           access_token,
           refresh_token
@@ -102,24 +102,19 @@ router
           calendly_uid
         );
 
-        const availableSlots = collection.map(formatEventTypeAvailTime)
+        const availableSlots = collection.map(formatEventTypeAvailTime);
 
-        res.json({availableSlots});
+        res.json({ availableSlots });
       } catch (error) {
         next(error);
       }
     }
   )
-  .get('/user_busy_times',
-  isUserAuthenticated,
-  async (req, res, next) => {
+  .get('/user_busy_times', isUserAuthenticated, async (req, res, next) => {
     try {
-      const { access_token, refresh_token, calendly_uid } = req.user
+      const { access_token, refresh_token, calendly_uid } = req.user;
 
-      const calendlyService = new CalendlyService(
-        access_token,
-        refresh_token
-      )
+      const calendlyService = new CalendlyService(access_token, refresh_token);
       const { user, start_time, end_time } = req.query;
 
       const { collection } = await calendlyService.getUserBusyTimes(
@@ -127,15 +122,41 @@ router
         start_time,
         end_time,
         calendly_uid
-      )
+      );
 
-      const busyTimes = collection.map(formatEventDateTime)
+      const busyTimes = collection.map(formatEventDateTime);
 
-      res.json({busyTimes})
+      res.json({ busyTimes });
     } catch (error) {
-      next(error)
+      next(error);
     }
-  }
+  })
+  .get(
+    '/user_availability_schedules',
+    isUserAuthenticated,
+    async (req, res, next) => {
+      try {
+        const { access_token, refresh_token, calendly_uid } = req.user;
+
+        const calendlyService = new CalendlyService(
+          access_token,
+          refresh_token
+        );
+
+        const { user } = req.query;
+
+        const { collection } =
+          await calendlyService.getUserAvailabilitySchedules(
+            user,
+            calendly_uid
+          );
+
+        res.json({collection});
+      } catch (error) {
+        console.log(error)
+        next(error);
+      }
+    }
   )
   .get('/authenticate', async (req, res) => {
     let user;

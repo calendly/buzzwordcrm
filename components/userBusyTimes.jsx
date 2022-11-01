@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
 
 export default () => {
     const location = useLocation().search;
@@ -19,7 +18,7 @@ export default () => {
 
    return (
     <div className='testing'>
-        <p>{busyTimes && busyTimes.length && JSON.stringify(busyTimes)}</p>
+        <p>{busyTimes?.length && JSON.stringify(busyTimes)}</p> 
     </div>
 //     <div className='container'>
 //         <div className='user-availability'>

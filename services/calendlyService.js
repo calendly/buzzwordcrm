@@ -132,6 +132,14 @@ class CalendlyService {
     return data;
   };
 
+  getUserAvailabilitySchedules = async (userUri) => {
+    const url = `/user_availability_schedules?user=${userUri}`;
+
+    const { data } = await this.request.get(url, this.requestConfiguration());
+
+    return data;
+  };
+
   markAsNoShow = async (uri) => {
     const { data } = await this.request.post(
       '/invitee_no_shows',
