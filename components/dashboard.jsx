@@ -41,7 +41,8 @@ export default () => {
                     backgroundColor: '#fff',
                     cursor: 'pointer',
                   }}
-                ></div>
+                  />
+                  </div>
                 <div className="card-content" style={{ color: 'black' }}>
                   <p>{eventType.name}</p>
                   <p style={{ fontSize: 'small' }}>
