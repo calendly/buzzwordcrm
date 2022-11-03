@@ -41,8 +41,7 @@ exports.mockCalendlyEventTypes = () => {
     });
 };
 
-exports.mockCalendlyEvent = () => {
-  const uuid = 'someUuid';
+exports.mockCalendlyEvent = (uuid = 'someUuid') => {
 
   nock(CALENDLY_API_BASE_URL)
     .persist()
