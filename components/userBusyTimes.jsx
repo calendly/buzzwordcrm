@@ -14,7 +14,7 @@ export default () => {
 
   const fetchData = async () => {
     const result = await fetch(
-      `/api/user_busy_times?user=${user}&${queryParams}`
+      `/api/user_busy_times?user=${user}${queryParams}`
     ).then((res) => res.json());
 
     if (result.busyTimes.length === 0) {
@@ -40,7 +40,7 @@ export default () => {
   return (
     <div className="event-avail-selection-box">
       <h6 className="event-avail-header">
-        Click below to see availability for this event type by start date
+        Click below to see **Rasheeda's** availability for by start date
       </h6>
       <div>
         <strong>
@@ -64,7 +64,7 @@ export default () => {
               );
               setFinalDateMillisec(new Date(date).getTime());
               setQueryParams(
-                `start_time=${date.toISOString()}&end_time=${endDate.toISOString()}`
+                `&start_time=${date.toISOString()}&end_time=${endDate.toISOString()}`
               );
             }}
           />
@@ -90,7 +90,7 @@ export default () => {
                 setShowSubmit(true);
                 setFinalDateMillisec(new Date(dateWithTime).getTime());
                 setQueryParams(
-                  `start_time=${dateWithTime.toISOString()}&end_time=${endDate.toISOString()}`
+                  `&start_time=${dateWithTime.toISOString()}&end_time=${endDate.toISOString()}`
                 );
               }}
             ></input>
@@ -110,7 +110,44 @@ export default () => {
           Submit
         </button>
       )}
-      <div>{busyTimes?.length > 0 && JSON.stringify(busyTimes)}</div>
+      <div className="event-type-and-user-availability">
+      {busyTimes?.length ? (
+        <div className="row">
+          <table className="striped centered">
+            <thead>
+              <tr>
+                <th>Day of Week</th>
+                <th>Availability Range(s)</th>
+                <th>Unavailable Times</th>
+                <th>Total Scheduled Hours</th>
+                <th>Total Available Hours</th>
+              </tr>
+            </thead>
+            {busyTimes && (
+              <tbody>
+                {busyTimes.map((meeting, i) => (
+                  //Only Calendly meetings have the event property. External events don't have a unique identifier.
+                  <tr key={meeting.event?.uri ? meeting.event.uri : i}>
+                    <td>{JSON.stringify(new Date(meeting.start_time))}</td>
+              <td>Nothing yet</td>
+              <td>{`${meeting.date}, ${meeting.start_time_formatted}-${meeting.end_time_formatted}`}</td>
+              <td>Nothing yet</td>
+              <td>Nothing yet</td>
+                    {/* <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td>
+                    <td>1</td> */}
+                  </tr>
+                ))}
+              </tbody>
+            )}
+          </table>
+        </div>
+      ) : (
+        ''
+      )}
+      </div>
     </div>
   );
 };

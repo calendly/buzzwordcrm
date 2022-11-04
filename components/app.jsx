@@ -66,7 +66,7 @@ let App = () => (
     element={
       <RequireAuth>
         <UserBusyTimes />
-        <UserAvailabilitySchedules />
+        {/* <UserAvailabilitySchedules /> */}
       </RequireAuth>
     }
     />
