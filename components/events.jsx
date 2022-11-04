@@ -104,9 +104,9 @@ export default () => {
 
   return (
     <div className="container" style={{ marginTop: '50px' }}>
-      <Link to={`/user_busy_times?user=${events.length && events[0].event_memberships[0].user}`}>
+      {/* <Link to={`/user_busy_times?user=${events.length && events[0].event_memberships[0].user}`}>
       Click here to See This User's Availability
-      </Link>
+      </Link> */}
       <div style={{ alignSelf: 'center', textAlign: 'center' }}>
         <Select
           defaultValue={selectedOption}
