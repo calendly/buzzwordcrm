@@ -17,7 +17,9 @@ export default () => {
   const [availUser, setAvailUser] = useState();
   const [showAlert, setShowAlert] = useState(true);
   const [totalScheduledHours, setTotalScheduledHours] = useState(0);
-  const [totalAvailHours, setTotalAvailHours] = useState(0);
+  const [totalScheduledHoursMilli, setTotalScheduledHoursMilli] = useState(0);
+  const [totalAvailHoursMilli, setTotalAvailHoursMilli] = useState(0);
+  const [totalAvailToBook, settotalAvailToBook] = useState(0);
 
   const weekDays = [
     'monday',
@@ -48,20 +50,8 @@ export default () => {
     setBusyTimes(result.busyTimes);
   };
 
-  function millisecToHours(milliseconds) {
-    const seconds = (ms / 1000).toFixed(1);
-    const minutes = (ms / (1000 * 60)).toFixed(1);
-    const hours = (ms / (1000 * 60 * 60)).toFixed(1);
-    const days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
-    if (seconds < 60) return seconds + " Sec";
-    else if (minutes < 60) return minutes + " Min";
-    else if (hours < 24) return hours + " Hrs";
-    else return days + " Days"
-  }
-
   const setBusyHours = () => {
     let total = 0;
-    let humanReadableTotal;
 
     if (busyTimes?.length) {
       busyTimes.map((timeRangeObj) => {
@@ -71,30 +61,57 @@ export default () => {
         );
         const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
         const duration = moment.duration(endTime.diff(startTime));
-        //console.log('duration=', duration.milliseconds)
-
-        // duration in hours
-        //const hours = parseInt(duration.asHours());
-
-        // duration in minutes
-        //const minutes = parseInt(duration.asMinutes()) % 60;
-
         total += duration
-        console.log('running total= ', total)
       });
     }
     total = (total/(60 * 60 * 1000)).toFixed(2)
-    console.log('total hours=', total)
     const splitTotal = total.toString().split('.')
-    humanReadableTotal = `${parseInt(splitTotal[0])} hours and ${Math.floor((60 * ((parseInt(splitTotal[1]))))/100)} minutes`
-    
+    const humanReadableTotal = `${parseInt(splitTotal[0])} hours and ${Math.floor((60 * ((parseInt(splitTotal[1]))))/100)} minutes`
     
     setTotalScheduledHours(humanReadableTotal)
+    setTotalScheduledHoursMilli(total)
   };
 
-  console.log('totalScheduledHours= ', totalScheduledHours)
-
-  console.log('busyTimes data= ', busyTimes);
+  setAvailHours = () => {
+    const availSchedArr = []
+    let total = 0
+    if (schedule?.length) {
+      schedule.map((availability, i) =>
+        availability.rules.map((rule) => {
+          const milliseconds = new Date(rule.date).getTime();
+          const endCheck = new Date(endTime).getTime();
+          if (
+            rule.type === 'date' &&
+            milliseconds <= endCheck &&
+            milliseconds >= date &&
+            rule.intervals.length
+          ) {
+            availSchedArr.push(rule.intervals)
+          } else if (rule.type === 'wday' && rule.intervals.length) {
+            availSchedArr.push(rule.intervals);
+          }
+        })
+      );
+    }
+    availSchedArr.map((timeArr) => {
+      timeArr.map((range) => {
+        const fromTime = moment(
+        range.from,
+        'HH:mm:ss a'
+      );
+      const toTime = moment(range.to, 'HH:mm:ss a');
+      const duration = moment.duration(toTime.diff(fromTime));
+      total += duration
+      })
+      
+    });
+    total = (total/(60 * 60 * 1000)).toFixed(2)
+    setTotalAvailHoursMilli(total)
+    const availHoursToBook = Math.abs(totalAvailHoursMilli - totalScheduledHoursMilli)
+    const splitTotal = availHoursToBook.toString().split('.')
+    const humanReadableTotal = `${parseInt(splitTotal[0])} hours and ${Math.floor((60 * ((parseInt(splitTotal[1]))))/100)} minutes`
+    settotalAvailToBook(humanReadableTotal)
+  }
 
   const fetchUserAvailabilityData = async () => {
     //This is to avoid nested mapping through the schedules array at first render
@@ -105,8 +122,6 @@ export default () => {
 
     setSchedule(result.availabilitySchedules);
   };
-
-  // console.log('avail schedule data= ', schedule);
 
   formatAvailScheduleTime = (availability) => {
     for (const range in availability) {
@@ -193,8 +208,6 @@ export default () => {
     }
   }
 
-  //console.log('weekdayAvailability= ', weekdayAvailability);
-
   useEffect(() => {
     fetchBusyTimesData();
   }, []);
@@ -206,6 +219,10 @@ export default () => {
   useEffect(() => {
     setBusyHours();
   });
+
+  useEffect(() => {
+    setAvailHours()
+  })
 
   return (
     <div className="event-avail-selection-box">
@@ -301,12 +318,14 @@ export default () => {
                       <ul>
                         <li>
                           <strong>Monday: </strong>
-                          {weekdayAvailability['monday'].map((range, i) => {
+                          {/* This is to check if there is no availability on this date since all of the arrays can be empty.
+                          I want to avoid going into the mapping, if the arrays are all empty.  */}
+                          {!weekdayAvailability['monday'].every(array => !array.length) ?  weekdayAvailability['monday'].map((range, i) => {
                             if (range.length) {
                               return <p key={i}>{`${range}`}</p>;
                             }
-                          })}
-                          {weekdayAvailability['dates'].map((array, i) => {
+                          }): 'Unavailable'}
+                          {!weekdayAvailability['monday'].every(array => !array.length) ?  weekdayAvailability['dates'].map((array, i) => {
                             if (array.includes('monday')) {
                               return (
                                 <div key={i}>
@@ -319,16 +338,16 @@ export default () => {
                                 </div>
                               );
                             }
-                          })}
+                          }): ''}
                         </li>
                         <li>
                           <strong>Tuesday: </strong>
-                          {weekdayAvailability['tuesday'].map((range, i) => {
+                          {!weekdayAvailability['tuesday'].every(array => !array.length) ?  weekdayAvailability['tuesday'].map((range, i) => {
                             if (range.length) {
                               return <p key={i}>{`${range}`}</p>;
                             }
-                          })}
-                          {weekdayAvailability['dates'].map((array, i) => {
+                          }): 'Unavailable'}
+                          {!weekdayAvailability['tuesday'].every(array => !array.length) ? weekdayAvailability['dates'].map((array, i) => {
                             if (array.includes('tuesday')) {
                               return (
                                 <div key={i}>
@@ -341,16 +360,16 @@ export default () => {
                                 </div>
                               );
                             }
-                          })}
+                          }): ''}
                         </li>
                         <li>
                           <strong>Wednesday: </strong>
-                          {weekdayAvailability['wednesday'].map((range, i) => {
+                          {!weekdayAvailability['wednesday'].every(array => !array.length) ? weekdayAvailability['wednesday'].map((range, i) => {
                             if (range.length) {
                               return <p key={i}>{`${range}`}</p>;
                             }
-                          })}
-                          {weekdayAvailability['dates'].map((array, i) => {
+                          }): 'Unavailable'}
+                          {!weekdayAvailability['wednesday'].every(array => !array.length) ? weekdayAvailability['dates'].map((array, i) => {
                             if (array.includes('wednesday')) {
                               return (
                                 <div key={i}>
@@ -363,16 +382,16 @@ export default () => {
                                 </div>
                               );
                             }
-                          })}
+                          }): ''}
                         </li>
                         <li>
                           <strong>Thursday: </strong>
-                          {weekdayAvailability['thursday'].map((range, i) => {
+                          {!weekdayAvailability['thursday'].every(array => !array.length) ? weekdayAvailability['thursday'].map((range, i) => {
                             if (range.length) {
                               return <p key={i}>{`${range}`}</p>;
                             }
-                          })}
-                          {weekdayAvailability['dates'].map((array, i) => {
+                          }): 'Unavailable'}
+                          {!weekdayAvailability['thursday'].every(array => !array.length) ? weekdayAvailability['dates'].map((array, i) => {
                             if (array.includes('thursday')) {
                               return (
                                 <div key={i}>
@@ -385,16 +404,16 @@ export default () => {
                                 </div>
                               );
                             }
-                          })}
+                          }): ''}
                         </li>
                         <li>
                           <strong>Friday: </strong>
-                          {weekdayAvailability['friday'].map((range, i) => {
+                          {!weekdayAvailability['friday'].every(array => !array.length) ? weekdayAvailability['friday'].map((range, i) => {
                             if (range.length) {
                               return <p key={i}>{`${range}`}</p>;
                             }
-                          })}
-                          {weekdayAvailability['dates'].map((array, i) => {
+                          }): 'Unavailable'}
+                          {!weekdayAvailability['friday'].every(array => !array.length) ? weekdayAvailability['dates'].map((array, i) => {
                             if (array.includes('friday')) {
                               return (
                                 <div key={i}>
@@ -407,16 +426,17 @@ export default () => {
                                 </div>
                               );
                             }
-                          })}
+                          }): ''}
                         </li>
                         <li>
                           <strong>Saturday: </strong>
-                          {weekdayAvailability['saturday'].map((range, i) => {
+                          {/* {weekdayAvailability['saturday'].every(array => !array.length) && <p>Unavailable</p>} */}
+                          {!weekdayAvailability['saturday'].every(array => !array.length) ? weekdayAvailability['saturday'].map((range, i) => {
                             if (range.length) {
                               return <p key={i}>{`${range}`}</p>;
                             }
-                          })}
-                          {weekdayAvailability['dates'].map((array, i) => {
+                          }): 'Unavailable'}
+                          {!weekdayAvailability['saturday'].every(array => !array.length) ?  weekdayAvailability['dates'].map((array, i) => {
                             if (array.includes('saturday')) {
                               return (
                                 <div key={i}>
@@ -429,16 +449,17 @@ export default () => {
                                 </div>
                               );
                             }
-                          })}
+                          }): ''}
                         </li>
                         <li>
                           <strong>Sunday: </strong>
-                          {weekdayAvailability['sunday'].map((range, i) => {
+
+                          {!weekdayAvailability['sunday'].every(array => !array.length) ?  weekdayAvailability['sunday'].map((range, i) => {
                             if (range.length) {
                               return <p key={i}>{`${range}`}</p>;
                             }
-                          })}
-                          {weekdayAvailability['dates'].map((array, i) => {
+                          }): 'Unavailable'}
+                          {!weekdayAvailability['sunday'].every(array => !array.length) ?  weekdayAvailability['dates'].map((array, i) => {
                             if (array.includes('sunday')) {
                               return (
                                 <div key={i}>
@@ -451,7 +472,7 @@ export default () => {
                                 </div>
                               );
                             }
-                          })}
+                          }): ''}
                         </li>
                       </ul>
                     </td>
@@ -487,14 +508,14 @@ export default () => {
               <thead>
                 <tr>
                   <th>Total Scheduled Hours</th>
-                  <th>Total Available Hours</th>
+                  <th>Total Available Hours To Book</th>
                 </tr>
               </thead>
               {totalScheduledHours && (
                 <tbody>
                     <tr>
                       <td>{totalScheduledHours}</td>
-                      <td>Nothing yet</td>
+                      <td>{totalAvailToBook}</td>
                     </tr>
                   
                 </tbody>
@@ -505,8 +526,6 @@ export default () => {
           ''
         )}
       </div>
-      <div style={{ color: 'black' }}>{JSON.stringify(busyTimes)}</div>
-      <div style={{ color: 'black' }}>{JSON.stringify(schedule)}</div>
     </div>
   );
 };
