@@ -12,7 +12,6 @@ import { createRoot } from 'react-dom/client';
 import Event from './event.jsx';
 import EventTypeAvailTimes from './eventTypeAvailTimes.jsx';
 import UserBusyTimes from "./userBusyTimes";
-import UserAvailabilitySchedules from "./userAvailabilitySchedules"
 
 let App = () => (
   <Routes>
@@ -66,7 +65,6 @@ let App = () => (
     element={
       <RequireAuth>
         <UserBusyTimes />
-        {/* <UserAvailabilitySchedules /> */}
       </RequireAuth>
     }
     />
