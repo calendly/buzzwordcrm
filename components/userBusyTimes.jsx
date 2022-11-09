@@ -16,6 +16,8 @@ export default () => {
   const [endTime, setEndTime] = useState();
   const [availUser, setAvailUser] = useState();
   const [showAlert, setShowAlert] = useState(true);
+  const [totalScheduledHours, setTotalScheduledHours] = useState(0);
+  const [totalAvailHours, setTotalAvailHours] = useState(0);
 
   const weekDays = [
     'monday',
@@ -38,27 +40,61 @@ export default () => {
     dates: [],
   };
 
-  const fetchData = async () => {
+  const fetchBusyTimesData = async () => {
     const result = await fetch(
       `/api/user_busy_times?user=${user}${queryParams}`
     ).then((res) => res.json());
 
-    if (result.busyTimes.length === 0) {
-      //This takes care of if a user sets a certain date range when an event type can be scheduled, or how far in advance the event type can be scheduled.
-      const start = new Date(queryParams.split('=')[1].substring(0, 24))
-        .toString()
-        .split(' ');
-      const end = new Date(queryParams.split('=')[2].substring(0, 24))
-        .toString()
-        .split(' ');
-
-      alert(
-        `\nNo availability found between ${start[1]} ${start[2]}, ${start[3]} and ${end[1]} ${end[2]}, ${end[3]} or this event cannot be scheduled so far in advance.`
-      );
-    }
-
     setBusyTimes(result.busyTimes);
   };
+
+  function millisecToHours(milliseconds) {
+    const seconds = (ms / 1000).toFixed(1);
+    const minutes = (ms / (1000 * 60)).toFixed(1);
+    const hours = (ms / (1000 * 60 * 60)).toFixed(1);
+    const days = (ms / (1000 * 60 * 60 * 24)).toFixed(1);
+    if (seconds < 60) return seconds + " Sec";
+    else if (minutes < 60) return minutes + " Min";
+    else if (hours < 24) return hours + " Hrs";
+    else return days + " Days"
+  }
+
+  const setBusyHours = () => {
+    let total = 0;
+    let humanReadableTotal;
+
+    if (busyTimes?.length) {
+      busyTimes.map((timeRangeObj) => {
+        const startTime = moment(
+          new Date(timeRangeObj.start_time),
+          'HH:mm:ss a'
+        );
+        const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
+        const duration = moment.duration(endTime.diff(startTime));
+        //console.log('duration=', duration.milliseconds)
+
+        // duration in hours
+        //const hours = parseInt(duration.asHours());
+
+        // duration in minutes
+        //const minutes = parseInt(duration.asMinutes()) % 60;
+
+        total += duration
+        console.log('running total= ', total)
+      });
+    }
+    total = (total/(60 * 60 * 1000)).toFixed(2)
+    console.log('total hours=', total)
+    const splitTotal = total.toString().split('.')
+    humanReadableTotal = `${parseInt(splitTotal[0])} hours and ${Math.floor((60 * ((parseInt(splitTotal[1]))))/100)} minutes`
+    
+    
+    setTotalScheduledHours(humanReadableTotal)
+  };
+
+  console.log('totalScheduledHours= ', totalScheduledHours)
+
+  console.log('busyTimes data= ', busyTimes);
 
   const fetchUserAvailabilityData = async () => {
     //This is to avoid nested mapping through the schedules array at first render
@@ -70,30 +106,45 @@ export default () => {
     setSchedule(result.availabilitySchedules);
   };
 
+  // console.log('avail schedule data= ', schedule);
+
   formatAvailScheduleTime = (availability) => {
     for (const range in availability) {
       let formattedRange;
-
-      availability[range].map((timeRanges, i) => {
-        let finalRange = [];
-        timeRanges.map((timeRangeObj) => {
-          console.log('time data type= ', typeof timeRangeObj);
-          if (timeRanges.length && typeof timeRangeObj === 'object') {
-            formattedRange = `${moment(timeRangeObj.from, 'HH:mm').format(
-              'hh:mm A'
-            )}-${moment(timeRangeObj.to, 'HH:mm').format('hh:mm A')}`;
-            finalRange.push(formattedRange);
-            if (finalRange.length) availability[range][i] = finalRange;
-          }
+      if (weekDays.includes(range)) {
+        availability[range].map((timeRanges, i) => {
+          const finalRange = [];
+          timeRanges.map((timeRangeObj) => {
+            if (timeRanges.length && typeof timeRangeObj === 'object') {
+              formattedRange = `${moment(timeRangeObj.from, 'H:mm').format(
+                'h:mm A'
+              )}-${moment(timeRangeObj.to, 'H:mm').format('h:mm A')}`;
+              finalRange.push(formattedRange);
+              if (finalRange.length) availability[range][i] = finalRange;
+            }
+          });
         });
-      });
+      }
     }
   };
 
+  formatDatesArrTimeRange = (datesArray) => {
+    let formattedRange;
+    datesArray.map((weekDayArr) => {
+      const finalRange = [];
+      weekDayArr[2].map((range, i) => {
+        formattedRange = `${moment(range.from, 'H:mm').format(
+          'h:mm A'
+        )}-${moment(range.to, 'H:mm').format('h:mm A')}`;
+        finalRange.push(formattedRange);
+        weekDayArr[2] = finalRange;
+      });
+    });
+  };
+
   if (schedule?.length) {
-    schedule.map((availability) =>
+    schedule.map((availability, i) =>
       availability.rules.map((rule) => {
-        console.log('rule= ', rule);
         const milliseconds = new Date(rule.date).getTime();
         const endCheck = new Date(endTime).getTime();
         if (
@@ -103,24 +154,30 @@ export default () => {
         ) {
           const weekdayNum = new Date(rule.date).getDay();
 
-          weekdayAvailability['dates'].push(rule.intervals, [
+          weekdayAvailability['dates'].push([
             weekDays[weekdayNum],
+            rule.date,
+            rule.intervals,
           ]);
+
+          weekdayAvailability[`${weekDays[weekdayNum]}`].sort();
         } else if (rule.type === 'wday') {
           weekdayAvailability[`${rule.wday}`].push(rule.intervals);
+          weekdayAvailability[`${rule.wday}`].sort();
         }
       })
     );
+
     formatAvailScheduleTime(weekdayAvailability);
+    formatDatesArrTimeRange(weekdayAvailability['dates']);
   }
 
   if (weekdayAvailability.dates.length && showAlert) {
     //This checks if each day of the week is empty; thus, the user is unavailable for the 7-day period
     const sevenDaysCheck = weekdayAvailability.dates.filter(
-      (date) => !date.length
+      (date) => !date[2].length
     );
     if (sevenDaysCheck.length >= 7) {
-      
       const start = new Date(queryParams.split('=')[1].substring(0, 24))
         .toString()
         .split(' ');
@@ -136,15 +193,19 @@ export default () => {
     }
   }
 
-  console.log('avail schedule= ', weekdayAvailability)
+  //console.log('weekdayAvailability= ', weekdayAvailability);
 
   useEffect(() => {
-    fetchData();
+    fetchBusyTimesData();
   }, []);
 
   useEffect(() => {
     fetchUserAvailabilityData();
   }, []);
+
+  useEffect(() => {
+    setBusyHours();
+  });
 
   return (
     <div className="event-avail-selection-box">
@@ -213,7 +274,7 @@ export default () => {
           onClick={() => {
             if (finalDateMillisec > new Date().getTime()) {
               {
-                fetchData();
+                fetchBusyTimesData();
                 fetchUserAvailabilityData();
               }
             } else {
@@ -230,11 +291,179 @@ export default () => {
             <table className="striped centered">
               <thead>
                 <tr>
-                  <th>Day of Week</th>
                   <th>Availability Range(s)</th>
+                </tr>
+              </thead>
+              {weekdayAvailability && (
+                <tbody>
+                  <tr>
+                    <td>
+                      <ul>
+                        <li>
+                          <strong>Monday: </strong>
+                          {weekdayAvailability['monday'].map((range, i) => {
+                            if (range.length) {
+                              return <p key={i}>{`${range}`}</p>;
+                            }
+                          })}
+                          {weekdayAvailability['dates'].map((array, i) => {
+                            if (array.includes('monday')) {
+                              return (
+                                <div key={i}>
+                                  <strong>{`${array[1]}`}</strong>
+                                  {array[2].map((timeRange, i) => (
+                                    <ul key={i}>
+                                      <li>{`${timeRange}`}</li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          })}
+                        </li>
+                        <li>
+                          <strong>Tuesday: </strong>
+                          {weekdayAvailability['tuesday'].map((range, i) => {
+                            if (range.length) {
+                              return <p key={i}>{`${range}`}</p>;
+                            }
+                          })}
+                          {weekdayAvailability['dates'].map((array, i) => {
+                            if (array.includes('tuesday')) {
+                              return (
+                                <div key={i}>
+                                  <strong>{`${array[1]}`}</strong>
+                                  {array[2].map((timeRange, i) => (
+                                    <ul key={i}>
+                                      <li>{`${timeRange}`}</li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          })}
+                        </li>
+                        <li>
+                          <strong>Wednesday: </strong>
+                          {weekdayAvailability['wednesday'].map((range, i) => {
+                            if (range.length) {
+                              return <p key={i}>{`${range}`}</p>;
+                            }
+                          })}
+                          {weekdayAvailability['dates'].map((array, i) => {
+                            if (array.includes('wednesday')) {
+                              return (
+                                <div key={i}>
+                                  <strong>{`${array[1]}`}</strong>
+                                  {array[2].map((timeRange, i) => (
+                                    <ul key={i}>
+                                      <li>{`${timeRange}`}</li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          })}
+                        </li>
+                        <li>
+                          <strong>Thursday: </strong>
+                          {weekdayAvailability['thursday'].map((range, i) => {
+                            if (range.length) {
+                              return <p key={i}>{`${range}`}</p>;
+                            }
+                          })}
+                          {weekdayAvailability['dates'].map((array, i) => {
+                            if (array.includes('thursday')) {
+                              return (
+                                <div key={i}>
+                                  <strong>{`${array[1]}`}</strong>
+                                  {array[2].map((timeRange, i) => (
+                                    <ul key={i}>
+                                      <li>{`${timeRange}`}</li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          })}
+                        </li>
+                        <li>
+                          <strong>Friday: </strong>
+                          {weekdayAvailability['friday'].map((range, i) => {
+                            if (range.length) {
+                              return <p key={i}>{`${range}`}</p>;
+                            }
+                          })}
+                          {weekdayAvailability['dates'].map((array, i) => {
+                            if (array.includes('friday')) {
+                              return (
+                                <div key={i}>
+                                  <strong>{`${array[1]}`}</strong>
+                                  {array[2].map((timeRange, i) => (
+                                    <ul key={i}>
+                                      <li>{`${timeRange}`}</li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          })}
+                        </li>
+                        <li>
+                          <strong>Saturday: </strong>
+                          {weekdayAvailability['saturday'].map((range, i) => {
+                            if (range.length) {
+                              return <p key={i}>{`${range}`}</p>;
+                            }
+                          })}
+                          {weekdayAvailability['dates'].map((array, i) => {
+                            if (array.includes('saturday')) {
+                              return (
+                                <div key={i}>
+                                  <strong>{`${array[1]}`}</strong>
+                                  {array[2].map((timeRange, i) => (
+                                    <ul key={i}>
+                                      <li>{`${timeRange}`}</li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          })}
+                        </li>
+                        <li>
+                          <strong>Sunday: </strong>
+                          {weekdayAvailability['sunday'].map((range, i) => {
+                            if (range.length) {
+                              return <p key={i}>{`${range}`}</p>;
+                            }
+                          })}
+                          {weekdayAvailability['dates'].map((array, i) => {
+                            if (array.includes('sunday')) {
+                              return (
+                                <div key={i}>
+                                  <strong>{`${array[1]}`}</strong>
+                                  {array[2].map((timeRange, i) => (
+                                    <ul key={i}>
+                                      <li>{`${timeRange}`}</li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          })}
+                        </li>
+                      </ul>
+                    </td>
+                  </tr>
+                </tbody>
+              )}
+            </table>
+            <table className="striped centered">
+              <thead>
+                <tr>
+                  <th>Day of Week</th>
                   <th>Unavailable Times</th>
-                  <th>Total Scheduled Hours</th>
-                  <th>Total Available Hours</th>
                 </tr>
               </thead>
               {busyTimes && (
@@ -248,12 +477,26 @@ export default () => {
                           { weekday: 'long' }
                         )}
                       </td>
-                      <td>Nothing yet</td>
                       <td>{`${meeting.date}, ${meeting.start_time_formatted}-${meeting.end_time_formatted}`}</td>
-                      <td>Nothing yet</td>
-                      <td>Nothing yet</td>
                     </tr>
                   ))}
+                </tbody>
+              )}
+            </table>
+            <table className="striped centered">
+              <thead>
+                <tr>
+                  <th>Total Scheduled Hours</th>
+                  <th>Total Available Hours</th>
+                </tr>
+              </thead>
+              {totalScheduledHours && (
+                <tbody>
+                    <tr>
+                      <td>{totalScheduledHours}</td>
+                      <td>Nothing yet</td>
+                    </tr>
+                  
                 </tbody>
               )}
             </table>
