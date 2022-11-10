@@ -85,12 +85,12 @@ export default () => {
   };
 
   const fetchUser = async () => {
-    const result = await fetch(
-      `/api/users/${user.split('/')[4]}`
-    ).then((res) => res.json())
+    const result = await fetch(`/api/users/${user.split('/')[4]}`).then((res) =>
+      res.json()
+    );
 
-    setNamedUser(result.resource)
-  }
+    setNamedUser(result.resource);
+  };
 
   const getDayOfWeek = (date) => {
     return new Date(date)
@@ -103,8 +103,8 @@ export default () => {
     const splitHours = hours.toString().split('.');
     let humanReadable;
 
-    if(parseInt(splitHours[0]) === 0 && parseInt(splitHours[1]) === 0) {
-      return 'N/A'
+    if (parseInt(splitHours[0]) === 0 && parseInt(splitHours[1]) === 0) {
+      return 'N/A';
     }
 
     if (parseInt(splitHours[0]) > 0) {
@@ -121,10 +121,10 @@ export default () => {
   };
 
   const setTotalHoursAvailToBook = (scheduledHours, availableHours) => {
-    const diff = Math.abs(scheduledHours - availableHours)
-    const humanReadable = convertToHumanReadableTime(diff)
-    return humanReadable
-  }
+    const diff = Math.abs(scheduledHours - availableHours);
+    const humanReadable = convertToHumanReadableTime(diff);
+    return humanReadable;
+  };
 
   if (busyTimes?.length) {
     busyTimes.map((meeting, i) => {
@@ -459,12 +459,12 @@ export default () => {
   });
 
   useEffect(() => {
-    setTotalHoursAvailToBook()
-  })
+    setTotalHoursAvailToBook();
+  });
 
   useEffect(() => {
     fetchUser();
-  }, [])
+  }, []);
 
   return (
     <div className="event-avail-selection-box">
@@ -596,28 +596,35 @@ export default () => {
                         : 'N/A'}
                     </td>
                     <td>
-                      {convertToHumanReadableTime(scheduledHoursAndAvailTotals[day][0])}
+                      {convertToHumanReadableTime(
+                        scheduledHoursAndAvailTotals[day][0]
+                      )}
                     </td>
                     <td>
-                      {setTotalHoursAvailToBook(scheduledHoursAndAvailTotals[day][0], scheduledHoursAndAvailTotals[day][1])}
+                      {setTotalHoursAvailToBook(
+                        scheduledHoursAndAvailTotals[day][0],
+                        scheduledHoursAndAvailTotals[day][1]
+                      )}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <div style={{fontSize: 'xx-large'}}>
-            <PopupButton
-                          url={namedUser?.scheduling_url}
-                          rootElement={document.getElementById('root')}
-                          text={`Book a meeting with ${namedUser?.name.split(' ')[0] || ''}`}
-                          styles={{
-                            backgroundColor: 'rgb(238,110,115,0.1)',
-                            borderRadius: 60,
-                            borderWidth: 0,
-                            cursor: 'pointer',
-                            fontWeight: 'bolder',
-                          }}
-                        />
+            <div style={{ fontSize: 'xx-large' }}>
+              <PopupButton
+                url={namedUser?.scheduling_url}
+                rootElement={document.getElementById('root')}
+                text={`Book a meeting with ${
+                  namedUser?.name.split(' ')[0] || ''
+                }`}
+                styles={{
+                  backgroundColor: 'rgb(238,110,115,0.1)',
+                  borderRadius: 60,
+                  borderWidth: 0,
+                  cursor: 'pointer',
+                  fontWeight: 'bolder',
+                }}
+              />
             </div>
           </div>
         ) : (

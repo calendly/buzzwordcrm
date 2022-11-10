@@ -151,34 +151,27 @@ router
             calendly_uid
           );
 
-        res.json({availabilitySchedules});
+        res.json({ availabilitySchedules });
       } catch (error) {
         next(error);
       }
     }
   )
-  .get(
-    '/users/:uuid',
-    isUserAuthenticated,
-    async (req, res, next) => {
-      try {
-        const { access_token, refresh_token } = req.user;
+  .get('/users/:uuid', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token } = req.user;
 
-        const calendlyService = new CalendlyService(
-          access_token,
-          refresh_token
-        )
+      const calendlyService = new CalendlyService(access_token, refresh_token);
 
-        const { uuid } = req.params;
+      const { uuid } = req.params;
 
-        const { resource } = await calendlyService.getUser(uuid)
+      const { resource } = await calendlyService.getUser(uuid);
 
-        res.json({resource});
-      } catch (error) {
-        next(error)
-      }
+      res.json({ resource });
+    } catch (error) {
+      next(error);
     }
-  )
+  })
   .get('/authenticate', async (req, res) => {
     let user;
 
