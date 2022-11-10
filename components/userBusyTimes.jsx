@@ -16,7 +16,6 @@ export default () => {
   const [schedule, setSchedule] = useState([]);
   const [endTime, setEndTime] = useState();
   const [availUser, setAvailUser] = useState();
-  const [showAlert, setShowAlert] = useState(true);
   const [monTotalBusy, setMonTotalBusy] = useState(0);
   const [tuesTotalBusy, setTuesTotalBusy] = useState(0);
   const [wedTotalBusy, setWedTotalBusy] = useState(0);
@@ -80,6 +79,30 @@ export default () => {
     const result = await fetch(
       `/api/user_availability_schedules?user=${availUser}`
     ).then((res) => res.json());
+
+    let countDays = 0
+    result.availabilitySchedules.forEach((schedule) => {
+      schedule.rules.forEach((rule) => {
+        const endCheck = JSON.stringify(new Date(endTime)).split('T')[0].slice(1);
+        const startCheck = JSON.stringify(new Date(date)).split('T')[0].slice(1)
+
+        if(rule.date >= startCheck && rule.date <= endCheck && !rule.intervals.length) {
+          countDays++
+        }
+      });
+    });
+
+    //This takes care of when the requested user has no availability across the entire 7-day range. 
+    //Data is always returned from this endpoint because there is no date param (just a user param), so looping through the data is required.
+    //You would think countDays should be 6, but rendering requires multiplying by 2
+    if(countDays >= 12) {
+      const start = new Date(date).toString().split(' ')
+        const end = new Date(endTime).toString().split(' ')
+      alert(
+        `\nNo availability found between ${start[1]} ${start[2]}, ${start[3]} and ${end[1]} ${end[2]}, ${end[3]}`
+      );
+      window.location.reload();
+    }
 
     setSchedule(result.availabilitySchedules);
   };
@@ -287,7 +310,7 @@ export default () => {
             rule.intervals.length
           ) {
             if (
-              //The date is the the format yyyy-mm-dd, which doesn't work with the Date constructor
+              //The date is in the format yyyy-mm-dd, which doesn't work with the Date constructor
               getDayOfWeek(rule.date.split('-').join('/')) === 'monday'
             ) {
               rule.intervals.map((range) => {
@@ -391,27 +414,50 @@ export default () => {
     });
   };
 
+  const convertToIndvTimeZone = (isoDate) => {
+    const localDate = new Date(isoDate).toString();
+    const hourAndMinute = localDate.split(' ')[4].slice(0, 5);
+
+    return hourAndMinute;
+  };
+
   if (schedule?.length) {
     schedule.map((availability, i) =>
       availability.rules.map((rule) => {
         const milliseconds = new Date(rule.date).getTime();
-        const endCheck = new Date(endTime).getTime();
+        const chosenEndCheck = new Date(endTime).getTime();
+        const chosenStartCheck = JSON.stringify(date).split('T')[1].slice(0, 5);
+        const ruleStartTime = rule.start_time;
         if (
           rule.type === 'date' &&
-          milliseconds <= endCheck &&
+          milliseconds <= chosenEndCheck &&
           milliseconds >= date
         ) {
           const weekdayNum = new Date(rule.date).getDay();
 
-          weekdayAvailability['dates'].push([
-            weekDays[weekdayNum],
-            rule.date,
-            rule.intervals,
-          ]);
+          if (rule.intervals.length) {
+            rule.intervals.forEach((interval, i) => {
+              if (interval.to > convertToIndvTimeZone(date)) {
+                weekdayAvailability['dates'].push([
+                  weekDays[weekdayNum],
+                  rule.date,
+                  [interval],
+                ]);
+              }
+            });
+          }
 
           weekdayAvailability[`${weekDays[weekdayNum]}`].sort();
         } else if (rule.type === 'wday') {
-          weekdayAvailability[`${rule.wday}`].push(rule.intervals);
+
+          if (rule.intervals.length) {
+            rule.intervals.forEach((interval, i) => {
+              if (interval.to > convertToIndvTimeZone(date)) {
+                weekdayAvailability[`${rule.wday}`].push([interval]);
+              }
+            });
+          }
+
           weekdayAvailability[`${rule.wday}`].sort();
         }
       })
@@ -419,27 +465,6 @@ export default () => {
 
     formatAvailScheduleTime(weekdayAvailability);
     formatDatesArrTimeRange(weekdayAvailability['dates']);
-  }
-
-  if (weekdayAvailability.dates.length && showAlert) {
-    //This checks if each day of the week is empty; thus, the user is unavailable for the 7-day period
-    const sevenDaysCheck = weekdayAvailability.dates.filter(
-      (date) => !date[2].length
-    );
-    if (sevenDaysCheck.length >= 7) {
-      const start = new Date(queryParams.split('=')[1].substring(0, 24))
-        .toString()
-        .split(' ');
-      const end = new Date(queryParams.split('=')[2].substring(0, 24))
-        .toString()
-        .split(' ');
-
-      alert(
-        `\nNo availability found between ${start[1]} ${start[2]}, ${start[3]} and ${end[1]} ${end[2]}, ${end[3]}`
-      );
-      setShowAlert(!showAlert);
-      window.location.reload();
-    }
   }
 
   useEffect(() => {
