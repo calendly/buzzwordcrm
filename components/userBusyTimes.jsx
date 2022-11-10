@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
+import { PopupButton } from 'react-calendly';
 import moment from 'moment';
 
 export default () => {
@@ -604,6 +605,20 @@ export default () => {
                 ))}
               </tbody>
             </table>
+            <div style={{fontSize: 'xx-large'}}>
+            <PopupButton
+                          url={namedUser?.scheduling_url}
+                          rootElement={document.getElementById('root')}
+                          text={`Book a meeting with ${namedUser?.name.split(' ')[0] || ''}`}
+                          styles={{
+                            backgroundColor: 'rgb(238,110,115,0.1)',
+                            borderRadius: 60,
+                            borderWidth: 0,
+                            cursor: 'pointer',
+                            fontWeight: 'bolder',
+                          }}
+                        />
+            </div>
           </div>
         ) : (
           ''
