@@ -16,10 +16,23 @@ export default () => {
   const [endTime, setEndTime] = useState();
   const [availUser, setAvailUser] = useState();
   const [showAlert, setShowAlert] = useState(true);
-  const [totalScheduledHours, setTotalScheduledHours] = useState(0);
-  const [totalScheduledHoursMilli, setTotalScheduledHoursMilli] = useState(0);
-  const [totalAvailHoursMilli, setTotalAvailHoursMilli] = useState(0);
-  const [totalAvailToBook, settotalAvailToBook] = useState(0);
+  const [monTotalBusy, setMonTotalBusy] = useState(0);
+  const [tuesTotalBusy, setTuesTotalBusy] = useState(0);
+  const [wedTotalBusy, setWedTotalBusy] = useState(0);
+  const [thursTotalBusy, setThursTotalBusy] = useState(0);
+  const [friTotalBusy, setFriTotalBusy] = useState(0);
+  const [satTotalBusy, setSatTotalBusy] = useState(0);
+  const [sunTotalBusy, setSunTotalBusy] = useState(0);
+  const [monTotalAvail, setMonTotalAvail] = useState(0);
+  const [tuesTotalAvail, setTuesTotalAvail] = useState(0);
+  const [wedTotalAvail, setWedTotalAvail] = useState(0);
+  const [thursTotalAvail, setThursTotalAvail] = useState(0);
+  const [friTotalAvail, setFriTotalAvail] = useState(0);
+  const [satTotalAvail, setSatTotalAvail] = useState(0);
+  const [sunTotalAvail, setSunTotalAvail] = useState(0);
+  const [namedUser, setNamedUser] = useState();
+
+  const busyTimesObj = {};
 
   const weekDays = [
     'monday',
@@ -42,6 +55,16 @@ export default () => {
     dates: [],
   };
 
+  const scheduledHoursAndAvailTotals = {
+    monday: [monTotalBusy, monTotalAvail],
+    tuesday: [tuesTotalBusy, tuesTotalAvail],
+    wednesday: [wedTotalBusy, wedTotalAvail],
+    thursday: [thursTotalBusy, thursTotalAvail],
+    friday: [friTotalBusy, friTotalAvail],
+    saturday: [satTotalBusy, satTotalAvail],
+    sunday: [sunTotalBusy, sunTotalAvail],
+  };
+
   const fetchBusyTimesData = async () => {
     const result = await fetch(
       `/api/user_busy_times?user=${user}${queryParams}`
@@ -49,69 +72,6 @@ export default () => {
 
     setBusyTimes(result.busyTimes);
   };
-
-  const setBusyHours = () => {
-    let total = 0;
-
-    if (busyTimes?.length) {
-      busyTimes.map((timeRangeObj) => {
-        const startTime = moment(
-          new Date(timeRangeObj.start_time),
-          'HH:mm:ss a'
-        );
-        const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
-        const duration = moment.duration(endTime.diff(startTime));
-        total += duration
-      });
-    }
-    total = (total/(60 * 60 * 1000)).toFixed(2)
-    const splitTotal = total.toString().split('.')
-    const humanReadableTotal = `${parseInt(splitTotal[0])} hours and ${Math.floor((60 * ((parseInt(splitTotal[1]))))/100)} minutes`
-    
-    setTotalScheduledHours(humanReadableTotal)
-    setTotalScheduledHoursMilli(total)
-  };
-
-  setAvailHours = () => {
-    const availSchedArr = []
-    let total = 0
-    if (schedule?.length) {
-      schedule.map((availability, i) =>
-        availability.rules.map((rule) => {
-          const milliseconds = new Date(rule.date).getTime();
-          const endCheck = new Date(endTime).getTime();
-          if (
-            rule.type === 'date' &&
-            milliseconds <= endCheck &&
-            milliseconds >= date &&
-            rule.intervals.length
-          ) {
-            availSchedArr.push(rule.intervals)
-          } else if (rule.type === 'wday' && rule.intervals.length) {
-            availSchedArr.push(rule.intervals);
-          }
-        })
-      );
-    }
-    availSchedArr.map((timeArr) => {
-      timeArr.map((range) => {
-        const fromTime = moment(
-        range.from,
-        'HH:mm:ss a'
-      );
-      const toTime = moment(range.to, 'HH:mm:ss a');
-      const duration = moment.duration(toTime.diff(fromTime));
-      total += duration
-      })
-      
-    });
-    total = (total/(60 * 60 * 1000)).toFixed(2)
-    setTotalAvailHoursMilli(total)
-    const availHoursToBook = Math.abs(totalAvailHoursMilli - totalScheduledHoursMilli)
-    const splitTotal = availHoursToBook.toString().split('.')
-    const humanReadableTotal = `${parseInt(splitTotal[0])} hours and ${Math.floor((60 * ((parseInt(splitTotal[1]))))/100)} minutes`
-    settotalAvailToBook(humanReadableTotal)
-  }
 
   const fetchUserAvailabilityData = async () => {
     //This is to avoid nested mapping through the schedules array at first render
@@ -121,6 +81,279 @@ export default () => {
     ).then((res) => res.json());
 
     setSchedule(result.availabilitySchedules);
+  };
+
+  const fetchUser = async () => {
+    const result = await fetch(
+      `/api/users/${user.split('/')[4]}`
+    ).then((res) => res.json())
+
+    setNamedUser(result.resource)
+  }
+
+  const getDayOfWeek = (date) => {
+    return new Date(date)
+      .toLocaleDateString('default', { weekday: 'long' })
+      .toLocaleLowerCase();
+  };
+
+  const convertToHumanReadableTime = (milliseconds) => {
+    const hours = (milliseconds / (60 * 60 * 1000)).toFixed(2);
+    const splitHours = hours.toString().split('.');
+    let humanReadable;
+
+    if(parseInt(splitHours[0]) === 0 && parseInt(splitHours[1]) === 0) {
+      return 'N/A'
+    }
+
+    if (parseInt(splitHours[0]) > 0) {
+      humanReadable = `${parseInt(splitHours[0])} hour(s) and ${Math.floor(
+        (60 * parseInt(splitHours[1])) / 100
+      )} minutes`;
+    } else {
+      humanReadable = `${Math.ceil(
+        (60 * parseInt(splitHours[1])) / 100
+      )} minutes`;
+    }
+
+    return humanReadable;
+  };
+
+  const setTotalHoursAvailToBook = (scheduledHours, availableHours) => {
+    const diff = Math.abs(scheduledHours - availableHours)
+    const humanReadable = convertToHumanReadableTime(diff)
+    return humanReadable
+  }
+
+  if (busyTimes?.length) {
+    busyTimes.map((meeting, i) => {
+      if (!busyTimesObj[getDayOfWeek(meeting.date)]) {
+        busyTimesObj[getDayOfWeek(meeting.date)] = [];
+        busyTimesObj[getDayOfWeek(meeting.date)].push(
+          `${meeting.date}, ${meeting.start_time_formatted}-${meeting.end_time_formatted}`
+        );
+      } else {
+        busyTimesObj[getDayOfWeek(meeting.date)].push(
+          `${meeting.date}, ${meeting.start_time_formatted}-${meeting.end_time_formatted}`
+        );
+      }
+    });
+  }
+
+  const setBusyHours = () => {
+    let monTotal = 0;
+    let tuesTotal = 0;
+    let wedTotal = 0;
+    let thursTotal = 0;
+    let friTotal = 0;
+    let satTotal = 0;
+    let sunTotal = 0;
+
+    if (busyTimes?.length) {
+      busyTimes.map((timeRangeObj) => {
+        if (getDayOfWeek(timeRangeObj.start_time) === 'monday') {
+          const startTime = moment(
+            new Date(timeRangeObj.start_time),
+            'HH:mm:ss a'
+          );
+          const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
+          const duration = moment.duration(endTime.diff(startTime));
+          setMonTotalBusy((monTotal += duration));
+        } else if (getDayOfWeek(timeRangeObj.start_time) === 'tuesday') {
+          const startTime = moment(
+            new Date(timeRangeObj.start_time),
+            'HH:mm:ss a'
+          );
+          const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
+          const duration = moment.duration(endTime.diff(startTime));
+          setTuesTotalBusy((tuesTotal += duration));
+        } else if (getDayOfWeek(timeRangeObj.start_time) === 'wednesday') {
+          const startTime = moment(
+            new Date(timeRangeObj.start_time),
+            'HH:mm:ss a'
+          );
+          const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
+          const duration = moment.duration(endTime.diff(startTime));
+          setWedTotalBusy((wedTotal += duration));
+        } else if (getDayOfWeek(timeRangeObj.start_time) === 'thursday') {
+          const startTime = moment(
+            new Date(timeRangeObj.start_time),
+            'HH:mm:ss a'
+          );
+          const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
+          const duration = moment.duration(endTime.diff(startTime));
+          setThursTotalBusy((thursTotal += duration));
+        } else if (getDayOfWeek(timeRangeObj.start_time) === 'friday') {
+          const startTime = moment(
+            new Date(timeRangeObj.start_time),
+            'HH:mm:ss a'
+          );
+          const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
+          const duration = moment.duration(endTime.diff(startTime));
+          setFriTotalBusy((friTotal += duration));
+        } else if (getDayOfWeek(timeRangeObj.start_time) === 'saturday') {
+          const startTime = moment(
+            new Date(timeRangeObj.start_time),
+            'HH:mm:ss a'
+          );
+          const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
+          const duration = moment.duration(endTime.diff(startTime));
+          setSatTotalBusy((satTotal += duration));
+        } else if (getDayOfWeek(timeRangeObj.start_time) === 'sunday') {
+          const startTime = moment(
+            new Date(timeRangeObj.start_time),
+            'HH:mm:ss a'
+          );
+          const endTime = moment(new Date(timeRangeObj.end_time), 'HH:mm:ss a');
+          const duration = moment.duration(endTime.diff(startTime));
+          setSunTotalBusy((sunTotal += duration));
+        }
+      });
+    }
+  };
+
+  setAvailHours = () => {
+    let monTotal = 0;
+    let tuesTotal = 0;
+    let wedTotal = 0;
+    let thursTotal = 0;
+    let friTotal = 0;
+    let satTotal = 0;
+    let sunTotal = 0;
+
+    if (schedule?.length) {
+      //Below appears repetitive, but the conditionals are quite precise and different states are set accordingly
+      schedule.map((availability) => {
+        availability.rules.map((rule) => {
+          const milliseconds = new Date(rule.date).getTime();
+          const endCheck = new Date(endTime).getTime();
+          if (rule.type === 'wday' && rule.intervals.length) {
+            if (rule.wday === 'monday') {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setMonTotalAvail((monTotal += duration));
+              });
+            } else if (rule.wday === 'tuesday') {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setTuesTotalAvail((tuesTotal += duration));
+              });
+            } else if (rule.wday === 'wednesday') {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setWedTotalAvail((wedTotal += duration));
+              });
+            } else if (rule.wday === 'thursday') {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setThursTotalAvail((thursTotal += duration));
+              });
+            } else if (rule.wday === 'friday') {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setFriTotalAvail((friTotal += duration));
+              });
+            } else if (rule.wday === 'saturday') {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setSatTotalAvail((satTotal += duration));
+              });
+            } else if (rule.wday === 'sunday') {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setSunTotalAvail((sunTotal += duration));
+              });
+            }
+          }
+          if (
+            rule.type === 'date' &&
+            milliseconds <= endCheck &&
+            milliseconds >= date &&
+            rule.intervals.length
+          ) {
+            if (
+              //The date is the the format yyyy-mm-dd, which doesn't work with the Date constructor
+              getDayOfWeek(rule.date.split('-').join('/')) === 'monday'
+            ) {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setMonTotalAvail((monTotal += duration));
+              });
+            } else if (
+              getDayOfWeek(rule.date.split('-').join('/')) === 'tuesday'
+            ) {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setTuesTotalAvail((tuesTotal += duration));
+              });
+            } else if (
+              getDayOfWeek(rule.date.split('-').join('/')) === 'wednesday'
+            ) {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setWedTotalAvail((wedTotal += duration));
+              });
+            } else if (
+              getDayOfWeek(rule.date.split('-').join('/')) === 'thursday'
+            ) {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setThursTotalAvail((thursTotal += duration));
+              });
+            } else if (
+              getDayOfWeek(rule.date.split('-').join('/')) === 'friday'
+            ) {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setFriTotalAvail((friTotal += duration));
+              });
+            } else if (
+              getDayOfWeek(rule.date.split('-').join('/')) === 'saturday'
+            ) {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setSatTotalAvail((satTotal += duration));
+              });
+            } else if (
+              getDayOfWeek(rule.date.split('-').join('/')) === 'sunday'
+            ) {
+              rule.intervals.map((range) => {
+                const fromTime = moment(range.from, 'HH:mm:ss a');
+                const toTime = moment(range.to, 'HH:mm:ss a');
+                const duration = moment.duration(toTime.diff(fromTime));
+                setSunTotalAvail((sunTotal += duration));
+              });
+            }
+          }
+        });
+      });
+    }
   };
 
   formatAvailScheduleTime = (availability) => {
@@ -221,13 +454,22 @@ export default () => {
   });
 
   useEffect(() => {
-    setAvailHours()
+    setAvailHours();
+  });
+
+  useEffect(() => {
+    setTotalHoursAvailToBook()
   })
+
+  useEffect(() => {
+    fetchUser();
+  }, [])
 
   return (
     <div className="event-avail-selection-box">
+      <h5>{`${namedUser?.name.split(' ')[0] || ''}'s Availability`}</h5>
       <h6 className="event-avail-header">
-        Click below to see **Rasheeda's** availability for by start date
+        Choose a start DATE/TIME below, then click SUBMIT
       </h6>
       <div>
         <strong>
@@ -302,224 +544,65 @@ export default () => {
           Submit
         </button>
       )}
+      {/* With regards to setting keys in mapping, only Calendly meetings have a unique identifier. */}
       <div className="event-type-and-user-availability">
         {busyTimes?.length && schedule?.length ? (
           <div className="row">
             <table className="striped centered">
               <thead>
                 <tr>
-                  <th>Availability Range(s)</th>
-                </tr>
-              </thead>
-              {weekdayAvailability && (
-                <tbody>
-                  <tr>
-                    <td>
-                      <ul>
-                        <li>
-                          <strong>Monday: </strong>
-                          {/* This is to check if there is no availability on this date since all of the arrays can be empty.
-                          I want to avoid going into the mapping, if the arrays are all empty.  */}
-                          {!weekdayAvailability['monday'].every(array => !array.length) ?  weekdayAvailability['monday'].map((range, i) => {
-                            if (range.length) {
-                              return <p key={i}>{`${range}`}</p>;
-                            }
-                          }): 'Unavailable'}
-                          {!weekdayAvailability['monday'].every(array => !array.length) ?  weekdayAvailability['dates'].map((array, i) => {
-                            if (array.includes('monday')) {
-                              return (
-                                <div key={i}>
-                                  <strong>{`${array[1]}`}</strong>
-                                  {array[2].map((timeRange, i) => (
-                                    <ul key={i}>
-                                      <li>{`${timeRange}`}</li>
-                                    </ul>
-                                  ))}
-                                </div>
-                              );
-                            }
-                          }): ''}
-                        </li>
-                        <li>
-                          <strong>Tuesday: </strong>
-                          {!weekdayAvailability['tuesday'].every(array => !array.length) ?  weekdayAvailability['tuesday'].map((range, i) => {
-                            if (range.length) {
-                              return <p key={i}>{`${range}`}</p>;
-                            }
-                          }): 'Unavailable'}
-                          {!weekdayAvailability['tuesday'].every(array => !array.length) ? weekdayAvailability['dates'].map((array, i) => {
-                            if (array.includes('tuesday')) {
-                              return (
-                                <div key={i}>
-                                  <strong>{`${array[1]}`}</strong>
-                                  {array[2].map((timeRange, i) => (
-                                    <ul key={i}>
-                                      <li>{`${timeRange}`}</li>
-                                    </ul>
-                                  ))}
-                                </div>
-                              );
-                            }
-                          }): ''}
-                        </li>
-                        <li>
-                          <strong>Wednesday: </strong>
-                          {!weekdayAvailability['wednesday'].every(array => !array.length) ? weekdayAvailability['wednesday'].map((range, i) => {
-                            if (range.length) {
-                              return <p key={i}>{`${range}`}</p>;
-                            }
-                          }): 'Unavailable'}
-                          {!weekdayAvailability['wednesday'].every(array => !array.length) ? weekdayAvailability['dates'].map((array, i) => {
-                            if (array.includes('wednesday')) {
-                              return (
-                                <div key={i}>
-                                  <strong>{`${array[1]}`}</strong>
-                                  {array[2].map((timeRange, i) => (
-                                    <ul key={i}>
-                                      <li>{`${timeRange}`}</li>
-                                    </ul>
-                                  ))}
-                                </div>
-                              );
-                            }
-                          }): ''}
-                        </li>
-                        <li>
-                          <strong>Thursday: </strong>
-                          {!weekdayAvailability['thursday'].every(array => !array.length) ? weekdayAvailability['thursday'].map((range, i) => {
-                            if (range.length) {
-                              return <p key={i}>{`${range}`}</p>;
-                            }
-                          }): 'Unavailable'}
-                          {!weekdayAvailability['thursday'].every(array => !array.length) ? weekdayAvailability['dates'].map((array, i) => {
-                            if (array.includes('thursday')) {
-                              return (
-                                <div key={i}>
-                                  <strong>{`${array[1]}`}</strong>
-                                  {array[2].map((timeRange, i) => (
-                                    <ul key={i}>
-                                      <li>{`${timeRange}`}</li>
-                                    </ul>
-                                  ))}
-                                </div>
-                              );
-                            }
-                          }): ''}
-                        </li>
-                        <li>
-                          <strong>Friday: </strong>
-                          {!weekdayAvailability['friday'].every(array => !array.length) ? weekdayAvailability['friday'].map((range, i) => {
-                            if (range.length) {
-                              return <p key={i}>{`${range}`}</p>;
-                            }
-                          }): 'Unavailable'}
-                          {!weekdayAvailability['friday'].every(array => !array.length) ? weekdayAvailability['dates'].map((array, i) => {
-                            if (array.includes('friday')) {
-                              return (
-                                <div key={i}>
-                                  <strong>{`${array[1]}`}</strong>
-                                  {array[2].map((timeRange, i) => (
-                                    <ul key={i}>
-                                      <li>{`${timeRange}`}</li>
-                                    </ul>
-                                  ))}
-                                </div>
-                              );
-                            }
-                          }): ''}
-                        </li>
-                        <li>
-                          <strong>Saturday: </strong>
-                          {/* {weekdayAvailability['saturday'].every(array => !array.length) && <p>Unavailable</p>} */}
-                          {!weekdayAvailability['saturday'].every(array => !array.length) ? weekdayAvailability['saturday'].map((range, i) => {
-                            if (range.length) {
-                              return <p key={i}>{`${range}`}</p>;
-                            }
-                          }): 'Unavailable'}
-                          {!weekdayAvailability['saturday'].every(array => !array.length) ?  weekdayAvailability['dates'].map((array, i) => {
-                            if (array.includes('saturday')) {
-                              return (
-                                <div key={i}>
-                                  <strong>{`${array[1]}`}</strong>
-                                  {array[2].map((timeRange, i) => (
-                                    <ul key={i}>
-                                      <li>{`${timeRange}`}</li>
-                                    </ul>
-                                  ))}
-                                </div>
-                              );
-                            }
-                          }): ''}
-                        </li>
-                        <li>
-                          <strong>Sunday: </strong>
-
-                          {!weekdayAvailability['sunday'].every(array => !array.length) ?  weekdayAvailability['sunday'].map((range, i) => {
-                            if (range.length) {
-                              return <p key={i}>{`${range}`}</p>;
-                            }
-                          }): 'Unavailable'}
-                          {!weekdayAvailability['sunday'].every(array => !array.length) ?  weekdayAvailability['dates'].map((array, i) => {
-                            if (array.includes('sunday')) {
-                              return (
-                                <div key={i}>
-                                  <strong>{`${array[1]}`}</strong>
-                                  {array[2].map((timeRange, i) => (
-                                    <ul key={i}>
-                                      <li>{`${timeRange}`}</li>
-                                    </ul>
-                                  ))}
-                                </div>
-                              );
-                            }
-                          }): ''}
-                        </li>
-                      </ul>
-                    </td>
-                  </tr>
-                </tbody>
-              )}
-            </table>
-            <table className="striped centered">
-              <thead>
-                <tr>
                   <th>Day of Week</th>
+                  <th>Availability Range(s)</th>
                   <th>Unavailable Times</th>
-                </tr>
-              </thead>
-              {busyTimes && (
-                <tbody>
-                  {busyTimes.map((meeting, i) => (
-                    //Only Calendly meetings have the event property. External events don't have a unique identifier.
-                    <tr key={meeting.event?.uri ? meeting.event.uri : i}>
-                      <td>
-                        {new Date(meeting.start_time).toLocaleDateString(
-                          'default',
-                          { weekday: 'long' }
-                        )}
-                      </td>
-                      <td>{`${meeting.date}, ${meeting.start_time_formatted}-${meeting.end_time_formatted}`}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              )}
-            </table>
-            <table className="striped centered">
-              <thead>
-                <tr>
                   <th>Total Scheduled Hours</th>
                   <th>Total Available Hours To Book</th>
                 </tr>
               </thead>
-              {totalScheduledHours && (
-                <tbody>
-                    <tr>
-                      <td>{totalScheduledHours}</td>
-                      <td>{totalAvailToBook}</td>
-                    </tr>
-                  
-                </tbody>
-              )}
+              <tbody>
+                {weekDays.map((day, i) => (
+                  <tr key={i}>
+                    <td>{`${day.toLocaleUpperCase()}`}</td>
+                    <td>
+                      {!weekdayAvailability[day].every((array) => !array.length)
+                        ? weekdayAvailability[day].map((range, i) => {
+                            if (range.length) {
+                              return <p key={i}>{`${range}`}</p>;
+                            }
+                          })
+                        : 'Unavailable'}
+                      {!weekdayAvailability[day].every((array) => !array.length)
+                        ? weekdayAvailability['dates'].map((array, i) => {
+                            if (array.includes(day) && array[2].length) {
+                              return (
+                                <div key={i}>
+                                  <strong>{`${array[1]}`}</strong>
+                                  {array[2].map((timeRange, i) => (
+                                    <ul key={i}>
+                                      <li>{`${timeRange}`}</li>
+                                    </ul>
+                                  ))}
+                                </div>
+                              );
+                            }
+                          })
+                        : ''}
+                    </td>
+                    <td>
+                      {Object.keys(busyTimesObj).length && busyTimesObj[day]
+                        ? busyTimesObj[day].map((range, i) => (
+                            <p key={i}>{`${range}`}</p>
+                          ))
+                        : 'N/A'}
+                    </td>
+                    <td>
+                      {convertToHumanReadableTime(scheduledHoursAndAvailTotals[day][0])}
+                    </td>
+                    <td>
+                      {setTotalHoursAvailToBook(scheduledHoursAndAvailTotals[day][0], scheduledHoursAndAvailTotals[day][1])}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
             </table>
           </div>
         ) : (

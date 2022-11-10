@@ -140,6 +140,14 @@ class CalendlyService {
     return data;
   };
 
+  getUser = async (userUri) => {
+    const url = `/users/${userUri}`;
+
+    const { data } = await this.request.get(url, this.requestConfiguration());
+
+    return data
+  }
+
   markAsNoShow = async (uri) => {
     const { data } = await this.request.post(
       '/invitee_no_shows',

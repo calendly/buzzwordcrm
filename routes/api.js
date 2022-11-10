@@ -157,6 +157,28 @@ router
       }
     }
   )
+  .get(
+    '/users/:uuid',
+    isUserAuthenticated,
+    async (req, res, next) => {
+      try {
+        const { access_token, refresh_token } = req.user;
+
+        const calendlyService = new CalendlyService(
+          access_token,
+          refresh_token
+        )
+
+        const { uuid } = req.params;
+
+        const { resource } = await calendlyService.getUser(uuid)
+
+        res.json({resource});
+      } catch (error) {
+        next(error)
+      }
+    }
+  )
   .get('/authenticate', async (req, res) => {
     let user;
 
