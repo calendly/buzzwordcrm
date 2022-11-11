@@ -113,7 +113,8 @@ export default () => {
     //This takes care of when the requested user has no availability across the entire 7-day range.
     //Data is always returned from this endpoint because there is no date param (just a user param), so looping through the data is required.
     //You would think countDays should be 6, but rendering requires multiplying by 2
-    if (countDays >= 12) {
+    //You have to take into account if user chooses a start date that pushes the queried date range to the next day, so subtract by 1 X 2 = 2, thus 10
+    if (countDays >= 10) {
       const start = new Date(date).toString().split(' ');
       const end = new Date(endTime).toString().split(' ');
       alert(
