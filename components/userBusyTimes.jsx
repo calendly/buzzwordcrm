@@ -609,7 +609,16 @@ export default () => {
                         if (array.includes(day) && array[2].length) {
                           return (
                             <div key={i}>
-                              <strong>{`${array[1]}`}</strong>
+                              <strong
+                                style={{
+                                  backgroundColor: 'rgb(238,110,115,0.1)',
+                                  borderRadius: 60,
+                                  borderWidth: 0,
+                                  cursor: 'pointer',
+                                  fontWeight: 'bolder',
+                                  textDecoration: 'underline',
+                                }}
+                              >{`${array[1]}`}</strong>
                               {array[2].map((timeRange, i) => (
                                 <ul key={i}>
                                   <li>{`${timeRange}`}</li>
