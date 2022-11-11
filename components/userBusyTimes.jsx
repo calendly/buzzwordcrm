@@ -55,6 +55,16 @@ export default () => {
     dates: [],
   };
 
+  const weekdayAvailabilityForRender = {
+    monday: [],
+    tuesday: [],
+    wednesday: [],
+    thursday: [],
+    friday: [],
+    saturday: [],
+    sunday: [],
+  };
+
   const scheduledHoursAndAvailTotals = {
     monday: [monTotalBusy, monTotalAvail],
     tuesday: [tuesTotalBusy, tuesTotalAvail],
@@ -80,24 +90,32 @@ export default () => {
       `/api/user_availability_schedules?user=${availUser}`
     ).then((res) => res.json());
 
-    let countDays = 0
+    let countDays = 0;
     result.availabilitySchedules.forEach((schedule) => {
       schedule.rules.forEach((rule) => {
-        const endCheck = JSON.stringify(new Date(endTime)).split('T')[0].slice(1);
-        const startCheck = JSON.stringify(new Date(date)).split('T')[0].slice(1)
+        const endCheck = JSON.stringify(new Date(endTime))
+          .split('T')[0]
+          .slice(1);
+        const startCheck = JSON.stringify(new Date(date))
+          .split('T')[0]
+          .slice(1);
 
-        if(rule.date >= startCheck && rule.date <= endCheck && !rule.intervals.length) {
-          countDays++
+        if (
+          rule.date >= startCheck &&
+          rule.date <= endCheck &&
+          !rule.intervals.length
+        ) {
+          countDays++;
         }
       });
     });
 
-    //This takes care of when the requested user has no availability across the entire 7-day range. 
+    //This takes care of when the requested user has no availability across the entire 7-day range.
     //Data is always returned from this endpoint because there is no date param (just a user param), so looping through the data is required.
     //You would think countDays should be 6, but rendering requires multiplying by 2
-    if(countDays >= 12) {
-      const start = new Date(date).toString().split(' ')
-        const end = new Date(endTime).toString().split(' ')
+    if (countDays >= 12) {
+      const start = new Date(date).toString().split(' ');
+      const end = new Date(endTime).toString().split(' ');
       alert(
         `\nNo availability found between ${start[1]} ${start[2]}, ${start[3]} and ${end[1]} ${end[2]}, ${end[3]}`
       );
@@ -144,9 +162,15 @@ export default () => {
   };
 
   const setTotalHoursAvailToBook = (scheduledHours, availableHours) => {
-    const diff = Math.abs(scheduledHours - availableHours);
-    const humanReadable = convertToHumanReadableTime(diff);
-    return humanReadable;
+    if (availableHours < scheduledHours) {
+      return 'No availability';
+    } else if (availableHours > scheduledHours) {
+      const diff = Math.abs(scheduledHours - availableHours);
+      const humanReadable = convertToHumanReadableTime(diff);
+      return humanReadable;
+    } else {
+      return 'No Availaility';
+    }
   };
 
   if (busyTimes?.length) {
@@ -164,6 +188,7 @@ export default () => {
     });
   }
 
+  //This function appears repetitive, but the conditionals are precise and each handles diff state
   const setBusyHours = () => {
     let monTotal = 0;
     let tuesTotal = 0;
@@ -236,6 +261,7 @@ export default () => {
     }
   };
 
+  //This function appears repetitive, but the conditionals are precise and each handles diff state
   setAvailHours = () => {
     let monTotal = 0;
     let tuesTotal = 0;
@@ -245,138 +271,108 @@ export default () => {
     let satTotal = 0;
     let sunTotal = 0;
 
-    if (schedule?.length) {
-      //Below appears repetitive, but the conditionals are quite precise and different states are set accordingly
-      schedule.map((availability) => {
-        availability.rules.map((rule) => {
-          const milliseconds = new Date(rule.date).getTime();
-          const endCheck = new Date(endTime).getTime();
-          if (rule.type === 'wday' && rule.intervals.length) {
-            if (rule.wday === 'monday') {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setMonTotalAvail((monTotal += duration));
-              });
-            } else if (rule.wday === 'tuesday') {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setTuesTotalAvail((tuesTotal += duration));
-              });
-            } else if (rule.wday === 'wednesday') {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setWedTotalAvail((wedTotal += duration));
-              });
-            } else if (rule.wday === 'thursday') {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setThursTotalAvail((thursTotal += duration));
-              });
-            } else if (rule.wday === 'friday') {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setFriTotalAvail((friTotal += duration));
-              });
-            } else if (rule.wday === 'saturday') {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setSatTotalAvail((satTotal += duration));
-              });
-            } else if (rule.wday === 'sunday') {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setSunTotalAvail((sunTotal += duration));
-              });
-            }
-          }
-          if (
-            rule.type === 'date' &&
-            milliseconds <= endCheck &&
-            milliseconds >= date &&
-            rule.intervals.length
-          ) {
-            if (
-              //The date is in the format yyyy-mm-dd, which doesn't work with the Date constructor
-              getDayOfWeek(rule.date.split('-').join('/')) === 'monday'
-            ) {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setMonTotalAvail((monTotal += duration));
-              });
-            } else if (
-              getDayOfWeek(rule.date.split('-').join('/')) === 'tuesday'
-            ) {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setTuesTotalAvail((tuesTotal += duration));
-              });
-            } else if (
-              getDayOfWeek(rule.date.split('-').join('/')) === 'wednesday'
-            ) {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setWedTotalAvail((wedTotal += duration));
-              });
-            } else if (
-              getDayOfWeek(rule.date.split('-').join('/')) === 'thursday'
-            ) {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setThursTotalAvail((thursTotal += duration));
-              });
-            } else if (
-              getDayOfWeek(rule.date.split('-').join('/')) === 'friday'
-            ) {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setFriTotalAvail((friTotal += duration));
-              });
-            } else if (
-              getDayOfWeek(rule.date.split('-').join('/')) === 'saturday'
-            ) {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setSatTotalAvail((satTotal += duration));
-              });
-            } else if (
-              getDayOfWeek(rule.date.split('-').join('/')) === 'sunday'
-            ) {
-              rule.intervals.map((range) => {
-                const fromTime = moment(range.from, 'HH:mm:ss a');
-                const toTime = moment(range.to, 'HH:mm:ss a');
-                const duration = moment.duration(toTime.diff(fromTime));
-                setSunTotalAvail((sunTotal += duration));
-              });
-            }
-          }
+    for (const timeRange of weekdayAvailabilityForRender.monday) {
+      if (timeRange.length) {
+        const flattenedArr = timeRange.flat();
+
+        flattenedArr.forEach((range) => {
+          const [start, end] = range.split('-');
+
+          const fromTime = moment(start, 'HH:mm:ss a');
+          const toTime = moment(end, 'HH:mm:ss a');
+          const duration = moment.duration(toTime.diff(fromTime));
+          setMonTotalAvail((monTotal += duration));
         });
-      });
+      }
+    }
+
+    for (const timeRange of weekdayAvailabilityForRender.tuesday) {
+      if (timeRange.length) {
+        const flattenedArr = timeRange.flat();
+
+        flattenedArr.forEach((range) => {
+          const [start, end] = range.split('-');
+
+          const fromTime = moment(start, 'HH:mm:ss a');
+          const toTime = moment(end, 'HH:mm:ss a');
+          const duration = moment.duration(toTime.diff(fromTime));
+          setTuesTotalAvail((tuesTotal += duration));
+        });
+      }
+    }
+
+    for (const timeRange of weekdayAvailabilityForRender.wednesday) {
+      if (timeRange.length) {
+        const flattenedArr = timeRange.flat();
+
+        flattenedArr.forEach((range) => {
+          const [start, end] = range.split('-');
+          const fromTime = moment(start, 'HH:mm:ss a');
+          const toTime = moment(end, 'HH:mm:ss a');
+          const duration = moment.duration(toTime.diff(fromTime));
+          setWedTotalAvail((wedTotal += duration));
+        });
+      }
+    }
+
+    for (const timeRange of weekdayAvailabilityForRender.thursday) {
+      if (timeRange.length) {
+        const flattenedArr = timeRange.flat();
+
+        flattenedArr.forEach((range) => {
+          const [start, end] = range.split('-');
+
+          const fromTime = moment(start, 'HH:mm:ss a');
+          const toTime = moment(end, 'HH:mm:ss a');
+          const duration = moment.duration(toTime.diff(fromTime));
+          setThursTotalAvail((thursTotal += duration));
+        });
+      }
+    }
+
+    for (const timeRange of weekdayAvailabilityForRender.friday) {
+      if (timeRange.length) {
+        const flattenedArr = timeRange.flat();
+
+        flattenedArr.forEach((range) => {
+          const [start, end] = range.split('-');
+
+          const fromTime = moment(start, 'HH:mm:ss a');
+          const toTime = moment(end, 'HH:mm:ss a');
+          const duration = moment.duration(toTime.diff(fromTime));
+          setFriTotalAvail((friTotal += duration));
+        });
+      }
+    }
+
+    for (const timeRange of weekdayAvailabilityForRender.saturday) {
+      if (timeRange.length) {
+        const flattenedArr = timeRange.flat();
+
+        flattenedArr.forEach((range) => {
+          const [start, end] = range.split('-');
+
+          const fromTime = moment(start, 'HH:mm:ss a');
+          const toTime = moment(end, 'HH:mm:ss a');
+          const duration = moment.duration(toTime.diff(fromTime));
+          setSatTotalAvail((satTotal += duration));
+        });
+      }
+    }
+
+    for (const timeRange of weekdayAvailabilityForRender.sunday) {
+      if (timeRange.length) {
+        const flattenedArr = timeRange.flat();
+
+        flattenedArr.forEach((range) => {
+          const [start, end] = range.split('-');
+
+          const fromTime = moment(start, 'HH:mm:ss a');
+          const toTime = moment(end, 'HH:mm:ss a');
+          const duration = moment.duration(toTime.diff(fromTime));
+          setSunTotalAvail((sunTotal += duration));
+        });
+      }
     }
   };
 
@@ -449,7 +445,6 @@ export default () => {
 
           weekdayAvailability[`${weekDays[weekdayNum]}`].sort();
         } else if (rule.type === 'wday') {
-
           if (rule.intervals.length) {
             rule.intervals.forEach((interval, i) => {
               if (interval.to > convertToIndvTimeZone(date)) {
@@ -465,6 +460,18 @@ export default () => {
 
     formatAvailScheduleTime(weekdayAvailability);
     formatDatesArrTimeRange(weekdayAvailability['dates']);
+  }
+
+  if (Object.keys(weekdayAvailability).length) {
+    for (const day in weekdayAvailability) {
+      if (weekdayAvailabilityForRender[day]) {
+        weekdayAvailabilityForRender[day].push(weekdayAvailability[day]);
+      } else {
+        weekdayAvailability[day].forEach((weekdayData) => {
+          weekdayAvailabilityForRender[weekdayData[0]].push(weekdayData[2]);
+        });
+      }
+    }
   }
 
   useEffect(() => {
@@ -589,29 +596,29 @@ export default () => {
                   <tr key={i}>
                     <td>{`${day.toLocaleUpperCase()}`}</td>
                     <td>
-                      {!weekdayAvailability[day].every((array) => !array.length)
+                      {!weekdayAvailabilityForRender[day].every(
+                        (array) => !array.length
+                      )
                         ? weekdayAvailability[day].map((range, i) => {
                             if (range.length) {
                               return <p key={i}>{`${range}`}</p>;
                             }
                           })
                         : 'Unavailable'}
-                      {!weekdayAvailability[day].every((array) => !array.length)
-                        ? weekdayAvailability['dates'].map((array, i) => {
-                            if (array.includes(day) && array[2].length) {
-                              return (
-                                <div key={i}>
-                                  <strong>{`${array[1]}`}</strong>
-                                  {array[2].map((timeRange, i) => (
-                                    <ul key={i}>
-                                      <li>{`${timeRange}`}</li>
-                                    </ul>
-                                  ))}
-                                </div>
-                              );
-                            }
-                          })
-                        : ''}
+                      {weekdayAvailability['dates'].map((array, i) => {
+                        if (array.includes(day) && array[2].length) {
+                          return (
+                            <div key={i}>
+                              <strong>{`${array[1]}`}</strong>
+                              {array[2].map((timeRange, i) => (
+                                <ul key={i}>
+                                  <li>{`${timeRange}`}</li>
+                                </ul>
+                              ))}
+                            </div>
+                          );
+                        }
+                      })}
                     </td>
                     <td>
                       {Object.keys(busyTimesObj).length && busyTimesObj[day]
@@ -626,10 +633,14 @@ export default () => {
                       )}
                     </td>
                     <td>
-                      {setTotalHoursAvailToBook(
-                        scheduledHoursAndAvailTotals[day][0],
-                        scheduledHoursAndAvailTotals[day][1]
-                      )}
+                      {!weekdayAvailabilityForRender[day].every(
+                        (array) => !array.length
+                      )
+                        ? setTotalHoursAvailToBook(
+                            scheduledHoursAndAvailTotals[day][0],
+                            scheduledHoursAndAvailTotals[day][1]
+                          )
+                        : 'No Availability'}
                     </td>
                   </tr>
                 ))}
