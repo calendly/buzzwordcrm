@@ -26,7 +26,8 @@ export default () => {
   const fetchData = async () => {
     let nextPageQueryParams = '?';
 
-    if (nextPageToken === pagination.next_page_token) nextPageQueryParams += `&page_token=${nextPageToken}`;
+    if (nextPageToken === pagination.next_page_token)
+      nextPageQueryParams += `&page_token=${nextPageToken}`;
 
     if (prevPageToken === pagination.previous_page_token) {
       nextPageQueryParams = '?';
@@ -66,13 +67,12 @@ export default () => {
   };
 
   const fetchUser = async () => {
-    
-      const result = await fetch(
+    const result = await fetch(
       `/api/users/${events[0].event_memberships[0].user.split('/')[4]}`
-    ).then((res) => res.json())
+    ).then((res) => res.json());
 
-    setUser(result.resource)
-  }
+    setUser(result.resource);
+  };
 
   const handleCancellation = async (event) => {
     event.preventDefault();
@@ -114,14 +114,14 @@ export default () => {
 
   useEffect(() => {
     fetchUser();
-  }, [events])
+  }, [events]);
 
   return (
     <div className="container" style={{ marginTop: '50px' }}>
-      <div style={{textAlign: 'center'}}>
-      <Link to={`/user_busy_times?user=${events?.length && events[0].event_memberships[0].user}`}>
-      {`Click here to see ${user?.name.split(' ')[0] || ''}'s Availability`}
-      </Link>
+      <div style={{ textAlign: 'center' }}>
+        <Link to={`/user_busy_times?user=${user?.uri}`}>
+          {`Click here to see ${user?.name.split(' ')[0] || ''}'s Availability`}
+        </Link>
       </div>
       <div style={{ alignSelf: 'center', textAlign: 'center' }}>
         <Select
