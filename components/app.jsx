@@ -24,7 +24,8 @@ let App = () => (
       }
     />
     <Route
-      exact path="/events"
+      exact
+      path="/events"
       element={
         <RequireAuth>
           <Events />
@@ -32,21 +33,23 @@ let App = () => (
       }
     />
     <Route
-    path="/event_types/:uuid"
-    element={
-      <RequireAuth>
-        <EventType />
-      </RequireAuth>
-    }
+      path="/event_types/:uuid"
+      element={
+        <RequireAuth>
+          <EventType />
+        </RequireAuth>
+      }
     />
-    <Route path="/events/:uuid"
+    <Route
+      path="/events/:uuid"
       element={
         <RequireAuth>
           <Event />
         </RequireAuth>
       }
     />
-    <Route path="/events/:uuid/invitees"
+    <Route
+      path="/events/:uuid/invitees"
       element={
         <RequireAuth>
           <Invitee />

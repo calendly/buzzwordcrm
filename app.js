@@ -9,7 +9,16 @@ const cookieSession = require('cookie-session');
 const cookieParser = require('cookie-parser');
 const hbs = require('hbs');
 const port = process.env.PORT || '3000';
-const { mockCalendlyAuthentication } = require('./utils/test.js');
+const {
+  mockCalendlyAuthentication,
+  mockCalendlyScheduledEvents,
+  mockCalendlyEventTypes,
+  mockCalendlyEvent,
+  mockCalendlyInvitees,
+  mockCalendlyNoShows,
+  mockCalendlyUndoNoShow,
+  mockCalendlyCancelEvent,
+} = require('./utils/test.js');
 
 (async () => {
   await initializeDatabase();
@@ -65,7 +74,16 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-if (process.env.NODE_ENV === 'test') mockCalendlyAuthentication();
+if (process.env.NODE_ENV === 'test') {
+  mockCalendlyAuthentication();
+  mockCalendlyEventTypes();
+  mockCalendlyScheduledEvents();
+  mockCalendlyEvent();
+  mockCalendlyInvitees();
+  mockCalendlyNoShows();
+  mockCalendlyUndoNoShow();
+  mockCalendlyCancelEvent();
+}
 
 app.listen(port, () => {
   console.log(`Server ready at http://localhost:${port}`);
