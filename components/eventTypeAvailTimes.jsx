@@ -127,7 +127,7 @@ export default () => {
           Submit
         </button>
       )}
-      <div className="event-type-availability">
+      <div className="event-type-and-user-availability">
         {eventTypesSlots && eventTypesSlots.length ? (
           <div className="row">
             <table className="striped centered">

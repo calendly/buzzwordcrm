@@ -69,7 +69,7 @@ button {
     width: 100em;
 }
 
-.event-type-availability {
+.event-type-and-user-availability {
     background-color: rgb(255, 255, 255, 0.1);
     color: black;
     margin: auto;

@@ -5,7 +5,7 @@ const {
   formatEventDateTime,
   formatEventTypeDate,
   formatInviteeDateTime,
-  formatEventTypeAvailTime
+  formatEventTypeAvailTime,
 } = require('../utils');
 const router = express.Router();
 const User = require('../models/userModel');
@@ -88,7 +88,7 @@ router
     async (req, res, next) => {
       try {
         const { access_token, refresh_token, calendly_uid } = req.user;
-        
+
         const calendlyService = new CalendlyService(
           access_token,
           refresh_token
@@ -102,14 +102,76 @@ router
           calendly_uid
         );
 
-        const availableSlots = collection.map(formatEventTypeAvailTime)
+        const availableSlots = collection.map(formatEventTypeAvailTime);
 
-        res.json({availableSlots});
+        res.json({ availableSlots });
       } catch (error) {
         next(error);
       }
     }
   )
+  .get('/user_busy_times', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token, calendly_uid } = req.user;
+
+      const calendlyService = new CalendlyService(access_token, refresh_token);
+      const { user, start_time, end_time } = req.query;
+
+      const { collection } = await calendlyService.getUserBusyTimes(
+        user,
+        start_time,
+        end_time,
+        calendly_uid
+      );
+
+      const busyTimes = collection.map(formatEventDateTime);
+
+      res.json({ busyTimes });
+    } catch (error) {
+      next(error);
+    }
+  })
+  .get(
+    '/user_availability_schedules',
+    isUserAuthenticated,
+    async (req, res, next) => {
+      try {
+        const { access_token, refresh_token, calendly_uid } = req.user;
+
+        const calendlyService = new CalendlyService(
+          access_token,
+          refresh_token
+        );
+
+        const { user } = req.query;
+
+        const { collection: availabilitySchedules } =
+          await calendlyService.getUserAvailabilitySchedules(
+            user,
+            calendly_uid
+          );
+
+        res.json({ availabilitySchedules });
+      } catch (error) {
+        next(error);
+      }
+    }
+  )
+  .get('/users/:uuid', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token } = req.user;
+
+      const calendlyService = new CalendlyService(access_token, refresh_token);
+
+      const { uuid } = req.params;
+
+      const { resource } = await calendlyService.getUser(uuid);
+
+      res.json({ resource });
+    } catch (error) {
+      next(error);
+    }
+  })
   .get('/authenticate', async (req, res) => {
     let user;
 
