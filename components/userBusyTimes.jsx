@@ -150,7 +150,7 @@ export default () => {
     }
 
     if (parseInt(splitHours[0]) > 0) {
-      humanReadable = `${parseInt(splitHours[0])} hour(s) and ${Math.floor(
+      humanReadable = `${parseInt(splitHours[0])} hour(s) and ${Math.round(
         (60 * parseInt(splitHours[1])) / 100
       )} minutes`;
     } else {
