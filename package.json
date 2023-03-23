@@ -6,7 +6,8 @@
     "esbuild": "esbuild components/app.jsx --bundle --outfile=public/javascripts/bundle.js",
     "start": "node app.js",
     "dev": "nf start -j Procfile.dev",
-    "test": "start-server-and-test 'NODE_ENV=test PORT=1234 npm start' 1234 'cypress open'"
+    "test": "start-server-and-test 'NODE_ENV=test PORT=1234 npm start' 1234 'cypress open'",
+    "pretest": "npm run esbuild"
   },
   "engines": {
     "node": ">=12"
