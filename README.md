@@ -15,6 +15,10 @@ BuzzwordCRM is a sample application that demonstrates how to build applications 
 1. Run `npm run dev` to start the application.
 1. Navigate to `http://localhost:3000`.
 
+## Using Knex Library
+[Knex Schema Builder](https://knexjs.org/guide/schema-builder.html)
+[Knex Query Builder](https://knexjs.org/guide/query-builder.html)
+
 ## Tests
 
 BuzzwordCRM is equipped with integration tests, built with [Cypress](https://www.cypress.io/). To run tests locally you can run `npm run test`, this starts a test server and then opens the Cypress runner.
