@@ -1,7 +1,27 @@
-.env
 .vscode
 node_modules
 public/javascripts/bundle.js
 cypress/videos
 cypress/screenshots
 .tool-versions
+
+# env files
+.env
+
+# Ignore all logfiles and tempfiles.
+/log/*
+/tmp/*
+!/log/.keep
+!/tmp/.keep
+
+# Ignore pidfiles, but keep the directory.
+/tmp/pids/*
+!/tmp/pids/
+!/tmp/pids/.keep
+
+# Ignore uploaded files in development.
+/storage/*
+!/storage/.keep
+/tmp/storage/*
+!/tmp/storage/
+!/tmp/storage/.keep
