@@ -15,7 +15,13 @@ BuzzwordCRM is a sample application that demonstrates how to build applications 
 1. Run `npm run dev` to start the application.
 1. Navigate to `http://localhost:3000`.
 
+## Docker
+
+docker compose build
+docker compose up
+
 ## Using Knex Library
+
 [Knex Schema Builder](https://knexjs.org/guide/schema-builder.html)
 [Knex Query Builder](https://knexjs.org/guide/query-builder.html)
 

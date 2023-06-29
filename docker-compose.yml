@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:14.1-alpine3.15
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - POSTGRES_HOST_AUTH_METHOD=trust
+  web:
+    build: .
+    command: npm start
+    volumes:
+      - .:/app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db

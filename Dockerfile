@@ -1,5 +1,5 @@
 # select your base image to start with
-FROM node:16-alpine
+FROM node:16.13.1-alpine3.14
 
 # Create app directory
 # this is the location where you will be inside the container
@@ -13,7 +13,8 @@ COPY package*.json ./
 
 # RUN npm install
 # If you are building your code for production
-RUN npm ci --only=production
+# ci --only=production
+RUN npm install
 
 # Bundle app source
 COPY . .
