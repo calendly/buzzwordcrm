@@ -3,20 +3,19 @@ FROM node:16-alpine
 
 # Create app directory
 # this is the location where you will be inside the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
 # where available (npm@5+)
 # copying packages first helps take advantage of docker layers
-COPY package*.json ./
+COPY package*.json .
 
-# RUN npm install
+# Install node packages
+RUN npm install
+
 # If you are building your code for production
-RUN npm ci --only=production
-
-# Bundle app source
-COPY . .
+# RUN npm ci --only=production
 
 ENV PORT=3000
 
@@ -26,4 +25,4 @@ EXPOSE 3000
 
 # Command to run when the container is ready
 # Separate arguments as separate values in the array
-CMD [ "npm", "start"]
+CMD [ "npm", "run", "dev"]
