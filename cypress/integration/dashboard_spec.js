@@ -4,7 +4,6 @@ const eventTypeList = [
     "color": "#0099ff",
     "description_plain": "Introductory meeting.",
     "name": "First chat",
-    "position": 0,
     "profile": {
         "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
     },
@@ -16,7 +15,6 @@ const eventTypeList = [
   "color": "#8247f5",
   "description_plain": "Follow-up meeting.",
   "name": "Second chat",
-  "position": 1,
   "profile": {
       "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
   },
@@ -28,7 +26,6 @@ const eventTypeList = [
   "color": "#17e885",
   "description_plain": "Follow-up to the follow-up meeting",
   "name": "Third chat",
-  "position": 2,
   "profile": {
       "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
   },
@@ -39,7 +36,6 @@ const eventTypeList = [
   "active": true,
   "color": "#0099ff",
   "name": "Fourth chat",
-  "position": 3,
   "profile": {
       "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
   },
@@ -73,10 +69,11 @@ describe('Dashboard', () => {
       {
         eventTypes: eventTypeList,
       }
-    ).as('EventTypeList');
+    ).as('eventTypeList');
 
-    cy.visit('/');
+    cy.visit('/login');
     cy.contains('Log in with Calendly').click();
+    cy.wait('@eventTypeList')
     cy.get('.card-content').contains('First chat');
     cy.get('.card-content').contains('Second chat');
     cy.get('.card-content').contains('Third chat');
@@ -111,10 +108,11 @@ describe('Dashboard', () => {
       {
         eventTypes: eventTypeList,
       }
-    );
+    ).as('eventTypeList');
 
-    cy.visit('/');
+    cy.visit('/login');
     cy.contains('Log in with Calendly').click();
+    cy.wait('@eventTypeList')
     cy.get('.card-action > button').click({ multiple: true, force: true });
     cy.get('.calendly-popup-content').should('exist');
     cy.get('.calendly-close-overlay').click({ multiple: true, force: true });
