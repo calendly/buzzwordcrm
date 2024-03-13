@@ -1,27 +1,47 @@
 const eventTypeList = [
   {
-    uri: 'https://api.calendly.com/users/AAAAAAAAAAAAAAAA',
-    name: 'First chat',
-    scheduling_url: 'https://calendly.com/acmesales',
-    description_plain: 'Introductory meeting',
+    "active": true,
+    "color": "#0099ff",
+    "description_plain": "Introductory meeting.",
+    "name": "First chat",
+    "profile": {
+        "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
+    },
+    "scheduling_url": "https://calendly.com/acmesales",
+    "uri": "https://api.calendly.com/event_types/AAAAAAAAAAAAAAAA"
+},
+{
+  "active": true,
+  "color": "#8247f5",
+  "description_plain": "Follow-up meeting.",
+  "name": "Second chat",
+  "profile": {
+      "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
   },
-  {
-    uri: 'https://api.calendly.com/users/BAAAAAAAAAAAAAAA',
-    name: 'Second chat',
-    scheduling_url: 'https://calendly.com/acmesales',
-    description_plain: 'Follow-up meeting',
+  "scheduling_url": "https://calendly.com/acmesales",
+  "uri": "https://api.calendly.com/event_types/BAAAAAAAAAAAAAAA"
+},
+{
+  "active": true,
+  "color": "#17e885",
+  "description_plain": "Follow-up to the follow-up meeting",
+  "name": "Third chat",
+  "profile": {
+      "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
   },
-  {
-    uri: 'https://api.calendly.com/users/CAAAAAAAAAAAAAAA',
-    name: 'Third chat',
-    scheduling_url: 'https://calendly.com/acmesales',
-    description_plain: 'Follow-up to the follow-up meeting',
+  "scheduling_url": "https://calendly.com/acmesales",
+  "uri": "https://api.calendly.com/event_types/CAAAAAAAAAAAAAAA"
+},
+{
+  "active": true,
+  "color": "#0099ff",
+  "name": "Fourth chat",
+  "profile": {
+      "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
   },
-  {
-    uri: 'https://api.calendly.com/users/DAAAAAAAAAAAAAAA',
-    name: 'Fourth chat',
-    scheduling_url: 'https://calendly.com/acmesales',
-  },
+  "scheduling_url": "https://calendly.com/acmesales",
+  "uri": "https://api.calendly.com/event_types/DAAAAAAAAAAAAAAA"
+},
 ];
 
 describe('Dashboard', () => {
@@ -49,10 +69,11 @@ describe('Dashboard', () => {
       {
         eventTypes: eventTypeList,
       }
-    );
+    ).as('eventTypeList');
 
-    cy.visit('/');
-    cy.get('.btn-large').click();
+    cy.visit('/login');
+    cy.contains('Log in with Calendly').click();
+    cy.wait('@eventTypeList')
     cy.get('.card-content').contains('First chat');
     cy.get('.card-content').contains('Second chat');
     cy.get('.card-content').contains('Third chat');
@@ -87,10 +108,11 @@ describe('Dashboard', () => {
       {
         eventTypes: eventTypeList,
       }
-    );
+    ).as('eventTypeList');
 
-    cy.visit('/');
-    cy.get('.btn-large').click();
+    cy.visit('/login');
+    cy.contains('Log in with Calendly').click();
+    cy.wait('@eventTypeList')
     cy.get('.card-action > button').click({ multiple: true, force: true });
     cy.get('.calendly-popup-content').should('exist');
     cy.get('.calendly-close-overlay').click({ multiple: true, force: true });
