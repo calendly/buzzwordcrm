@@ -1,48 +1,4 @@
-const eventTypeList = [
-  {
-    "active": true,
-    "color": "#0099ff",
-    "description_plain": "Introductory meeting.",
-    "name": "First chat",
-    "profile": {
-        "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
-    },
-    "scheduling_url": "https://calendly.com/acmesales",
-    "uri": "https://api.calendly.com/event_types/AAAAAAAAAAAAAAAA"
-},
-{
-  "active": true,
-  "color": "#8247f5",
-  "description_plain": "Follow-up meeting.",
-  "name": "Second chat",
-  "profile": {
-      "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
-  },
-  "scheduling_url": "https://calendly.com/acmesales",
-  "uri": "https://api.calendly.com/event_types/BAAAAAAAAAAAAAAA"
-},
-{
-  "active": true,
-  "color": "#17e885",
-  "description_plain": "Follow-up to the follow-up meeting",
-  "name": "Third chat",
-  "profile": {
-      "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
-  },
-  "scheduling_url": "https://calendly.com/acmesales",
-  "uri": "https://api.calendly.com/event_types/CAAAAAAAAAAAAAAA"
-},
-{
-  "active": true,
-  "color": "#0099ff",
-  "name": "Fourth chat",
-  "profile": {
-      "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA",
-  },
-  "scheduling_url": "https://calendly.com/acmesales",
-  "uri": "https://api.calendly.com/event_types/DAAAAAAAAAAAAAAA"
-},
-];
+const eventTypeList = require('./../fixtures/eventTypeList.json')
 
 describe('Dashboard', () => {
   it('Should show indv event-type cards', () => {
@@ -59,8 +15,8 @@ describe('Dashboard', () => {
           302
         );
       }
-    );
-
+    ).as('login');
+    
     cy.intercept(
       {
         method: 'GET',
@@ -98,7 +54,7 @@ describe('Dashboard', () => {
           302
         );
       }
-    );
+    ).as('login');
 
     cy.intercept(
       {
