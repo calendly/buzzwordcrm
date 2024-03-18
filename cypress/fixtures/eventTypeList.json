@@ -8,6 +8,9 @@
           "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA"
       },
       "scheduling_url": "https://calendly.com/acmesales",
+      "duration": 30,
+      "updated_at": "2024-03-13T20:56:56.220468Z",
+      "last_updated": "03/13/2024",
       "custom_questions": [
         { "position": 0, 
           "name": "What would you like the power to do?" }
@@ -23,6 +26,9 @@
         "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA"
     },
     "scheduling_url": "https://calendly.com/acmesales",
+    "duration": 45,
+    "updated_at": "2024-03-13T20:56:56.220468Z",
+    "last_updated": "03/13/2024",
     "uri": "https://api.calendly.com/event_types/BAAAAAAAAAAAAAAA"
   },
   {
@@ -34,12 +40,18 @@
         "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA"
     },
     "scheduling_url": "https://calendly.com/acmesales",
+    "duration": 30,
+    "updated_at": "2024-03-13T20:56:56.220468Z",
+    "last_updated": "03/13/2024",
     "uri": "https://api.calendly.com/event_types/CAAAAAAAAAAAAAAA"
   },
   {
     "active": true,
     "color": "#0099ff",
     "name": "Fourth chat",
+    "duration": 60,
+    "updated_at": "2024-03-13T20:56:56.220468Z",
+    "last_updated": "03/13/2024",
     "profile": {
         "owner": "https://api.calendly.com/users/AAAAAAAAAAAAAAAA"
     },
