@@ -35,13 +35,18 @@ router
       next(error);
     }
   })
-  .get('/event_types', isUserAuthenticated, async (req, res) => {
-    const { access_token, refresh_token, calendly_uid } = req.user;
-    const calendlyService = new CalendlyService(access_token, refresh_token);
-    const { collection: eventTypes, pagination } =
-      await calendlyService.getUserEventTypes(calendly_uid);
+  .get('/event_types', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token, calendly_uid } = req.user;
+      const { count, page_token } = req.query;
 
-    res.json({ eventTypes, pagination });
+      const calendlyService = new CalendlyService(access_token, refresh_token);
+      const { collection: eventTypes, pagination } =
+      await calendlyService.getUserEventTypes(calendly_uid, count, page_token);
+      res.json({ eventTypes, pagination });
+    } catch (error) {
+      next(error)
+    }
   })
   .get('/event_types/:uuid', isUserAuthenticated, async (req, res) => {
     const { access_token, refresh_token } = req.user;
