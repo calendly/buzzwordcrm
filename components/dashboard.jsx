@@ -92,6 +92,8 @@ export default () => {
                     borderWidth: 0,
                     backgroundColor: '#fff',
                     cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: 'red',
                   }}
                   />
                 </div>
