@@ -37,37 +37,67 @@ export default () => {
         {eventTypes.map(
           (eventType) =>
               <div className="col s6" key={eventType.uri}>
-                <Link to={eventType.active === true ? `/event_types/${eventType.uri.split('/')[4]}`: ''}>
-                  <div className="card">
-                    <div
+                {eventType.active === true ? (
+                  <Link to={`/event_types/${eventType.uri.split('/')[4]}`}>
+                    <div className="card">
+                      <div
                       style={{
                         backgroundColor: eventType.color,
                         height: 50,
                         width: '100%',
                       }}
-                    ></div>
-                    <div className="card-content" style={{ color: 'black' }}>
-                      <p>{eventType.name}</p>
+                      ></div>
+                      <div className="card-content" style={{ color: 'black' }}>
+                        <p>{eventType.name}</p>
+                        <p style={{ fontSize: 'small' }}>
+                          Description:{' '}
+                          {eventType.description_plain || 'No description'}
+                        </p>
+                      </div>
+                      <div className="card-action">
+                        <PopupButton
+                          url={eventType.scheduling_url}
+                          rootElement={document.getElementById('root')}
+                          text="View Availability"
+                          styles={{
+                            borderWidth: 0,
+                            backgroundColor: '#fff',
+                            cursor: 'pointer',
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </Link> ) : (
+                <div className="card">
+                  <div
+                      style={{
+                        backgroundColor: eventType.color,
+                        height: 50,
+                        width: '100%',
+                      }}
+                  ></div>
+                  <div className="card-content" style={{ color: 'black' }}>
+                    <p>{eventType.name}</p>
                       <p style={{ fontSize: 'small' }}>
                         Description:{' '}
                         {eventType.description_plain || 'No description'}
                       </p>
-                    </div>
-                    {eventType.active === true ? <div className="card-action">
-                       <PopupButton
-                        url={eventType.scheduling_url}
-                        rootElement={document.getElementById('root')}
-                        text="View Availability"
-                        styles={{
-                          borderWidth: 0,
-                          backgroundColor: '#fff',
-                          cursor: 'pointer',
-                        }}
-                      />
-                    </div> : 'INACTIVE EVENT TYPE'}
                   </div>
-                </Link>
-              </div>
+                <div className="card-action">
+                  <PopupButton
+                  url={eventType.scheduling_url}
+                  rootElement={document.getElementById('root')}
+                  text="INACTIVE EVENT TYPE"
+                  styles={{
+                    borderWidth: 0,
+                    backgroundColor: '#fff',
+                    cursor: 'pointer',
+                  }}
+                  />
+                </div>
+              </div>)
+            }
+          </div>
         )}
       </div>
       {pagination?.next_page && (
