@@ -20,7 +20,7 @@ describe('Dashboard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/api/event_types',
+        url: '/api/event_types*',
       },
       {
         eventTypes: eventTypeList,
@@ -59,7 +59,7 @@ describe('Dashboard', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/api/event_types',
+        url: '/api/event_types*',
       },
       {
         eventTypes: eventTypeList,
