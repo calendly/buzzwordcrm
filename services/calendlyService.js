@@ -39,11 +39,14 @@ class CalendlyService {
     return data;
   };
 
-  getUserEventTypes = async (userUri) => {
-    const { data } = await this.request.get(
-      `/event_types?user=${userUri}`,
-      this.requestConfiguration()
-    );
+  getUserEventTypes = async (userUri, count, pageToken) => {
+    let queryParams = [`count=${count || 10}`].join('&');
+
+    if (pageToken) queryParams += `&page_token=${pageToken}`;
+
+    const url = `/event_types?${queryParams}&user=${userUri}`;
+
+    const { data } =  await this.request.get(url, this.requestConfiguration());
 
     return data;
   };
