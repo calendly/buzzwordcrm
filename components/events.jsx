@@ -19,6 +19,8 @@ export default () => {
 
   const options = [
     { value: 'all-events', label: 'All Events' },
+    { value: 'asc-events', label: 'All Events ASC' },
+    { value: 'desc-events', label: 'All Events DESC'},
     { value: 'active-events', label: 'Active Events' },
     { value: 'canceled-events', label: 'Canceled Events' },
   ];
@@ -36,6 +38,30 @@ export default () => {
 
     if (selectedOption === 'active-events') {
       nextPageQueryParams += '&status=active';
+
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...result.events]);
+      setPagination(result.pagination);
+      return;
+    }
+
+    if (selectedOption === 'asc-events') {
+      nextPageQueryParams += '&sort=start_time:asc';
+
+      const result = await fetch(
+        `/api/scheduled_events${nextPageQueryParams}`
+      ).then((res) => res.json());
+
+      setEvents([...result.events]);
+      setPagination(result.pagination);
+      return;
+    }
+
+    if (selectedOption === 'desc-events') {
+      nextPageQueryParams += '&sort=start_time:desc';
 
       const result = await fetch(
         `/api/scheduled_events${nextPageQueryParams}`
@@ -68,7 +94,7 @@ export default () => {
 
   const fetchUser = async () => {
     const result = await fetch(
-      `/api/users/${events[0].event_memberships[0].user.split('/')[4]}`
+      `/api/users/${events[0]?.event_memberships[0].user.split('/')[4]}`
     ).then((res) => res.json());
 
     setUser(result.resource);
@@ -109,7 +135,6 @@ export default () => {
     setNextPageToken(false);
     setPrevPageToken(false);
     setSelectedOption(value);
-    setEvents([]);
   };
 
   useEffect(() => {
