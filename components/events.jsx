@@ -147,7 +147,7 @@ export default () => {
     <div className="container" style={{ marginTop: '50px' }}>
       <div style={{ textAlign: 'center' }}>
         <Link to={`/user_busy_times?user=${user?.uri}`}>
-          {`Click here to see ${user?.name.split(' ')[0]}'s Availability` || ''}
+          {`Click here to see ${user?.name.split(' ')[0]}'s Availability`}
         </Link>
       </div>
       {events.length ? (
