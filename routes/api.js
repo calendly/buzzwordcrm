@@ -14,7 +14,7 @@ router
   .get('/scheduled_events', isUserAuthenticated, async (req, res, next) => {
     try {
       const { access_token, refresh_token, calendly_uid } = req.user;
-      const { count, page_token, status, max_start_time, min_start_time } =
+      const { count, page_token, sort, status, max_start_time, min_start_time } =
         req.query;
       const calendlyService = new CalendlyService(access_token, refresh_token);
 
@@ -23,6 +23,7 @@ router
           calendly_uid,
           count,
           page_token,
+          sort,
           status,
           max_start_time,
           min_start_time
@@ -162,6 +163,19 @@ router
       }
     }
   )
+  .get('/users/me', isUserAuthenticated, async (req, res, next) => {
+    try {
+      const { access_token, refresh_token } = req.user;
+
+      const calendlyService = new CalendlyService(access_token, refresh_token);
+
+      const { resource } = await calendlyService.getUserInfo();
+
+      res.json({ resource });
+    } catch (error) {
+      next(error);
+    }
+  })
   .get('/users/:uuid', isUserAuthenticated, async (req, res, next) => {
     try {
       const { access_token, refresh_token } = req.user;

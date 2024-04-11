@@ -64,6 +64,7 @@ class CalendlyService {
     userUri,
     count,
     pageToken,
+    sort,
     status,
     maxStartTime,
     minStartTime
@@ -71,10 +72,10 @@ class CalendlyService {
     let queryParams = [
       `user=${userUri}`,
       `count=${count || 10}`,
-      `sort=start_time:asc`,
     ].join('&');
 
     if (pageToken) queryParams += `&page_token=${pageToken}`;
+    if (sort) queryParams += `&sort=${sort}`;
     if (status) queryParams += `&status=${status}`;
     if (maxStartTime) queryParams += `&max_start_time=${maxStartTime}`;
     if (minStartTime) queryParams += `&min_start_time=${minStartTime}`;
