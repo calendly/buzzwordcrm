@@ -5,7 +5,6 @@ import { PopupButton } from 'react-calendly';
 import moment from 'moment';
 
 export default () => {
-  const location = useLocation().search;
   const [user, setUser] = useState();
   const [busyTimes, setBusyTimes] = useState([]);
   const [date, setDate] = useState('');
@@ -91,7 +90,6 @@ export default () => {
   };
 
   const fetchUserAvailabilityData = async () => {
-    //This is to avoid nested mapping through the schedules array at first render
     if (user) {
       const result = await fetch(
       `/api/user_availability_schedules?user=${user.uri}`
