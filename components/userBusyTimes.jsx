@@ -5,8 +5,7 @@ import { PopupButton } from 'react-calendly';
 import moment from 'moment';
 
 export default () => {
-  const location = useLocation().search;
-  const user = new URLSearchParams(location).get('user');
+  const [user, setUser] = useState();
   const [busyTimes, setBusyTimes] = useState([]);
   const [date, setDate] = useState('');
   const [queryParams, setQueryParams] = useState();
@@ -15,7 +14,6 @@ export default () => {
   const [finalDateMillisec, setFinalDateMillisec] = useState();
   const [schedule, setSchedule] = useState([]);
   const [endTime, setEndTime] = useState();
-  const [availUser, setAvailUser] = useState();
   const [monTotalBusy, setMonTotalBusy] = useState(0);
   const [tuesTotalBusy, setTuesTotalBusy] = useState(0);
   const [wedTotalBusy, setWedTotalBusy] = useState(0);
@@ -30,7 +28,6 @@ export default () => {
   const [friTotalAvail, setFriTotalAvail] = useState(0);
   const [satTotalAvail, setSatTotalAvail] = useState(0);
   const [sunTotalAvail, setSunTotalAvail] = useState(0);
-  const [namedUser, setNamedUser] = useState();
 
   const busyTimesObj = {};
 
@@ -75,19 +72,27 @@ export default () => {
     sunday: [sunTotalBusy, sunTotalAvail],
   };
 
+  const fetchUser = async () => {
+    const result = await fetch('/api/users/me').then((res) =>
+      res.json()
+    );
+    setUser(result.resource);
+  };
+  
   const fetchBusyTimesData = async () => {
-    const result = await fetch(
-      `/api/user_busy_times?user=${user}${queryParams}`
+    if (user) {
+      const result = await fetch(
+      `/api/user_busy_times?user=${user.uri}${queryParams}`
     ).then((res) => res.json());
 
     setBusyTimes(result.busyTimes);
+    }
   };
 
   const fetchUserAvailabilityData = async () => {
-    //This is to avoid nested mapping through the schedules array at first render
-    setAvailUser(new URLSearchParams(location).get('user'));
-    const result = await fetch(
-      `/api/user_availability_schedules?user=${availUser}`
+    if (user) {
+      const result = await fetch(
+      `/api/user_availability_schedules?user=${user.uri}`
     ).then((res) => res.json());
 
     let countDays = 0;
@@ -124,14 +129,10 @@ export default () => {
     }
 
     setSchedule(result.availabilitySchedules);
-  };
+    }
+    
 
-  const fetchUser = async () => {
-    const result = await fetch(`/api/users/${user.split('/')[4]}`).then((res) =>
-      res.json()
-    );
-
-    setNamedUser(result.resource);
+    
   };
 
   const getDayOfWeek = (date) => {
@@ -396,7 +397,7 @@ export default () => {
 
   return (
     <div className="event-avail-selection-box">
-      <h5>{`${namedUser?.name.split(' ')[0] || ''}'s Availability`}</h5>
+      <h5>{`${user?.name.split(' ')[0] || ''}'s Availability`}</h5>
       <h6 className="event-avail-header">
         Choose a start DATE/TIME below, then click SUBMIT
       </h6>
@@ -553,10 +554,10 @@ export default () => {
             </table>
             <div style={{ fontSize: 'xx-large' }}>
               <PopupButton
-                url={namedUser?.scheduling_url}
+                url={user?.scheduling_url}
                 rootElement={document.getElementById('root')}
                 text={`Book a meeting with ${
-                  namedUser?.name.split(' ')[0] || ''
+                  user?.name.split(' ')[0] || ''
                 }`}
                 styles={{
                   backgroundColor: 'rgb(238,110,115,0.1)',
