@@ -1,0 +1,10 @@
+version: '2'
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - "./:/app"
+      # map local to remote folder, exclude node_modules
+      - "/app/node_modules"
