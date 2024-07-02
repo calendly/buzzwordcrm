@@ -29,6 +29,26 @@ exports.formatEventDateTime = (event) => ({
   end_time_formatted: formatTime(event.end_time),
 });
 
+exports.formatISOExtended = (dateObj) => {
+  // Get individual date components
+  const date = new Date(dateObj);
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+  const day = String(date.getUTCDate()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, '0');
+  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+
+  // Get milliseconds and extend to six fractional digits
+  const milliseconds = String(date.getUTCMilliseconds()).padStart(3, '0');
+  const extendedFractional = milliseconds + '000'; // Pad to six digits
+
+  // Construct the extended ISO string
+  const extendedISO = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${extendedFractional}Z`;
+
+  return extendedISO;
+}
+
 exports.formatEventTypeDate = (eventType) => ({
   ...eventType,
   last_updated: new Date(eventType.updated_at).toLocaleDateString(),

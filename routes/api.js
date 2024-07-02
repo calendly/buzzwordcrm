@@ -6,6 +6,7 @@ const {
   formatEventTypeDate,
   formatInviteeDateTime,
   formatEventTypeAvailTime,
+  formatISOExtended,
 } = require('../utils');
 const router = express.Router();
 const User = require('../models/userModel');
@@ -102,8 +103,8 @@ router
         const { event_type, end_time, start_time } = req.query;
 
         const { collection } = await calendlyService.getUserEventTypeAvailTimes(
-          event_type,
-          start_time,
+          formatISOExtended(event_type),
+          formatISOExtended(start_time),
           end_time,
           calendly_uid
         );
@@ -125,8 +126,8 @@ router
 
       const { collection } = await calendlyService.getUserBusyTimes(
         user,
-        start_time,
-        end_time,
+        formatISOExtended(start_time),
+        formatISOExtended(end_time),
         calendly_uid
       );
 
