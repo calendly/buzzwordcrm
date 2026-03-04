@@ -1,3 +1,13 @@
+const dateInFuture = new Date(new Date().setFullYear(new Date().getFullYear() + 30));
+const dateInFutureDateFormat = Intl.DateTimeFormat(undefined,{ year: "numeric",
+  month: "numeric",
+  day: "numeric",
+  timeZone: "UTC"}).format(dateInFuture)
+const dateInFutureTimeFormat = Intl.DateTimeFormat(undefined,{ hour: "numeric",
+  minute: "numeric",
+  second: "numeric",
+  timeZone: "UTC"}).format(dateInFuture)
+
 const scheduledEvents = [
   {
     uri: 'https://api.calendly.com/scheduled_events/GBGBDCAADAEDCRZ2',
@@ -29,13 +39,31 @@ const scheduledEvents = [
   {
     uri: 'https://api.calendly.com/scheduled_events/GFBGBDCAADAEDCRZ4',
     name: 'Third chat',
-    date: '11/11/2022',
-    start_time: '2022-11-11T20:00:00.000Z',
-    start_time_formatted: '03:00 PM',
+    date: dateInFutureDateFormat,
+    start_time: dateInFuture.toISOString(),
+    start_time_formatted: dateInFutureTimeFormat,
     end_time_formatted: '03:30 PM',
     status: 'active',
   },
 ];
+
+const userResource = {
+  "avatar_url": null,
+  "created_at": "2019-10-17T13:23:46.287139Z",
+  "current_organization": "https://api.calendly.com/organizations/ORGANIZATION_UUID",
+  "email": "mail@org.com",
+  "name": "John Doe",
+  "resource_type": "User",
+  "scheduling_url": "https://calendly.com/user",
+  "slug": "userslug",
+  "timezone": "America/New_York",
+  "updated_at": "2019-10-17T13:23:46.287139Z",
+  "uri": "https://api.calendly.com/users/USER_UUID",
+};
+
+const scheduledEventsPagination = {
+  "count": 0,
+}
 
 describe('Scheduled Events', () => {
   it('Should render a table of all scheduled events, allowing filtering by all, active, and canceled events', () => {
@@ -57,7 +85,7 @@ describe('Scheduled Events', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/api/event_types',
+        url: '/api/event_types?',
       },
       {
         eventTypes: [],
@@ -71,6 +99,7 @@ describe('Scheduled Events', () => {
       },
       {
         events: scheduledEvents,
+        pagination: scheduledEventsPagination
       }
     );
 
@@ -81,6 +110,7 @@ describe('Scheduled Events', () => {
       },
       {
         events: [scheduledEvents[0], scheduledEvents[2]],
+        pagination: scheduledEventsPagination
       }
     );
 
@@ -91,8 +121,19 @@ describe('Scheduled Events', () => {
       },
       {
         events: [scheduledEvents[1]],
+        pagination: scheduledEventsPagination
       }
     );
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/users/me',
+      },
+      {
+          resource: userResource,
+      }
+    )
 
     cy.visit('/login');
     cy.get('.btn-large').click();
@@ -108,8 +149,8 @@ describe('Scheduled Events', () => {
     cy.get('td').eq(8).should('have.text', '03:30 PM');
     cy.get('td').eq(9).should('have.text', 'CANCELED');
     cy.get('td').eq(10).should('have.text', 'Third chat');
-    cy.get('td').eq(11).should('have.text', '11/11/2022');
-    cy.get('td').eq(12).should('have.text', '03:00 PM');
+    cy.get('td').eq(11).should('have.text', dateInFutureDateFormat);
+    cy.get('td').eq(12).should('have.text', dateInFutureTimeFormat);
     cy.get('td').eq(13).should('have.text', '03:30 PM');
     cy.get('td').eq(14).should('have.text', 'ACTIVE');
     cy.get('.css-4xgw5l-IndicatorsContainer2').click();
@@ -120,8 +161,8 @@ describe('Scheduled Events', () => {
     cy.get('td').eq(3).should('have.text', '05:00 PM');
     cy.get('td').eq(4).should('have.text', 'ACTIVE');
     cy.get('td').eq(5).should('have.text', 'Third chat');
-    cy.get('td').eq(6).should('have.text', '11/11/2022');
-    cy.get('td').eq(7).should('have.text', '03:00 PM');
+    cy.get('td').eq(6).should('have.text', dateInFutureDateFormat);
+    cy.get('td').eq(7).should('have.text', dateInFutureTimeFormat);
     cy.get('td').eq(8).should('have.text', '03:30 PM');
     cy.get('td').eq(9).should('have.text', 'ACTIVE');
     cy.get('.css-4xgw5l-IndicatorsContainer2').click();
@@ -144,8 +185,8 @@ describe('Scheduled Events', () => {
     cy.get('td').eq(8).should('have.text', '03:30 PM');
     cy.get('td').eq(9).should('have.text', 'CANCELED');
     cy.get('td').eq(10).should('have.text', 'Third chat');
-    cy.get('td').eq(11).should('have.text', '11/11/2022');
-    cy.get('td').eq(12).should('have.text', '03:00 PM');
+    cy.get('td').eq(11).should('have.text', dateInFutureDateFormat);
+    cy.get('td').eq(12).should('have.text', dateInFutureTimeFormat);
     cy.get('td').eq(13).should('have.text', '03:30 PM');
     cy.get('td').eq(14).should('have.text', 'ACTIVE');
   });
@@ -180,7 +221,7 @@ describe('Scheduled Events', () => {
     cy.get('.popup-box').contains('Yes, cancel').click({ force: true });
     cy.on('window:alert', (alertMessage) => {
       expect(alertMessage).to.equal(
-        'You have successfully canceled the following event: "Third chat" on 11/11/2022 at 03:00 PM!'
+        `You have successfully canceled the following event: "Third chat" on ${dateInFutureDateFormat} at ${dateInFutureTimeFormat}!`
       );
     });
   });

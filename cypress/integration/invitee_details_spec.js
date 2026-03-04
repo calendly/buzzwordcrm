@@ -19,6 +19,20 @@ const scheduledEvents = [
   },
 ];
 
+const userResource = {
+  "avatar_url": null,
+  "created_at": "2019-10-17T13:23:46.287139Z",
+  "current_organization": "https://api.calendly.com/organizations/ORGANIZATION_UUID",
+  "email": "mail@org.com",
+  "name": "John Doe",
+  "resource_type": "User",
+  "scheduling_url": "https://calendly.com/user",
+  "slug": "userslug",
+  "timezone": "America/New_York",
+  "updated_at": "2019-10-17T13:23:46.287139Z",
+  "uri": "https://api.calendly.com/users/USER_UUID",
+};
+
 const eventInvitees = [
   {
     event: 'https://api.calendly.com/scheduled_events/GFGBDCAADAEDCRZ2',
@@ -70,6 +84,14 @@ const eventInvitees = [
   },
 ];
 
+const eventInviteesPagination = {
+    "count": 20,
+    "next_page": "https://calendly.com/scheduled_events/AAAAAAAAAAAAAAAA/invitees?count=1&page_token=sNjq4TvMDfUHEl7zHRR0k0E1PCEJWvdi",
+    "previous_page": "https://calendly.com/scheduled_events/AAAAAAAAAAAAAAAA/invitees?count=1&page_token=VJs2rfDYeY8ahZpq0QI1O114LJkNjd7H",
+    "next_page_token": "sNjq4TvMDfUHEl7zHRR0k0E1PCEJWvdi",
+    "previous_page_token": "VJs2rfDYeY8ahZpq0QI1O114LJkNjd7H"
+}
+
 const noShow = {
   uri: 'https://api.calendly.com/invitee_no_shows/639fa667-4c1b-4b20-93b5-1b1969d67dc7',
   invitee:
@@ -97,7 +119,7 @@ describe('Scheduled Event Invitee Details', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/api/event_types',
+        url: '/api/event_types?',
       },
       {
         eventTypes: [],
@@ -112,7 +134,7 @@ describe('Scheduled Event Invitee Details', () => {
       {
         events: scheduledEvents,
       }
-    );
+    ).as('scheduledEvents');
 
     cy.intercept(
       {
@@ -131,15 +153,27 @@ describe('Scheduled Event Invitee Details', () => {
       },
       {
         invitees: eventInvitees,
+        pagination: eventInviteesPagination,
       }
     );
+
+    cy.intercept(
+      {
+        method: 'GET',
+        url: '/api/users/me',
+      },
+      {
+          resource: userResource,
+      }
+    )
 
     cy.visit('/login');
     cy.get('.btn-large').click();
     cy.get('nav').contains('Events').click();
+    cy.wait('@scheduledEvents');
     cy.get('td').eq(0).contains('First chat').click();
     cy.get('.scheduled-event-header').contains('First chat');
-    cy.get('.invitee-details-link')
+    cy.get('.details-link')
       .contains('Click here for invitee details')
       .click();
     cy.get('tbody').contains('John Doe');
@@ -174,6 +208,7 @@ describe('Scheduled Event Invitee Details', () => {
       },
       {
         invitees: eventInvitees,
+        pagination: eventInviteesPagination,
       }
     );
 

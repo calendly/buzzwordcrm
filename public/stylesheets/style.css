@@ -64,9 +64,7 @@ button {
     margin: auto;
     padding-top: 0.2em;
     padding-bottom: 5em;
-    position: center;
     text-align: center;
-    width: 100em;
 }
 
 .event-type-and-user-availability {

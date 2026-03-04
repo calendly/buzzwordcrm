@@ -20,7 +20,7 @@ describe('Event Type Details', () => {
     cy.intercept(
       {
         method: 'GET',
-        url: '/api/event_types',
+        url: '/api/event_types?',
       },
       {
         eventTypes: eventTypeList,
