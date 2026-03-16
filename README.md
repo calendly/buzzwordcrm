@@ -11,10 +11,17 @@ BuzzwordCRM is a sample application that demonstrates how to build applications 
    cp .env.example .env
    ```
 
+### Installing Locally
+
 1. Run `npm install` to install dependencies.
 1. Run `npm run dev` to start the application.
 1. Navigate to `http://localhost:3000`.
 
-## Tests
+### Docker Setup
+
+`docker compose up` will start the application at [localhost:3000](localhost:3000)
+If you need to rebuild the application due to changes in dependencies, run `docker compose up --build`
+
+### Tests
 
 BuzzwordCRM is equipped with integration tests, built with [Cypress](https://www.cypress.io/). To run tests locally you can run `npm run test`, this starts a test server and then opens the Cypress runner.
