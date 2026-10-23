@@ -5,7 +5,7 @@ import DatePicker from 'react-datepicker';
 export default () => {
   const [eventType, setEventType] = useState([]);
   const [date, setDate] = useState(new Date());
-  const [eventTypesSlots, seEventTypesSlots] = useState([]);
+  const [eventTypesSlots, setEventTypesSlots] = useState([]);
   const [eventUri, setEventUri] = useState();
 
   const { uuid } = useParams();
