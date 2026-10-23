@@ -7,10 +7,10 @@ export default () => {
   const location = useLocation().search;
   const eventUri = new URLSearchParams(location).get('event_type');
   const [eventType, setEventType] = useState([]);
-  const [eventTypesSlots, seEventTypesSlots] = useState([]);
+  const [eventTypesSlots, setEventTypesSlots] = useState([]);
   const [date, setDate] = useState('');
   const [queryParams, setQueryParams] = useState();
-  const [showTime, setShowTIme] = useState(false);
+  const [showTime, setShowTime] = useState(false);
   const [showSubmit, setShowSubmit] = useState(false);
   const [finalDateMillisec, setFinalDateMillisec] = useState();
 
@@ -42,7 +42,7 @@ export default () => {
       );
     }
 
-    seEventTypesSlots(result.availableSlots);
+    setEventTypesSlots(result.availableSlots);
   };
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export default () => {
             dateFormat="MMMM d, yyyy"
             onChange={(date) => {
               setDate(date);
-              setShowTIme(true);
+              setShowTime(true);
               const copyDate = new Date(date);
               const endDate = new Date(
                 copyDate.setTime(copyDate.getTime() + 7 * 24 * 3600 * 1000)

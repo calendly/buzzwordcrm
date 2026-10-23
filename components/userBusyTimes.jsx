@@ -9,7 +9,7 @@ export default () => {
   const [busyTimes, setBusyTimes] = useState([]);
   const [date, setDate] = useState('');
   const [queryParams, setQueryParams] = useState();
-  const [showTime, setShowTIme] = useState(false);
+  const [showTime, setShowTime] = useState(false);
   const [showSubmit, setShowSubmit] = useState(false);
   const [finalDateMillisec, setFinalDateMillisec] = useState();
   const [schedule, setSchedule] = useState([]);
@@ -416,7 +416,7 @@ export default () => {
             dateFormat="MMMM d, yyyy"
             onChange={(date) => {
               setDate(date);
-              setShowTIme(true);
+              setShowTime(true);
               const copyDate = new Date(date);
               const endDate = new Date(
                 copyDate.setTime(copyDate.getTime() + 7 * 24 * 3600 * 1000)
